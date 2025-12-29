@@ -5,3 +5,8 @@ export { Autocomplete } from "./autocomplete";
 export { MarkdownRenderer } from "./markdown-renderer";
 export { FileViewer } from "./file-viewer";
 export { FileThumbnail } from "./file-thumbnail";
+export { CSVPicker, parseCSV, validateCSVForMetaAnalysis } from "./csv-picker";
+export type { CSVData } from "./csv-picker";
+export { SnippetsLibrary, snippets, snippetCategories } from "./snippets-library";
+export type { Snippet } from "./snippets-library";
+export { ExportSheet } from "./export-sheet";

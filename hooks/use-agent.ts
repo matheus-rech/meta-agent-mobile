@@ -14,10 +14,11 @@ interface UseAgentReturn {
   isConnected: boolean;
   sessionId: string;
   rStatus: REnvironmentStatus | null;
-  sendMessage: (message: string) => Promise<void>;
+  sendMessage: (message: string, options?: { csvData?: unknown }) => Promise<void>;
   clearMessages: () => void;
   executeRCode: (code: string) => Promise<void>;
   checkRStatus: () => Promise<void>;
+  addSystemMessage: (content: string) => void;
 }
 
 interface REnvironmentStatus {
@@ -317,6 +318,15 @@ ${packageList}
     memoryRef.current.clearMessages();
   }, []);
 
+  // Add a system message
+  const addSystemMessage = useCallback((content: string) => {
+    addMessage({
+      type: "system",
+      content,
+      timestamp: Date.now(),
+    });
+  }, [addMessage]);
+
   return {
     messages,
     isThinking,
@@ -327,5 +337,6 @@ ${packageList}
     clearMessages,
     executeRCode,
     checkRStatus,
+    addSystemMessage,
   };
 }

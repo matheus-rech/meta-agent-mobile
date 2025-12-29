@@ -37,7 +37,16 @@ describe("R-Related Skills", () => {
     
     expect(skill).toBeDefined();
     expect(skill?.triggers).toContain("prisma");
+    expect(skill?.triggers).toContain("grade assessment");
+  });
+
+  it("should have risk-of-bias skill registered", () => {
+    const registry = getSkillRegistry();
+    const skill = registry.get("risk-of-bias");
+    
+    expect(skill).toBeDefined();
     expect(skill?.triggers).toContain("risk of bias");
+    expect(skill?.triggers).toContain("rob2");
   });
 
   it("should have visualization skill registered", () => {
@@ -66,15 +75,15 @@ describe("R-Related Skills", () => {
     const registry = getSkillRegistry();
     const rSkills = registry.getRSkills();
     
-    expect(rSkills.length).toBe(4);
+    expect(rSkills.length).toBe(8);
     expect(rSkills.map(s => s.name)).toContain("r-statistics");
     expect(rSkills.map(s => s.name)).toContain("meta-analysis");
     expect(rSkills.map(s => s.name)).toContain("systematic-review");
     expect(rSkills.map(s => s.name)).toContain("visualization");
   });
 
-  it("should include all 9 skills in availableSkills", () => {
-    expect(availableSkills.length).toBe(9);
+  it("should include all 15 skills in availableSkills", () => {
+    expect(availableSkills.length).toBe(15);
     const skillNames = availableSkills.map(s => s.name);
     expect(skillNames).toContain("research");
     expect(skillNames).toContain("analysis");
@@ -83,6 +92,12 @@ describe("R-Related Skills", () => {
     expect(skillNames).toContain("tools");
     expect(skillNames).toContain("r-statistics");
     expect(skillNames).toContain("meta-analysis");
+    expect(skillNames).toContain("data-extraction");
+    expect(skillNames).toContain("risk-of-bias");
+    expect(skillNames).toContain("network-meta-analysis");
+    expect(skillNames).toContain("trial-sequential-analysis");
+    expect(skillNames).toContain("manuscript-writing");
+    expect(skillNames).toContain("neurosurgery-literature");
     expect(skillNames).toContain("systematic-review");
     expect(skillNames).toContain("visualization");
   });

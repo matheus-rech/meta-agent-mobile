@@ -69,3 +69,35 @@
 - [x] R session management
 - [x] Firejail sandboxing for secure R execution
 - [x] Network access control (allow when needed)
+
+## New Features (v1.3)
+
+### CSV File Upload
+- [x] Document picker for CSV file selection
+- [x] CSV parsing and validation
+- [x] Preview data before analysis
+- [x] Store uploaded files for session
+
+### R Code Snippets Library
+- [x] Pre-built templates for meta-analysis
+- [x] Templates for data extraction
+- [x] Templates for risk of bias
+- [x] Templates for network meta-analysis
+- [x] Templates for TSA (Trial Sequential Analysis)
+- [x] Templates for manuscript sections
+- [x] Insert snippet into terminal
+
+### Export Functionality
+- [x] Save plots to photo library
+- [x] Export analysis results as CSV
+- [x] Share results via system share sheet
+- [x] Copy R code to clipboard
+
+### Skills Integration from meta-agent
+- [x] Meta-analysis skill (binary, continuous, proportion, survival)
+- [x] Data extraction skill with schemas
+- [x] Risk of bias skill (RoB2, NOS, ROBINS-I)
+- [x] Network meta-analysis skill
+- [x] TSA (Trial Sequential Analysis) skill
+- [x] Manuscript writing skill (PRISMA-compliant)
+- [x] Neurosurgery literature search skill
