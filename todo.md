@@ -54,3 +54,18 @@
 - [x] Open and display generated plots/images
 - [x] Visualize handled files (images, charts)
 - [x] File preview modal/screen
+
+## R Integration (v1.2)
+
+- [x] R execution service on server
+- [x] R code execution endpoint
+- [x] Meta-analysis templates (binary, continuous, proportion)
+- [x] Forest plot generation
+- [x] Funnel plot generation
+- [x] PRISMA flowchart generation (template ready)
+- [x] R-related skills in agent SDK
+- [x] /r command for R code execution
+- [x] Plot output visualization
+- [x] R session management
+- [x] Firejail sandboxing for secure R execution
+- [x] Network access control (allow when needed)

@@ -29,7 +29,7 @@ describe("Slash Commands", () => {
     const result = await executeSlashCommand("/version");
     expect(result.handled).toBe(true);
     expect(result.response).toContain("Meta Agent Mobile");
-    expect(result.response).toContain("v1.0.0");
+    expect(result.response).toContain("v1.2.0");
   });
 
   it("should execute /skills command", async () => {
