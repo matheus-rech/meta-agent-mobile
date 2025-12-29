@@ -1,0 +1,86 @@
+{
+  "timestamp": "2025-12-29 14:01:29",
+  "r_version": "R version 4.1.2 (2021-11-01)",
+  "tests": {
+    "binary_or": {
+      "status": "PASSED",
+      "pooled_or": [
+        [0.4337]
+      ],
+      "ci_lower": 0.3263,
+      "ci_upper": 0.5764,
+      "i_squared": 0,
+      "tau_squared": 0,
+      "p_value": 8.6716e-09,
+      "k_studies": 8,
+      "plot": "test1_forest_binary.png"
+    },
+    "continuous_smd": {
+      "status": "PASSED",
+      "pooled_smd": -1.082,
+      "ci_lower": -1.23,
+      "ci_upper": -0.9341,
+      "i_squared": 0,
+      "tau_squared": 0,
+      "k_studies": 8,
+      "plot": "test2_forest_smd.png"
+    },
+    "publication_bias": {
+      "status": "PASSED",
+      "egger_intercept": -0.9493,
+      "egger_p": 0.5894,
+      "asymmetry_detected": false,
+      "trimfill_missing": 0,
+      "trimfill_adjusted_or": [
+        [0.4337]
+      ],
+      "plot": "test3_funnel_plot.png"
+    },
+    "subgroup": {
+      "status": "PASSED",
+      "subgroups": ["Europe", "North America", "Asia"],
+      "q_between": 0.0479,
+      "p_interaction": 0.9763,
+      "plot": "test4_subgroup_forest.png"
+    },
+    "sensitivity": {
+      "status": "PASSED",
+      "original_or": [
+        [0.4337]
+      ],
+      "range_or": [0.4246, 0.4391],
+      "influential_studies": "None",
+      "plot": "test5_influence_plot.png"
+    },
+    "risk_of_bias": {
+      "status": "PASSED",
+      "n_studies": 8,
+      "overall_low": 1,
+      "overall_some": 6,
+      "overall_high": 1,
+      "plots": ["test6_rob_traffic_light.png", "test6_rob_summary.png"]
+    },
+    "meta_regression": {
+      "status": "PASSED",
+      "intercept": 16.8276,
+      "slope": -0.0087,
+      "p_moderator": 0.9254,
+      "r_squared": "NaN",
+      "plot": "test7_meta_regression.png"
+    },
+    "cumulative": {
+      "status": "PASSED",
+      "final_or": [],
+      "ci_lower": [],
+      "ci_upper": [],
+      "plot": "test8_cumulative_forest.png"
+    }
+  },
+  "summary": {
+    "total_tests": 8,
+    "passed": 8,
+    "failed": 0,
+    "success_rate": 100,
+    "plots_generated": ["test1_forest_binary.png", "test2_forest_smd.png", "test3_funnel_plot.png", "test4_subgroup_forest.png", "test5_influence_plot.png", "test6_rob_summary.png", "test6_rob_traffic_light.png", "test7_meta_regression.png", "test8_cumulative_forest.png"]
+  }
+}

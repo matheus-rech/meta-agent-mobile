@@ -101,3 +101,30 @@
 - [x] TSA (Trial Sequential Analysis) skill
 - [x] Manuscript writing skill (PRISMA-compliant)
 - [x] Neurosurgery literature search skill
+
+## E2E Testing (v1.4)
+
+### R Environment
+- [x] Verify R packages installed (meta, metafor, ggplot2)
+- [x] Test R execution with Firejail sandboxing
+
+### Meta-Analysis Methods
+- [x] Binary outcome meta-analysis (OR, RR)
+- [x] Continuous outcome meta-analysis (MD, SMD)
+- [x] Subgroup analysis
+- [x] Sensitivity analysis (leave-one-out)
+- [x] Meta-regression
+- [x] Cumulative meta-analysis
+
+### Plot Generation
+- [x] Forest plot generation and display
+- [x] Funnel plot for publication bias
+- [x] Risk of bias traffic light plot
+- [x] Influence diagnostics plot
+- [x] Meta-regression bubble plot
+- [x] Cumulative forest plot
+
+### Reports
+- [x] Generate comprehensive test report
+- [x] Document all test results (E2E_TEST_REPORT.md)
+
