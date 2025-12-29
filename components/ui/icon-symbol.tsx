@@ -18,6 +18,17 @@ const MAPPING = {
   "paperplane.fill": "send",
   "chevron.left.forwardslash.chevron.right": "code",
   "chevron.right": "chevron-right",
+  // Terminal app icons
+  "terminal.fill": "terminal",
+  "clock.fill": "history",
+  "gearshape.fill": "settings",
+  "xmark.circle.fill": "cancel",
+  "arrow.up.circle.fill": "arrow-upward",
+  "doc.on.doc.fill": "content-copy",
+  "trash.fill": "delete",
+  "checkmark.circle.fill": "check-circle",
+  "exclamationmark.triangle.fill": "warning",
+  "info.circle.fill": "info",
 } as IconMapping;
 
 /**
