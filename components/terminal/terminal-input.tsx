@@ -1,15 +1,15 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import {
   View,
   TextInput,
   StyleSheet,
   Platform,
-  Keyboard,
   TouchableOpacity,
 } from "react-native";
 import * as Haptics from "expo-haptics";
 import { useColors } from "@/hooks/use-colors";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { Autocomplete } from "./autocomplete";
 
 interface TerminalInputProps {
   onSubmit: (command: string) => void;
@@ -24,9 +24,10 @@ export function TerminalInput({
 }: TerminalInputProps) {
   const colors = useColors();
   const [text, setText] = useState("");
+  const [showAutocomplete, setShowAutocomplete] = useState(false);
   const inputRef = useRef<TextInput>(null);
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     const trimmed = text.trim();
     if (!trimmed || disabled) return;
 
@@ -34,9 +35,22 @@ export function TerminalInput({
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
 
+    setShowAutocomplete(false);
     onSubmit(trimmed);
     setText("");
-  };
+  }, [text, disabled, onSubmit]);
+
+  const handleTextChange = useCallback((newText: string) => {
+    setText(newText);
+    // Show autocomplete when typing
+    setShowAutocomplete(newText.length > 0);
+  }, []);
+
+  const handleAutocompleteSelect = useCallback((suggestion: string) => {
+    setText(suggestion + " ");
+    setShowAutocomplete(false);
+    inputRef.current?.focus();
+  }, []);
 
   const handleKeyPress = (e: any) => {
     // Handle Enter key on web/desktop
@@ -44,6 +58,21 @@ export function TerminalInput({
       e.preventDefault?.();
       handleSubmit();
     }
+    // Hide autocomplete on Escape
+    if (e.nativeEvent.key === "Escape") {
+      setShowAutocomplete(false);
+    }
+  };
+
+  const handleFocus = () => {
+    if (text.length > 0) {
+      setShowAutocomplete(true);
+    }
+  };
+
+  const handleBlur = () => {
+    // Delay hiding to allow selection
+    setTimeout(() => setShowAutocomplete(false), 200);
   };
 
   return (
@@ -56,6 +85,13 @@ export function TerminalInput({
         },
       ]}
     >
+      {/* Autocomplete dropdown */}
+      <Autocomplete
+        input={text}
+        onSelect={handleAutocompleteSelect}
+        visible={showAutocomplete}
+      />
+
       <View
         style={[
           styles.inputWrapper,
@@ -74,11 +110,13 @@ export function TerminalInput({
             },
           ]}
           value={text}
-          onChangeText={setText}
+          onChangeText={handleTextChange}
           placeholder={placeholder}
           placeholderTextColor={colors.muted}
           onSubmitEditing={handleSubmit}
           onKeyPress={handleKeyPress}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           returnKeyType="send"
           autoCapitalize="none"
           autoCorrect={false}
@@ -114,6 +152,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 12,
     borderTopWidth: 1,
+    position: "relative",
   },
   inputWrapper: {
     flexDirection: "row",

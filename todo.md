@@ -41,3 +41,16 @@
 - [x] Generate custom app logo
 - [x] Update app name in config
 - [x] Configure splash screen
+
+## New Features (v1.1)
+
+- [x] Command autocomplete with suggestions dropdown
+- [x] Show suggestions as users type slash commands
+- [x] Common phrase suggestions
+- [x] Markdown rendering for AI responses
+- [x] Code blocks with syntax highlighting
+- [x] Lists and formatting support
+- [x] File and plot visualization
+- [x] Open and display generated plots/images
+- [x] Visualize handled files (images, charts)
+- [x] File preview modal/screen
