@@ -5,6 +5,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
 import { invokeLLM } from "./_core/llm";
 import { executeR, checkREnvironment, generateForestPlot, generateFunnelPlot, runMetaAnalysis, R_TEMPLATES } from "./r-execute";
+import { executeRWithStreaming, StreamEvent } from "./r-streaming";
 import * as fs from "fs/promises";
 import * as path from "path";
 import * as os from "os";
@@ -483,6 +484,57 @@ Respond with a JSON object containing:
       templates: Object.keys(R_TEMPLATES),
       timestamp: Date.now(),
     })),
+
+    // Execute R code with streaming output (returns all events at once)
+    executeStreaming: publicProcedure
+      .input(
+        z.object({
+          code: z.string().min(1).max(50000),
+          timeout: z.number().min(1000).max(300000).optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { code, timeout = 120000 } = input;
+        
+        try {
+          const result = await executeRWithStreaming({ code, timeout });
+          
+          // Read file contents for generated files
+          const fileContents: Record<string, string> = {};
+          for (const file of result.files) {
+            const ext = path.extname(file).toLowerCase();
+            if ([".png", ".jpg", ".jpeg", ".gif", ".svg"].includes(ext)) {
+              const data = await fs.readFile(file);
+              fileContents[path.basename(file)] = `data:image/${ext.slice(1)};base64,${data.toString("base64")}`;
+            } else if ([".txt", ".json", ".csv"].includes(ext)) {
+              const data = await fs.readFile(file, "utf-8");
+              if (data.length < 100000) {
+                fileContents[path.basename(file)] = data;
+              }
+            }
+          }
+          
+          return {
+            success: result.success,
+            output: result.output,
+            errors: result.errors,
+            files: result.files.map(f => path.basename(f)),
+            fileContents,
+            events: result.events,
+            timestamp: Date.now(),
+          };
+        } catch (error) {
+          return {
+            success: false,
+            output: [],
+            errors: [error instanceof Error ? error.message : "Unknown error"],
+            files: [],
+            fileContents: {},
+            events: [],
+            timestamp: Date.now(),
+          };
+        }
+      }),
   }),
 });
 

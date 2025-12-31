@@ -10,3 +10,4 @@ export type { CSVData } from "./csv-picker";
 export { SnippetsLibrary, snippets, snippetCategories } from "./snippets-library";
 export type { Snippet } from "./snippets-library";
 export { ExportSheet } from "./export-sheet";
+export { StreamingOutput, type StreamLine } from "./streaming-output";

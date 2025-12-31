@@ -128,3 +128,29 @@
 - [x] Generate comprehensive test report
 - [x] Document all test results (E2E_TEST_REPORT.md)
 
+
+## New Features (v1.5)
+
+### Real-time R Output Streaming
+- [x] Server-side streaming endpoint for R execution
+- [x] WebSocket or SSE connection for real-time updates
+- [x] Line-by-line console output display
+- [x] Progress indicators for long-running analyses
+- [x] Error highlighting in real-time output
+
+### Project Workspace
+- [x] Project creation and management UI
+- [x] Persistent storage for study data (AsyncStorage)
+- [x] Save/load R scripts per project
+- [x] Store generated plots with project
+- [x] Project list and selection screen
+- [x] Export/import project data
+
+### PRISMA 2020 Flowchart Generator
+- [x] Interactive flowchart builder UI
+- [x] PRISMA 2020 template with all required boxes
+- [x] Editable counts for each stage
+- [x] Form-based editing
+- [x] Export as PNG image
+- [x] Export as SVG for manuscript
+- [x] Save flowchart with project
