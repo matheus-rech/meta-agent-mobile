@@ -169,7 +169,7 @@ function StreamLineItem({ line, color, prefix, onFileClick }: StreamLineItemProp
       duration: 150,
       useNativeDriver: true,
     }).start();
-  }, [fadeAnim]);
+  }, []);
   
   const isClickable = line.type === "file" && onFileClick;
   
@@ -211,7 +211,7 @@ function PulsingDot({ color }: { color: string }) {
     );
     pulse.start();
     return () => pulse.stop();
-  }, []);
+  }, [pulseAnim]);
   
   return (
     <Animated.View

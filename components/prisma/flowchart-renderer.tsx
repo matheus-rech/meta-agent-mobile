@@ -4,7 +4,7 @@
  */
 
 import React from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, ScrollView } from "react-native";
 import Svg, { Rect, Line, Polygon, Text as SvgText, G } from "react-native-svg";
 import { useColors } from "@/hooks/use-colors";
 import type { PRISMAFlowchart } from "@/lib/workspace";
