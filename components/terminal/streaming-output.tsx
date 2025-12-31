@@ -169,7 +169,7 @@ function StreamLineItem({ line, color, prefix, onFileClick }: StreamLineItemProp
       duration: 150,
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [fadeAnim]);
   
   const isClickable = line.type === "file" && onFileClick;
   

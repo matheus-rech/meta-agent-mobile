@@ -21,13 +21,23 @@ export function PRISMAFlowchartRenderer({
   height = 1000,
 }: PRISMAFlowchartRendererProps) {
   const colors = useColors();
+
+  // Box dimensions
+  const BOX_WIDTH = 180;
+  const BOX_HEIGHT = 60;
+  const SMALL_BOX_HEIGHT = 45;
+  const BOX_MARGIN = 20;
+
+
+  // Colors
+  const boxFill = colors.surface;
+  const boxStroke = colors.border;
+  const textColor = colors.foreground;
+  const arrowColor = colors.muted;
+
   
-  // Calculate totals
-  const totalIdentified =
-    data.identification.databaseRecords +
-    data.identification.registerRecords +
-    data.identification.otherRecords;
-  
+=======
+>>>>>>> Incoming (Background Agent changes)
   // Box dimensions
   const boxWidth = 180;
   const boxHeight = 60;

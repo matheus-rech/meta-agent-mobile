@@ -180,7 +180,10 @@ export function CSVPicker({ onFileSelected, onCancel, visible }: CSVPickerProps)
       setPreviewData(csvData);
       setValidation(validateCSVForMetaAnalysis(csvData));
       setLoading(false);
-    } catch (_error) {
+    } catch (error) {
+      setLoading(false);
+      Alert.alert("Error", "Failed to read CSV file");
+    }
       setLoading(false);
       Alert.alert("Error", "Failed to read CSV file");
     }
@@ -192,6 +195,8 @@ export function CSVPicker({ onFileSelected, onCancel, visible }: CSVPickerProps)
       setPreviewData(null);
       setValidation(null);
     }
+  };
+
   };
 
   const handleCancel = () => {

@@ -55,7 +55,7 @@ export function ExportSheet({ visible, onClose, content }: ExportSheetProps) {
       await MediaLibrary.saveToLibraryAsync(content.data);
       Alert.alert("Success", "Image saved to photo library");
       onClose();
-    } catch (_error) {
+    } catch {
       Alert.alert("Error", "Failed to save image");
     }
   };
@@ -86,7 +86,7 @@ export function ExportSheet({ visible, onClose, content }: ExportSheetProps) {
         });
       }
       onClose();
-    } catch (_error) {
+    } catch {
       Alert.alert("Error", "Failed to share content");
     }
   };
@@ -103,7 +103,7 @@ export function ExportSheet({ visible, onClose, content }: ExportSheetProps) {
       await Clipboard.setStringAsync(content.data);
       Alert.alert("Success", "Copied to clipboard");
       onClose();
-    } catch (error) {
+    } catch {
       Alert.alert("Error", "Failed to copy to clipboard");
     }
   };
@@ -128,7 +128,7 @@ export function ExportSheet({ visible, onClose, content }: ExportSheetProps) {
 
       Alert.alert("Success", `Saved as ${filename}`);
       onClose();
-    } catch (_error) {
+    } catch {
       Alert.alert("Error", "Failed to save file");
     }
   };
