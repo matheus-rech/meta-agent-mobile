@@ -1,4 +1,5 @@
 import * as Api from "@/lib/_core/api";
+import { apiCall } from "@/lib/_core/api";
 import * as Auth from "@/lib/_core/auth";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Platform } from "react-native";
@@ -55,10 +56,19 @@ export function useAuth(options?: UseAuthOptions) {
   }, []);
 
   // Validate token by calling API (works for both platforms)
-  const validateToken = useCallback(async (): Promise<Auth.User | null> => {
+  // Returns: { type: 'valid', user } | { type: 'invalid' } | { type: 'network_error' }
+  // FIX Bug 1: Distinguishes network errors from authentication errors
+  const validateToken = useCallback(async (): Promise<
+    | { type: "valid"; user: Auth.User }
+    | { type: "invalid" }
+    | { type: "network_error" }
+  > => {
     console.log("[useAuth] Validating token with API...");
     try {
-      const apiUser = await Api.getMe();
+      // Call apiCall directly (not getMe) to catch and distinguish error types
+      const result = await apiCall<{ user: any }>("/api/auth/me");
+      const apiUser = result.user;
+      
       if (apiUser) {
         const userInfo: Auth.User = {
           id: apiUser.id,
@@ -69,13 +79,33 @@ export function useAuth(options?: UseAuthOptions) {
           lastSignedIn: new Date(apiUser.lastSignedIn),
         };
         console.log("[useAuth] Token valid, user:", userInfo);
-        return userInfo;
+        return { type: "valid", user: userInfo };
       }
+      
+      // No user in response - treat as invalid token
       console.log("[useAuth] Token validation returned no user");
-      return null;
+      return { type: "invalid" };
     } catch (err) {
-      console.error("[useAuth] Token validation failed:", err);
-      return null;
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      
+      // Check for HTTP status codes indicating authentication failure (401 Unauthorized, 403 Forbidden)
+      // These indicate the token is invalid/expired
+      const isAuthError = 
+        errorMessage.match(/\b(401|403)\b/) || 
+        errorMessage.toLowerCase().includes("unauthorized") ||
+        errorMessage.toLowerCase().includes("forbidden") ||
+        errorMessage.includes("API call failed: 401") ||
+        errorMessage.includes("API call failed: 403");
+      
+      if (isAuthError) {
+        console.error("[useAuth] Token validation failed: authentication error (401/403)", err);
+        return { type: "invalid" };
+      }
+      
+      // Network error (fetch failed, timeout, connection refused, etc.)
+      // Preserve cached user - token might still be valid
+      console.warn("[useAuth] Token validation failed: network error (preserving cached user)", err);
+      return { type: "network_error" };
     }
   }, []);
 
@@ -138,18 +168,23 @@ export function useAuth(options?: UseAuthOptions) {
 
       // Then validate token in background
       console.log("[useAuth] Validating token with API...");
-      const validatedUser = await validateToken();
+      const validationResult = await validateToken();
 
-      if (validatedUser) {
+      if (validationResult.type === "valid") {
         // Token is valid, update user (may have changed on server)
-        safeSetState(setUser, validatedUser);
-        await Auth.setUserInfo(validatedUser);
+        safeSetState(setUser, validationResult.user);
+        await Auth.setUserInfo(validationResult.user);
         console.log("[useAuth] Token validated, user updated");
-      } else {
+      } else if (validationResult.type === "invalid") {
         // Token is invalid/expired, clear everything
         console.log("[useAuth] Token invalid, clearing credentials");
         safeSetState(setUser, null);
         await clearCredentials();
+      } else {
+        // Network error - preserve cached user, don't log out
+        console.warn("[useAuth] Network error during validation, preserving cached user");
+        // Keep the cached user that was already set above
+        // Don't clear credentials - token might still be valid
       }
     } catch (err) {
       const error = err instanceof Error ? err : new Error("Failed to fetch user");
