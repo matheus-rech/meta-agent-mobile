@@ -493,7 +493,7 @@ export function PROSPEROSearch({ visible, onClose, onImport }: PROSPEROSearchPro
                     Where to find the CRD ID?
                   </Text>
                   <Text style={{ fontSize: 14, color: colors.muted, lineHeight: 20 }}>
-                    The CRD ID is shown on the PROSPERO record page and in the URL. It starts with "CRD" followed by the year and a unique number (e.g., CRD42021234567).
+                    The CRD ID is shown on the PROSPERO record page and in the URL. It starts with &quot;CRD&quot; followed by the year and a unique number (e.g., CRD42021234567).
                   </Text>
                 </View>
               </View>

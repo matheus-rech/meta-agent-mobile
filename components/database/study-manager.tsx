@@ -71,8 +71,8 @@ export function StudyManager({ projectId, visible, onClose }: StudyManagerProps)
         ? await searchStudies(projectId, searchQuery)
         : await getStudiesByProject(projectId);
       setStudies(data);
-    } catch (error) {
-      console.error("Error loading studies:", error);
+    } catch (_error) {
+      console.error("Error loading studies:", _error);
     } finally {
       setIsLoading(false);
     }
@@ -122,7 +122,7 @@ export function StudyManager({ projectId, visible, onClose }: StudyManagerProps)
       });
       setShowAddStudy(false);
       loadStudies();
-    } catch (error) {
+    } catch (_error) {
       Alert.alert("Error", "Failed to add study");
     }
   };
@@ -176,7 +176,7 @@ export function StudyManager({ projectId, visible, onClose }: StudyManagerProps)
       setShowAddOutcome(false);
       const updatedOutcomes = await getOutcomesByStudy(selectedStudy.id);
       setOutcomes(updatedOutcomes);
-    } catch (error) {
+    } catch (_error) {
       Alert.alert("Error", "Failed to add outcome");
     }
   };

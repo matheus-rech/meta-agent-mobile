@@ -33,8 +33,6 @@ export function ProjectManager({ visible, onClose, onProjectSelected }: ProjectM
     createNewProject,
     selectProject,
     deleteCurrentProject,
-    exportCurrentProject,
-    importProjectFromJson,
   } = useWorkspace();
   
   const [showNewProject, setShowNewProject] = useState(false);
@@ -91,13 +89,6 @@ export function ProjectManager({ visible, onClose, onProjectSelected }: ProjectM
         },
       ]
     );
-  };
-  
-  const handleExport = async () => {
-    const json = await exportCurrentProject();
-    if (json) {
-      Alert.alert("Export", "Project exported to clipboard (in a real app, this would use sharing)");
-    }
   };
   
   const formatDate = (timestamp: number) => {

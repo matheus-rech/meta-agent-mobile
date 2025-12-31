@@ -169,7 +169,7 @@ function StreamLineItem({ line, color, prefix, onFileClick }: StreamLineItemProp
       duration: 150,
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [fadeAnim]);
   
   const isClickable = line.type === "file" && onFileClick;
   
@@ -247,7 +247,7 @@ function BlinkingCursor({ color }: { color: string }) {
     );
     blink.start();
     return () => blink.stop();
-  }, []);
+  }, [blinkAnim]);
   
   return (
     <Animated.View

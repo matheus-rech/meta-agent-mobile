@@ -275,9 +275,6 @@ ${packageList}
         });
 
         if (result.success && result.response) {
-          // Check if response contains R code that should be executed
-          const rCodeMatch = result.response.match(/```r\n([\s\S]*?)```/);
-          
           // Add agent response
           addMessage({
             type: "agent",

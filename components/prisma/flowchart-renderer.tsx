@@ -4,7 +4,7 @@
  */
 
 import React from "react";
-import { View, Text, ScrollView, Platform } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import Svg, { Rect, Line, Polygon, Text as SvgText, G } from "react-native-svg";
 import { useColors } from "@/hooks/use-colors";
 import type { PRISMAFlowchart } from "@/lib/workspace";
@@ -27,8 +27,6 @@ export function PRISMAFlowchartRenderer({
     data.identification.databaseRecords +
     data.identification.registerRecords +
     data.identification.otherRecords;
-  
-  const afterDuplicates = totalIdentified - data.screening.duplicatesRemoved;
   
   // Box dimensions
   const boxWidth = 180;

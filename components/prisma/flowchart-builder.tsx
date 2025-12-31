@@ -3,7 +3,7 @@
  * Interactive flowchart generator following PRISMA 2020 guidelines
  */
 
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,

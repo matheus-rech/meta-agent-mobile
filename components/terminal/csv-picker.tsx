@@ -180,7 +180,7 @@ export function CSVPicker({ onFileSelected, onCancel, visible }: CSVPickerProps)
       setPreviewData(csvData);
       setValidation(validateCSVForMetaAnalysis(csvData));
       setLoading(false);
-    } catch (error) {
+    } catch (_error) {
       setLoading(false);
       Alert.alert("Error", "Failed to read CSV file");
     }
