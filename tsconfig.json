@@ -2,10 +2,14 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "lib": ["ES2020", "DOM"],
+    "module": "ESNext",
+    "forceConsistentCasingInFileNames": true,
     "types": [
       "node",
       "nativewind/types"
     ],
+    "skipLibCheck": true,
     "paths": {
       "@/*": [
         "./*"
