@@ -9,6 +9,8 @@ import { executeRWithStreaming, StreamEvent } from "./r-streaming";
 import * as fs from "fs/promises";
 import * as path from "path";
 import * as os from "os";
+import axios from "axios";
+import * as cheerio from "cheerio";
 
 // Agent system prompt with R capabilities
 const AGENT_SYSTEM_PROMPT = `You are Meta Agent, an AI-powered research assistant running in a mobile CLI terminal.
@@ -531,6 +533,186 @@ Respond with a JSON object containing:
             files: [],
             fileContents: {},
             events: [],
+            timestamp: Date.now(),
+          };
+        }
+      }),
+  }),
+
+  // PROSPERO Integration
+  prospero: router({
+    // Search PROSPERO for protocols
+    search: publicProcedure
+      .input(
+        z.object({
+          query: z.string().min(1).max(500),
+          page: z.number().min(1).max(100).optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { query, page = 1 } = input;
+        
+        try {
+          // Search PROSPERO
+          const searchUrl = `https://www.crd.york.ac.uk/prospero/search`;
+          const response = await axios.get(searchUrl, {
+            params: {
+              SEARCH: query,
+              page: page,
+            },
+            timeout: 15000,
+            headers: {
+              "User-Agent": "Mozilla/5.0 (compatible; MetaAgent/1.0; Research Tool)",
+            },
+          });
+
+          // Parse HTML response
+          const $ = cheerio.load(response.data);
+          const results: Array<{
+            id: string;
+            title: string;
+            status: string;
+            registrationDate: string;
+            authors: string;
+          }> = [];
+
+          // Extract search results from the page
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          $(".search-result, .record-result, tr.result").each((_: number, el: any) => {
+            const $el = $(el);
+            const id = $el.find("a[href*='display_record']").text().trim() ||
+                       $el.find(".crd-number, .record-id").text().trim();
+            const title = $el.find(".title, h3, .record-title").text().trim();
+            const status = $el.find(".status, .record-status").text().trim();
+            const date = $el.find(".date, .registration-date").text().trim();
+            const authors = $el.find(".authors, .record-authors").text().trim();
+
+            if (id && title) {
+              results.push({
+                id: id.toUpperCase(),
+                title,
+                status: status || "Unknown",
+                registrationDate: date || "Unknown",
+                authors: authors || "Unknown",
+              });
+            }
+          });
+
+          // Try alternative parsing if no results found
+          if (results.length === 0) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            $("table tr").each((i: number, el: any) => {
+              if (i === 0) return; // Skip header
+              const $el = $(el);
+              const cells = $el.find("td");
+              if (cells.length >= 2) {
+                const id = $(cells[0]).text().trim();
+                const title = $(cells[1]).text().trim();
+                if (id.match(/CRD\d+/i)) {
+                  results.push({
+                    id: id.toUpperCase(),
+                    title,
+                    status: cells.length > 2 ? $(cells[2]).text().trim() : "Unknown",
+                    registrationDate: cells.length > 3 ? $(cells[3]).text().trim() : "Unknown",
+                    authors: cells.length > 4 ? $(cells[4]).text().trim() : "Unknown",
+                  });
+                }
+              }
+            });
+          }
+
+          return {
+            success: true,
+            results,
+            total: results.length,
+            page,
+            query,
+            timestamp: Date.now(),
+          };
+        } catch (error) {
+          return {
+            success: false,
+            results: [],
+            total: 0,
+            page,
+            query,
+            error: error instanceof Error ? error.message : "Failed to search PROSPERO",
+            timestamp: Date.now(),
+          };
+        }
+      }),
+
+    // Fetch a specific protocol by CRD ID
+    fetchProtocol: publicProcedure
+      .input(
+        z.object({
+          crdId: z.string().regex(/^CRD\d{11,}$/i, "Invalid CRD ID format"),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { crdId } = input;
+        
+        try {
+          const protocolUrl = `https://www.crd.york.ac.uk/prospero/display_record.php?RecordID=${crdId.replace(/^CRD/i, "")}`;
+          const response = await axios.get(protocolUrl, {
+            timeout: 15000,
+            headers: {
+              "User-Agent": "Mozilla/5.0 (compatible; MetaAgent/1.0; Research Tool)",
+            },
+          });
+
+          const $ = cheerio.load(response.data);
+          
+          // Helper to extract field value
+          const getField = (label: string): string => {
+            const $row = $(`.docsum-content:contains("${label}"), dt:contains("${label}"), th:contains("${label}")`).parent();
+            return $row.find("dd, td, .field-value").text().trim() || "";
+          };
+
+          // Extract protocol data
+          const protocol = {
+            id: crdId.toUpperCase(),
+            title: $("h1, .record-title, .title").first().text().trim() || getField("Title"),
+            status: getField("Review status") || getField("Status"),
+            registrationDate: getField("Registration date") || getField("Date registered"),
+            lastUpdated: getField("Last edited") || getField("Last updated"),
+            authors: (getField("Named contact") || getField("Review team")).split(/[,;]/).map(s => s.trim()).filter(Boolean),
+            reviewQuestion: getField("Review question"),
+            population: getField("Participants/population") || getField("Population"),
+            intervention: getField("Intervention(s)") || getField("Intervention"),
+            comparator: getField("Comparator(s)/control") || getField("Comparator"),
+            outcomes: getField("Main outcome(s)") || getField("Outcomes"),
+            studyDesigns: getField("Types of study") || getField("Study designs"),
+            databases: (getField("Electronic databases") || getField("Databases")).split(/[,;]/).map(s => s.trim()).filter(Boolean),
+            searchStrategy: getField("Search strategy"),
+            dataExtraction: getField("Data extraction"),
+            riskOfBias: getField("Risk of bias") || getField("Quality assessment"),
+            synthesisMethod: getField("Strategy for data synthesis") || getField("Data synthesis"),
+            startDate: getField("Anticipated or actual start date") || getField("Start date"),
+            expectedCompletion: getField("Anticipated completion date") || getField("Expected completion"),
+            fundingSource: getField("Funding sources") || getField("Funding"),
+            conflicts: getField("Conflicts of interest"),
+            keywords: (getField("Keywords") || "").split(/[,;]/).map(s => s.trim()).filter(Boolean),
+            country: getField("Country"),
+            stage: getField("Stage of review"),
+            url: protocolUrl,
+          };
+
+          // Validate we got some data
+          if (!protocol.title && !protocol.reviewQuestion) {
+            throw new Error("Could not parse protocol data. The record may not exist or the page structure has changed.");
+          }
+
+          return {
+            success: true,
+            protocol,
+            timestamp: Date.now(),
+          };
+        } catch (error) {
+          return {
+            success: false,
+            protocol: null,
+            error: error instanceof Error ? error.message : "Failed to fetch protocol",
             timestamp: Date.now(),
           };
         }

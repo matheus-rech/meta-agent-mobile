@@ -154,3 +154,24 @@
 - [x] Export as PNG image
 - [x] Export as SVG for manuscript
 - [x] Save flowchart with project
+
+## New Features (v1.6)
+
+### SQLite Study Database
+- [x] Install expo-sqlite for local database
+- [x] Create database schema for studies, outcomes, and meta-analyses
+- [x] Implement CRUD operations for study data
+- [x] Add study import from CSV with validation
+- [x] Support multiple outcome types (binary, continuous, proportion)
+- [x] Implement search and filter functionality
+- [x] Add data export to CSV/JSON
+- [x] Sync with project workspace
+
+### PROSPERO Integration
+- [x] Research PROSPERO API endpoints (web scraping approach)
+- [x] Implement protocol search by ID or keywords
+- [x] Parse and display protocol metadata
+- [x] Import protocol details into project
+- [x] Extract PICO elements from protocol
+- [x] Link protocol to project for reference
+- [x] Handle API errors and rate limiting
