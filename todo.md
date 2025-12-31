@@ -175,3 +175,24 @@
 - [x] Extract PICO elements from protocol
 - [x] Link protocol to project for reference
 - [x] Handle API errors and rate limiting
+
+## Agent Personality Enhancement (v1.7)
+
+### Pedagogical Features
+- [x] Add Socratic questioning to help students think through problems
+- [x] Include decision checkpoints for confirming understanding
+- [x] Encourage shared decision-making with team members
+- [x] Provide scaffolded learning with progressive complexity
+
+### Social Skills
+- [x] Add small talk capabilities on related topics
+- [x] Ask how the user is doing periodically
+- [x] Share anecdotes on history of science and statistics
+- [x] Include stories about famous statisticians and discoveries
+- [x] Add warmth and encouragement to responses
+
+### Collaborative Features
+- [x] Frame responses as team discussions
+- [x] Suggest when to involve supervisors or colleagues
+- [x] Provide templates for team presentations
+- [x] Encourage peer review of decisions
