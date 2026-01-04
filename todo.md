@@ -196,3 +196,94 @@
 - [x] Suggest when to involve supervisors or colleagues
 - [x] Provide templates for team presentations
 - [x] Encourage peer review of decisions
+
+## Knowledge Base & Search Enhancement (v1.8)
+
+### Plot Generation & File Handling
+- [ ] Test forest plot generation via R endpoint
+- [ ] Test funnel plot generation
+- [ ] Verify plot files are returned and displayable
+- [ ] Test CSV file upload and parsing
+- [ ] Verify file export functionality
+
+### Knowledge Base - Seminal Papers
+- [ ] Add DerSimonian & Laird 1986 (random effects)
+- [ ] Add Higgins & Thompson 2002 (I² statistic)
+- [ ] Add Egger et al 1997 (publication bias)
+- [ ] Add Cochrane 1972 (evidence-based medicine origins)
+- [ ] Add PRISMA 2009 and PRISMA 2020 guidelines
+- [ ] Add GRADE working group papers
+- [ ] Add Bradford Hill 1965 (causation criteria)
+
+### Knowledge Base - Cochrane Handbook
+- [ ] Add key chapters and section references
+- [ ] Include heterogeneity assessment guidance
+- [ ] Include effect measure selection guidance
+- [ ] Include risk of bias assessment guidance
+- [ ] Include GRADE assessment guidance
+
+### Knowledge Base - R Package Documentation
+- [ ] Add metafor package documentation
+- [ ] Add meta package documentation
+- [ ] Add netmeta package documentation
+- [ ] Add robvis package documentation
+- [ ] Add dmetar package documentation
+
+### Recent Meta-Analysis Search
+- [ ] Implement PubMed search for recent meta-analyses
+- [ ] Filter by publication date and study type
+- [ ] Return structured results with abstracts
+- [ ] Allow importing citations into projects
+
+## Open-Source LLM Fallback Research (v1.9)
+
+### Research Tasks
+- [ ] Survey current open-source LLM landscape (Dec 2024)
+- [ ] Identify top candidates comparable to Gemini 2.5 Flash
+- [ ] Compare benchmarks: reasoning, instruction-following, coding
+- [ ] Evaluate medical/scientific domain knowledge
+- [ ] Assess context window and multi-turn conversation ability
+- [ ] Analyze deployment options (local, cloud, API providers)
+- [ ] Consider resource requirements (GPU, RAM, latency)
+- [ ] Create comprehensive comparison report
+- [ ] Recommend best fallback option(s)
+
+## Offline-First Architecture (v2.0)
+
+### In-App Python Runtime
+- [ ] Research Pyodide/WebAssembly for React Native
+- [ ] Implement Python runtime integration
+- [ ] Bundle pandas, pdfplumber, numpy
+- [ ] Test PDF extraction in-app
+
+### In-App R Runtime
+- [ ] Research WebR for React Native
+- [ ] Implement R runtime integration
+- [ ] Bundle meta, metafor, dmetar, robvis packages
+- [ ] Test meta-analysis execution in-app
+
+### Local LLM Support
+- [ ] Create LLM provider abstraction layer
+- [ ] Research llama.cpp React Native bindings
+- [ ] Support Qwen 3 / DeepSeek R1 local models
+- [ ] Implement tiered fallback (local → cloud)
+- [ ] Add model download and management
+
+### Knowledge Base (Bundled)
+- [ ] Bundle Cochrane Handbook chapters
+- [ ] Bundle R package documentation (meta, metafor)
+- [ ] Bundle seminal papers references
+- [ ] Implement local vector search for KB
+- [ ] Add citation support in agent responses
+
+### Agent Orchestration
+- [ ] Implement subagent system (5 specialists)
+- [ ] Add task routing to appropriate subagent
+- [ ] Improve memory and context management
+- [ ] Add skill auto-loading from bundled skills
+
+### CLI-Inspired UI
+- [ ] Keep terminal aesthetic
+- [ ] Add command history navigation
+- [ ] Improve syntax highlighting
+- [ ] Add tab completion for commands

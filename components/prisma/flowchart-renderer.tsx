@@ -35,21 +35,12 @@ export function PRISMAFlowchartRenderer({
   const textColor = colors.foreground;
   const arrowColor = colors.muted;
 
-  
-=======
->>>>>>> Incoming (Background Agent changes)
-  // Box dimensions
-  const boxWidth = 180;
-  const boxHeight = 60;
-  const smallBoxHeight = 45;
-  const margin = 20;
-  
-  // Colors
-  const boxFill = colors.surface;
-  const boxStroke = colors.border;
-  const textColor = colors.foreground;
-  const arrowColor = colors.muted;
-  
+  // Use the constant names
+  const boxWidth = BOX_WIDTH;
+  const boxHeight = BOX_HEIGHT;
+  const smallBoxHeight = SMALL_BOX_HEIGHT;
+  const margin = BOX_MARGIN;
+
   // Helper to draw a box with text
   const Box = ({
     x,

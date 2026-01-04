@@ -34,11 +34,17 @@ export function useAuth(options?: UseAuthOptions) {
     };
   }, []);
 
-  // Helper to safely update state only if mounted
-  const safeSetState = useCallback(<T>(setter: React.Dispatch<React.SetStateAction<T>>, value: T) => {
-    if (isMounted.current) {
-      setter(value);
-    }
+  // Type-safe state setters that check if mounted
+  const safeSetLoading = useCallback((value: boolean) => {
+    if (isMounted.current) setLoading(value);
+  }, []);
+
+  const safeSetUser = useCallback((value: Auth.User | null) => {
+    if (isMounted.current) setUser(value);
+  }, []);
+
+  const safeSetError = useCallback((value: Error | null) => {
+    if (isMounted.current) setError(value);
   }, []);
 
   // Clear all auth credentials from storage
@@ -112,8 +118,8 @@ export function useAuth(options?: UseAuthOptions) {
   const fetchUser = useCallback(async () => {
     console.log("[useAuth] fetchUser called");
     try {
-      safeSetState(setLoading, true);
-      safeSetState(setError, null);
+      safeSetLoading(true);
+      safeSetError(null);
 
       // Web platform: use cookie-based auth, fetch user from API
       if (Platform.OS === "web") {
@@ -130,13 +136,13 @@ export function useAuth(options?: UseAuthOptions) {
             loginMethod: apiUser.loginMethod,
             lastSignedIn: new Date(apiUser.lastSignedIn),
           };
-          safeSetState(setUser, userInfo);
+          safeSetUser(userInfo);
           // Cache user info in localStorage for faster subsequent loads
           await Auth.setUserInfo(userInfo);
           console.log("[useAuth] Web user set from API:", userInfo);
         } else {
           console.log("[useAuth] Web: No authenticated user from API");
-          safeSetState(setUser, null);
+          safeSetUser(null);
           await Auth.clearUserInfo();
         }
         return;
@@ -152,7 +158,7 @@ export function useAuth(options?: UseAuthOptions) {
 
       if (!sessionToken) {
         console.log("[useAuth] No session token, clearing any stale data");
-        safeSetState(setUser, null);
+        safeSetUser(null);
         // FIX Bug 3: Clear any stale cached user info when no token
         await Auth.clearUserInfo();
         return;
@@ -163,7 +169,7 @@ export function useAuth(options?: UseAuthOptions) {
       const cachedUser = await Auth.getUserInfo();
       if (cachedUser) {
         console.log("[useAuth] Showing cached user immediately for UX:", cachedUser);
-        safeSetState(setUser, cachedUser);
+        safeSetUser(cachedUser);
       }
 
       // Then validate token in background
@@ -172,13 +178,13 @@ export function useAuth(options?: UseAuthOptions) {
 
       if (validationResult.type === "valid") {
         // Token is valid, update user (may have changed on server)
-        safeSetState(setUser, validationResult.user);
+        safeSetUser(validationResult.user);
         await Auth.setUserInfo(validationResult.user);
         console.log("[useAuth] Token validated, user updated");
       } else if (validationResult.type === "invalid") {
         // Token is invalid/expired, clear everything
         console.log("[useAuth] Token invalid, clearing credentials");
-        safeSetState(setUser, null);
+        safeSetUser(null);
         await clearCredentials();
       } else {
         // Network error - preserve cached user, don't log out
@@ -187,19 +193,19 @@ export function useAuth(options?: UseAuthOptions) {
         // Don't clear credentials - token might still be valid
       }
     } catch (err) {
-      const error = err instanceof Error ? err : new Error("Failed to fetch user");
-      console.error("[useAuth] fetchUser error:", error);
-      safeSetState(setError, error);
-      safeSetState(setUser, null);
+      const fetchError = err instanceof Error ? err : new Error("Failed to fetch user");
+      console.error("[useAuth] fetchUser error:", fetchError);
+      safeSetError(fetchError);
+      safeSetUser(null);
 
       // FIX Bug 3: Clear storage on auth errors to prevent error loops
       console.log("[useAuth] Clearing credentials due to error");
       await clearCredentials();
     } finally {
-      safeSetState(setLoading, false);
+      safeSetLoading(false);
       console.log("[useAuth] fetchUser completed, loading:", false);
     }
-  }, [safeSetState, validateToken, clearCredentials]);
+  }, [safeSetLoading, safeSetUser, safeSetError, validateToken, clearCredentials]);
 
   const logout = useCallback(async () => {
     setLogoutState({ inProgress: true, failed: false, error: null });
