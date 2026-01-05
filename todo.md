@@ -287,3 +287,61 @@
 - [ ] Add command history navigation
 - [ ] Improve syntax highlighting
 - [ ] Add tab completion for commands
+
+## Mobile-Compatible Architecture (v2.1) - Based on Technical Review
+
+### WebR Integration (Priority 1 - Critical PoC)
+- [x] Research WebR + React Native integration patterns
+- [x] Test WebR initialization in React Native WebView
+- [x] Verify metafor package compiles to WASM (confirmed on R-universe)
+- [ ] Run simple forest plot generation as proof of concept
+- [ ] Benchmark WebR performance vs native R (expect 2-3x slower)
+- [x] Document WebR limitations and workarounds (see research/WEBR_INTEGRATION_RESEARCH.md)
+
+### Pyodide Integration (Python in WASM)
+- [ ] Research Pyodide + React Native integration
+- [ ] Test pandas/numpy in WASM environment
+- [ ] Implement data processing with Pyodide
+- [ ] Bundle required Python packages
+
+### Mobile SLM (Small Language Model)
+- [x] Research Qwen 2.5 Coder 3B for mobile (Q4_K_M at 2.1GB recommended)
+- [x] Research Phi-3.5 Mini 3.8B as alternative
+- [x] Research Gemma 2 2B as lightweight option
+- [x] Create MobileLLMService with tiered fallback (cloud → local → template)
+- [ ] Implement MLC-LLM or ONNX Runtime integration
+- [ ] Test model loading and inference on mobile
+- [ ] Benchmark memory usage (<4GB target)
+
+### TypeScript Skills Loader
+- [x] Design SKILL.md file format specification (YAML frontmatter + markdown)
+- [x] Implement TypeScript loader for AgentSkills (lib/agent/skills-loader.ts)
+- [x] Convert existing skills to SKILL.md format (5 bundled skills)
+- [x] Bundle skills with app
+- [x] Add skill discovery and loading at runtime
+- [x] Create SkillsRegistry with search and filtering
+- [x] Implement buildSystemPrompt() for LLM context
+
+### Architecture Corrections Applied
+- [x] Confirmed: Docker NOT viable for mobile (iOS/Android restrictions)
+- [x] Confirmed: MiniMax-M2 too large for mobile (needs ~100GB RAM)
+- [x] Decision: Use WebR/Pyodide for in-app R/Python
+- [x] Decision: Use SLM (3-4B params) for on-device inference
+- [x] Decision: Adopt AgentSkills format, not Python framework
+
+
+### New Components Created (v2.1)
+- [x] WebR Service (lib/webr/webr-service.ts) - WebView-based R execution
+- [x] WebR Runtime Component (components/webr-runtime.tsx) - React Native integration
+- [x] Skills Loader (lib/agent/skills-loader.ts) - AgentSkills format parser
+- [x] Mobile LLM Service (lib/llm/mobile-llm-service.ts) - Tiered LLM provider
+- [x] Research documentation (research/WEBR_INTEGRATION_RESEARCH.md)
+
+### Next Steps (v2.2)
+- [ ] Fix "Unexpected text node" error in current UI
+- [ ] Integrate WebRRuntime into app layout
+- [ ] Create R execution hook (useRExecution)
+- [ ] Add offline mode detection and UI indicator
+- [ ] Implement model download UI for on-device SLM
+- [ ] Test WebR forest plot generation end-to-end
+- [ ] Add Pyodide integration for Python execution
