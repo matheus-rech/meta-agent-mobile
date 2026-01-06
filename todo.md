@@ -345,3 +345,26 @@
 - [ ] Implement model download UI for on-device SLM
 - [ ] Test WebR forest plot generation end-to-end
 - [ ] Add Pyodide integration for Python execution
+
+
+## WebR Forest Plot Testing (v2.2)
+- [x] Create WebR test component for forest plot generation (app/webr-test.tsx)
+- [x] Implement R code execution through WebView bridge (hooks/use-webr-test.ts)
+- [x] Generate forest plot with sample BCG vaccine data (BCG_VACCINE_DATA constant)
+- [x] Capture plot output as base64 image (via WebView message bridge)
+- [x] Display generated plot in React Native (WebRTestScreen)
+
+## MLC-LLM Integration (v2.2)
+- [x] Research MLC-LLM React Native bindings (@react-native-ai/mlc from Callstack)
+- [x] Create model download manager (lib/llm/mlc-llm-service.ts)
+- [x] Implement model loading and initialization (MLCLLMService class)
+- [x] Add inference API for text generation (generate, generateStream methods)
+- [x] Integrate with MobileLLMService (tiered fallback architecture)
+- [x] Create model manager screen (app/model-manager.tsx)
+
+## Offline Mode UI (v2.2)
+- [x] Create network status hook (hooks/use-network-status.ts)
+- [x] Build offline mode indicator component (components/offline-indicator.tsx)
+- [x] Show current LLM tier (cloud/local/template)
+- [x] Add visual feedback for model download progress
+- [x] Integrate indicator into app header (OfflineIndicatorCompact)
