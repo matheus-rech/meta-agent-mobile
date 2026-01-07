@@ -12,3 +12,26 @@
 export { SKILLS_METADATA, SKILL_DEFINITIONS, getSkillByName, getAllSkills } from './definitions';
 export { buildAvailableSkillsXML, buildSystemPromptWithSkills, getSkillInstructions } from './prompt-builder';
 export type { SkillDefinition, SkillMetadata } from './types';
+
+// Socratic Teaching
+export {
+  SOCRATIC_QUESTIONS,
+  TEACHING_RESPONSES,
+  SOCRATIC_TEACHING_SKILL,
+  getRandomQuestion,
+  getRandomResponse,
+  detectTopic,
+  buildSocraticResponse,
+  isSocraticTrigger,
+} from './socratic-teaching';
+
+// R Debugging
+export {
+  R_ERROR_PATTERNS,
+  R_DEBUGGING_SKILL,
+  METAFOR_FUNCTIONS,
+  analyzeRError,
+  generateDebugResponse,
+  containsRError,
+  type DebugResult,
+} from './r-debugging';

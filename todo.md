@@ -460,3 +460,35 @@
 - [x] Create skill matching algorithm (matchSkillsToQuery)
 - [x] Build context-aware prompt builder (buildContextAwarePrompt)
 - [x] Add response guidelines for Cochrane methodology
+
+
+## RAG Knowledge Base (v2.9)
+- [x] Research mobile-compatible RAG architecture (Gemini File Search)
+- [x] Create Gemini File Search service (lib/rag/gemini-file-search.ts)
+- [x] Define knowledge base structure (5 stores: Cochrane, Seminal Papers, R Docs, R Errors, Teaching)
+- [x] Add seminal papers content structure (DerSimonian & Laird, Higgins I², Egger bias)
+- [x] Bundle R package documentation structure (metafor, meta, dmetar, robvis, netmeta)
+- [x] Implement teachWithSocraticMethod() for RAG-grounded teaching
+- [x] Implement debugRError() for RAG-grounded debugging
+- [x] Create semantic search API (semanticSearch function)
+
+## Socratic Teaching Mode (v2.9)
+- [x] Design Socratic questioning patterns (8 topic categories)
+- [x] Add guiding questions instead of direct answers (SOCRATIC_QUESTIONS)
+- [x] Implement topic detection from user input (detectTopic)
+- [x] Create progressive complexity scaffolding (SOCRATIC_TEACHING_SKILL)
+- [x] Add teaching response patterns (acknowledgment, encouragement, clarification, guidance)
+- [x] Include "why" explanations with every recommendation
+- [x] Create buildSocraticResponse() function
+- [x] Add isSocraticTrigger() for teaching intent detection
+
+## R Debugging Skill (v2.9)
+- [x] Create R error pattern recognition (12 patterns in R_ERROR_PATTERNS)
+- [x] Build common error database (package, data format, NA, metafor-specific)
+- [x] Implement step-by-step debugging guidance (generateDebugResponse)
+- [x] Add code fix suggestions with explanations (teaching moments)
+- [x] Create analyzeRError() for automatic error classification
+- [x] Include R best practices and pitfall warnings
+- [x] Add METAFOR_FUNCTIONS reference (rma, escalc, forest, funnel)
+- [x] Create containsRError() detection function
+- [x] All 296 tests passing
