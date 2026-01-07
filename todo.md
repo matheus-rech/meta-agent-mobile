@@ -429,3 +429,20 @@
 - [x] Add /history command to view recent commands (formatted ASCII box)
 - [x] Add /clear-history command to reset history
 - [x] Add comprehensive tests (28 tests passing)
+
+
+## BYOK (Bring Your Own Key) Integration (v2.7)
+- [x] Research MiniMax M2.1 API documentation (Anthropic-compatible)
+- [x] Create secure API key storage using expo-secure-store
+- [x] Implement APIKeyManager service (lib/api-keys/api-key-manager.ts)
+- [x] Create OpenAI provider client
+- [x] Create Anthropic provider client
+- [x] Create Gemini provider client
+- [x] Create OpenRouter provider client (100+ models via one key)
+- [x] Create MiniMax M2.1 provider client (M2.1, M2.1-lightning, M2)
+- [x] Build API Keys settings screen UI (app/api-keys.tsx)
+- [x] Add key validation for each provider
+- [x] Integrate with MobileLLMService fallback chain (BYOK → cloud → local → template)
+- [x] Add provider selection in settings
+- [x] Add model selection per provider
+- [x] Add comprehensive tests (248 tests passing)

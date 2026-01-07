@@ -7,6 +7,9 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
+// Define __DEV__ global for expo-modules-core
+(globalThis as any).__DEV__ = false;
+
 // Mock React Native modules
 vi.mock('react-native', () => ({
   Platform: { OS: 'ios' },

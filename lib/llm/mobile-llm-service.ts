@@ -14,14 +14,23 @@
 
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { 
+  apiKeyManager, 
+  generateWithBestProvider,
+  type LLMProvider as BYOKProvider,
+  type ChatMessage,
+} from '../api-keys';
 
 /**
  * LLM Provider types
  */
 export type LLMProvider = 
+  | 'byok'        // User's own API keys (BYOK - Bring Your Own Key)
   | 'gemini'      // Google Gemini API (cloud)
   | 'minimax'     // MiniMax API (cloud)
   | 'anthropic'   // Anthropic Claude API (cloud)
+  | 'openai'      // OpenAI API (cloud)
+  | 'openrouter'  // OpenRouter API (cloud)
   | 'qwen-local'  // Qwen 2.5 Coder 3B (on-device)
   | 'phi-local'   // Phi-3.5 Mini (on-device)
   | 'template';   // Rule-based templates (offline fallback)
@@ -97,7 +106,7 @@ export interface LLMServiceConfig {
 }
 
 const DEFAULT_CONFIG: LLMServiceConfig = {
-  defaultProvider: 'gemini',
+  defaultProvider: 'byok', // Try user's API keys first
   enableOfflineFallback: true,
   preferredLocalModel: 'qwen-local',
   enableCaching: true,
@@ -155,9 +164,15 @@ export class MobileLLMService {
     
     // Fallback logic
     if (!result.success && this.config.enableOfflineFallback) {
-      // Try cloud fallback first
+      // Try BYOK first if not already tried
+      if (provider !== 'byok' && this.isCloudProvider(provider)) {
+        result = await this.tryProvider('byok', messages, options);
+        if (result.success) return result;
+      }
+      
+      // Try cloud fallback
       if (this.isCloudProvider(provider)) {
-        const fallbackProviders: LLMProvider[] = ['minimax', 'anthropic', 'gemini']
+        const fallbackProviders: LLMProvider[] = ['minimax', 'anthropic', 'gemini', 'openai', 'openrouter']
           .filter(p => p !== provider) as LLMProvider[];
         
         for (const fallback of fallbackProviders) {
@@ -198,12 +213,15 @@ export class MobileLLMService {
   ): Promise<LLMCompletionResult> {
     try {
       switch (provider) {
+        case 'byok':
+          return await this.callBYOK(messages, options);
+        case 'openai':
         case 'gemini':
-          return await this.callGemini(messages, options);
         case 'minimax':
-          return await this.callMiniMax(messages, options);
         case 'anthropic':
-          return await this.callAnthropic(messages, options);
+        case 'openrouter':
+          // These are handled by BYOK if user has keys
+          return await this.callBYOK(messages, options, provider as BYOKProvider);
         case 'qwen-local':
         case 'phi-local':
           return await this.callLocalModel(provider, messages, options);
@@ -226,47 +244,57 @@ export class MobileLLMService {
   }
   
   /**
-   * Call Gemini API
+   * Call BYOK (Bring Your Own Key) providers
+   * Uses user-configured API keys to call cloud providers directly
    */
-  private async callGemini(
+  private async callBYOK(
     messages: LLMMessage[],
-    options: LLMCompletionOptions
+    options: LLMCompletionOptions,
+    preferredProvider?: BYOKProvider
   ): Promise<LLMCompletionResult> {
-    // This would be implemented using the server's LLM endpoint
-    // For now, return a placeholder indicating the pattern
+    // Initialize API key manager
+    await apiKeyManager.initialize();
+    
+    // Check if user has any API keys configured
+    if (!apiKeyManager.hasAnyKeys()) {
+      return {
+        success: false,
+        error: 'No API keys configured. Add your API keys in Settings → API Keys.',
+        provider: 'byok',
+      };
+    }
+    
+    // Convert messages to BYOK format
+    const chatMessages: ChatMessage[] = messages.map(m => ({
+      role: m.role,
+      content: m.content,
+    }));
+    
+    // Call the best available provider
+    const result = await generateWithBestProvider(
+      chatMessages,
+      {
+        maxTokens: options.maxTokens,
+        temperature: options.temperature,
+      },
+      preferredProvider
+    );
+    
+    if (result.success) {
+      return {
+        success: true,
+        content: result.content,
+        provider: (result.provider || 'byok') as LLMProvider,
+        tokensUsed: result.usage 
+          ? result.usage.inputTokens + result.usage.outputTokens 
+          : undefined,
+      };
+    }
+    
     return {
       success: false,
-      error: 'Gemini API call should go through server tRPC endpoint',
-      provider: 'gemini',
-    };
-  }
-  
-  /**
-   * Call MiniMax API
-   */
-  private async callMiniMax(
-    messages: LLMMessage[],
-    options: LLMCompletionOptions
-  ): Promise<LLMCompletionResult> {
-    // MiniMax API integration via MCP
-    return {
-      success: false,
-      error: 'MiniMax API call should go through MCP',
-      provider: 'minimax',
-    };
-  }
-  
-  /**
-   * Call Anthropic API
-   */
-  private async callAnthropic(
-    messages: LLMMessage[],
-    options: LLMCompletionOptions
-  ): Promise<LLMCompletionResult> {
-    return {
-      success: false,
-      error: 'Anthropic API call should go through server tRPC endpoint',
-      provider: 'anthropic',
+      error: result.error || 'BYOK provider call failed',
+      provider: 'byok',
     };
   }
   
@@ -382,7 +410,23 @@ regtest(res)
    * Check if provider is cloud-based
    */
   private isCloudProvider(provider: LLMProvider): boolean {
-    return ['gemini', 'minimax', 'anthropic'].includes(provider);
+    return ['byok', 'gemini', 'minimax', 'anthropic', 'openai', 'openrouter'].includes(provider);
+  }
+  
+  /**
+   * Check if user has BYOK keys configured
+   */
+  async hasBYOKKeys(): Promise<boolean> {
+    await apiKeyManager.initialize();
+    return apiKeyManager.hasAnyKeys();
+  }
+  
+  /**
+   * Get configured BYOK providers
+   */
+  async getConfiguredBYOKProviders(): Promise<BYOKProvider[]> {
+    await apiKeyManager.initialize();
+    return apiKeyManager.getConfiguredProviders();
   }
   
   /**
@@ -534,7 +578,8 @@ regtest(res)
     const providers: LLMProvider[] = ['template'];
     
     if (this.isOnline) {
-      providers.unshift('gemini', 'minimax', 'anthropic');
+      // BYOK is the primary provider if user has keys
+      providers.unshift('byok', 'gemini', 'minimax', 'anthropic', 'openai', 'openrouter');
     }
     
     if (this.localModelStatus?.status === 'downloaded') {
@@ -542,6 +587,21 @@ regtest(res)
     }
     
     return providers;
+  }
+  
+  /**
+   * Get available providers with BYOK status
+   */
+  async getAvailableProvidersAsync(): Promise<{
+    providers: LLMProvider[];
+    hasBYOK: boolean;
+    byokProviders: BYOKProvider[];
+  }> {
+    const providers = this.getAvailableProviders();
+    const hasBYOK = await this.hasBYOKKeys();
+    const byokProviders = await this.getConfiguredBYOKProviders();
+    
+    return { providers, hasBYOK, byokProviders };
   }
 }
 
