@@ -382,3 +382,15 @@
 - [x] Create useMLCChat hook for React components (hooks/use-mlc-chat.ts)
 - [x] Test on-device inference with mock (198 tests passing)
 - [x] Automatic fallback to mock when native unavailable
+
+
+## Open Source Model Emphasis (v2.4)
+- [x] Add license information to model metadata (Llama 3.2 Community, MIT, Apache 2.0)
+- [x] Add detailed capability descriptions for each model
+- [x] Add "Open Source" badges to model cards
+- [x] Highlight model creators (Meta, Microsoft, Alibaba, Mistral AI)
+- [x] Add use case recommendations for each model (bestFor array)
+- [x] Emphasize privacy and offline benefits (privacy banner)
+- [x] Add expandable "Learn More" section with full details
+- [x] Add license links that open in browser
+- [x] Add "Why Open Source?" info section

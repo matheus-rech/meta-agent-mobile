@@ -31,57 +31,143 @@ import {
 export type MLCModelId = MLCNativeModelId;
 
 /**
+ * Model license types
+ */
+export type ModelLicense = 
+  | 'Llama 3.2 Community'
+  | 'MIT'
+  | 'Apache 2.0'
+  | 'Qwen License';
+
+/**
  * Model information
  */
 export interface MLCModelInfo {
   id: MLCModelId;
   name: string;
+  creator: string;
   size: string;
   sizeBytes: number;
   description: string;
+  detailedDescription: string;
+  license: ModelLicense;
+  licenseUrl: string;
+  capabilities: string[];
+  bestFor: string[];
   minMemoryGB: number;
   recommended: boolean;
+  isOpenSource: boolean;
 }
 
 /**
- * Available models with their metadata
+ * Available open source models with their metadata
+ * All models are fully open source and can run completely offline on your device.
+ * Your data never leaves your phone - complete privacy guaranteed.
  */
 export const MLC_MODELS: Record<MLCModelId, MLCModelInfo> = {
   'Llama-3.2-3B-Instruct': {
     id: 'Llama-3.2-3B-Instruct',
     name: 'Llama 3.2 3B',
+    creator: 'Meta',
     size: '~2GB',
     sizeBytes: 2_000_000_000,
-    description: 'Meta\'s latest small model, excellent for general tasks',
+    description: 'Meta\'s latest open source model - powerful and efficient',
+    detailedDescription: 'Llama 3.2 is Meta\'s newest open source language model, designed specifically for edge deployment. It offers an excellent balance of capability and efficiency, making it ideal for mobile devices. Trained on diverse data with strong instruction-following abilities.',
+    license: 'Llama 3.2 Community',
+    licenseUrl: 'https://llama.meta.com/llama3_2/license/',
+    capabilities: [
+      'General conversation',
+      'Code assistance',
+      'Text summarization',
+      'Question answering',
+      'Creative writing',
+    ],
+    bestFor: [
+      'Meta-analysis guidance',
+      'Research methodology questions',
+      'Data interpretation help',
+    ],
     minMemoryGB: 4,
     recommended: true,
+    isOpenSource: true,
   },
   'Phi-3-mini-4k-instruct': {
     id: 'Phi-3-mini-4k-instruct',
     name: 'Phi-3 Mini',
+    creator: 'Microsoft',
     size: '~2.5GB',
     sizeBytes: 2_500_000_000,
-    description: 'Microsoft\'s efficient model, great for reasoning',
+    description: 'Microsoft\'s MIT-licensed model - exceptional reasoning',
+    detailedDescription: 'Phi-3 Mini is Microsoft\'s breakthrough small language model released under the permissive MIT license. Despite its compact size, it demonstrates remarkable reasoning capabilities and outperforms many larger models on benchmarks. Optimized for logical thinking and structured tasks.',
+    license: 'MIT',
+    licenseUrl: 'https://huggingface.co/microsoft/Phi-3-mini-4k-instruct/blob/main/LICENSE',
+    capabilities: [
+      'Logical reasoning',
+      'Mathematical thinking',
+      'Code generation',
+      'Structured analysis',
+      'Step-by-step explanations',
+    ],
+    bestFor: [
+      'Statistical analysis guidance',
+      'R code generation',
+      'Interpreting heterogeneity',
+    ],
     minMemoryGB: 4,
     recommended: true,
+    isOpenSource: true,
   },
   'Qwen2.5-1.5B-Instruct': {
     id: 'Qwen2.5-1.5B-Instruct',
     name: 'Qwen 2.5 1.5B',
+    creator: 'Alibaba',
     size: '~1GB',
     sizeBytes: 1_000_000_000,
-    description: 'Alibaba\'s lightweight model, fast inference',
+    description: 'Alibaba\'s Apache 2.0 model - fastest on-device inference',
+    detailedDescription: 'Qwen 2.5 is Alibaba\'s open source model family released under the permissive Apache 2.0 license. The 1.5B version is optimized for mobile deployment, offering the fastest inference speeds while maintaining strong multilingual capabilities. Perfect for quick responses.',
+    license: 'Apache 2.0',
+    licenseUrl: 'https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct/blob/main/LICENSE',
+    capabilities: [
+      'Fast responses',
+      'Multilingual support',
+      'Basic reasoning',
+      'Text completion',
+      'Simple Q&A',
+    ],
+    bestFor: [
+      'Quick lookups',
+      'Simple explanations',
+      'Older devices with limited RAM',
+    ],
     minMemoryGB: 2,
     recommended: true,
+    isOpenSource: true,
   },
   'Mistral-7B-Instruct': {
     id: 'Mistral-7B-Instruct',
     name: 'Mistral 7B',
+    creator: 'Mistral AI',
     size: '~4.5GB',
     sizeBytes: 4_500_000_000,
-    description: 'High-quality model, requires high-end device',
+    description: 'Mistral AI\'s Apache 2.0 model - highest quality responses',
+    detailedDescription: 'Mistral 7B is the flagship open source model from Mistral AI, a leading European AI company. Released under Apache 2.0, it delivers the highest quality responses among mobile-compatible models. Requires a high-end device with 8GB+ RAM but provides near-cloud-quality results.',
+    license: 'Apache 2.0',
+    licenseUrl: 'https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3/blob/main/LICENSE',
+    capabilities: [
+      'Complex reasoning',
+      'Detailed explanations',
+      'Code generation',
+      'Creative writing',
+      'Nuanced analysis',
+    ],
+    bestFor: [
+      'Complex meta-analysis questions',
+      'Detailed methodology guidance',
+      'High-end devices (iPhone 15 Pro+)',
+    ],
     minMemoryGB: 8,
     recommended: false,
+    isOpenSource: true,
   },
 };
 
