@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
+    "@react-native-ai/mlc": "^0.11.0",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-navigation/bottom-tabs": "^7.8.12",
     "@react-navigation/elements": "^2.9.2",
@@ -29,6 +30,7 @@
     "@trpc/react-query": "11.7.2",
     "@trpc/server": "11.7.2",
     "@types/cheerio": "^1.0.0",
+    "ai": "^6.0.14",
     "axios": "^1.13.2",
     "cheerio": "^1.1.2",
     "clsx": "^2.1.1",

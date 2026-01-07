@@ -18,15 +18,17 @@
 
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { 
+  getMLCImplementation, 
+  isMLCNativeAvailable,
+  MLCNativeModelId,
+  MLCNativeGenerationResult,
+} from './mlc-native';
 
 /**
  * Available MLC models
  */
-export type MLCModelId = 
-  | 'Llama-3.2-3B-Instruct'
-  | 'Phi-3-mini-4k-instruct'
-  | 'Qwen2.5-1.5B-Instruct'
-  | 'Mistral-7B-Instruct';
+export type MLCModelId = MLCNativeModelId;
 
 /**
  * Model information
@@ -125,6 +127,7 @@ export interface MLCGenerationResult {
   error?: string;
   tokensGenerated?: number;
   latencyMs?: number;
+  isNative?: boolean;
 }
 
 /**
@@ -138,16 +141,13 @@ const STORAGE_KEYS = {
 /**
  * MLC-LLM Service class
  * 
- * Note: This is an interface layer. The actual MLC integration requires:
- * 1. Installing @react-native-ai/mlc
- * 2. Enabling New Architecture in React Native
- * 3. Adding "Increased Memory Limit" capability in Xcode
+ * Now uses the actual @react-native-ai/mlc native module when available,
+ * with automatic fallback to mock implementation for development.
  */
 export class MLCLLMService {
   private modelStates: Map<MLCModelId, MLCModelState> = new Map();
   private selectedModel: MLCModelId | null = null;
-  private mlcInstance: any = null; // Will hold the actual MLC instance
-  private isInitialized = false;
+  private mlcImpl = getMLCImplementation();
   private listeners: Set<(states: Map<MLCModelId, MLCModelState>) => void> = new Set();
   
   constructor() {
@@ -206,6 +206,13 @@ export class MLCLLMService {
   }
   
   /**
+   * Check if using native implementation
+   */
+  isUsingNativeModule(): boolean {
+    return this.mlcImpl.isNative;
+  }
+  
+  /**
    * Get all available models
    */
   getAvailableModels(): MLCModelInfo[] {
@@ -216,8 +223,6 @@ export class MLCLLMService {
    * Get recommended models for the current device
    */
   getRecommendedModels(): MLCModelInfo[] {
-    // On iOS, we can check device capabilities
-    // For now, return models marked as recommended
     return Object.values(MLC_MODELS).filter(m => m.recommended);
   }
   
@@ -255,13 +260,11 @@ export class MLCLLMService {
       return false;
     }
     
-    // Check if running on simulator (MLC doesn't work on simulator)
-    // This would need actual device detection
-    return true;
+    return this.mlcImpl.isAvailable();
   }
   
   /**
-   * Download a model
+   * Download a model using native MLC module
    */
   async downloadModel(
     modelId: MLCModelId,
@@ -288,21 +291,16 @@ export class MLCLLMService {
     await this.saveState();
     
     try {
-      // In production, this would use the actual MLC API:
-      // const model = mlc.languageModel(modelId);
-      // await model.download({ onProgress });
-      
-      // Simulate download progress for now
-      for (let i = 0; i <= 100; i += 5) {
-        await new Promise(resolve => setTimeout(resolve, 100));
+      // Use the actual MLC implementation (native or mock)
+      await this.mlcImpl.downloadModel(modelId, (progress) => {
         this.modelStates.set(modelId, {
           modelId,
           status: 'downloading',
-          progress: i,
+          progress,
         });
         this.notifyListeners();
-        onProgress?.(i);
-      }
+        onProgress?.(progress);
+      });
       
       // Update state to downloaded
       this.modelStates.set(modelId, {
@@ -329,11 +327,11 @@ export class MLCLLMService {
   }
   
   /**
-   * Prepare a downloaded model for inference
+   * Prepare a downloaded model for inference using native MLC module
    */
   async prepareModel(modelId: MLCModelId): Promise<boolean> {
     const state = this.getModelState(modelId);
-    if (state.status !== 'downloaded') {
+    if (state.status !== 'downloaded' && state.status !== 'ready') {
       console.error('[MLC] Model must be downloaded before preparing');
       return false;
     }
@@ -345,12 +343,8 @@ export class MLCLLMService {
     this.notifyListeners();
     
     try {
-      // In production, this would use the actual MLC API:
-      // const model = mlc.languageModel(modelId);
-      // await model.prepare();
-      
-      // Simulate preparation
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Use the actual MLC implementation
+      await this.mlcImpl.prepareModel(modelId);
       
       this.modelStates.set(modelId, {
         ...state,
@@ -380,7 +374,7 @@ export class MLCLLMService {
    */
   async deleteModel(modelId: MLCModelId): Promise<boolean> {
     try {
-      // In production, this would delete the actual model files
+      this.mlcImpl.deleteModel(modelId);
       
       this.modelStates.delete(modelId);
       if (this.selectedModel === modelId) {
@@ -397,7 +391,7 @@ export class MLCLLMService {
   }
   
   /**
-   * Generate text using the selected model
+   * Generate text using the selected model with native MLC inference
    */
   async generate(
     prompt: string,
@@ -421,19 +415,16 @@ export class MLCLLMService {
     const startTime = Date.now();
     
     try {
-      // In production, this would use the actual MLC API:
-      // const model = mlc.languageModel(this.selectedModel);
-      // const { text } = await generateText({
-      //   model,
-      //   prompt,
-      //   maxTokens: options.maxTokens,
-      //   temperature: options.temperature,
-      // });
-      
-      // For now, return a placeholder response
-      const response = `[MLC Response from ${this.selectedModel}]\n\n` +
-        `This is a placeholder response. In production, this would be generated by the ${this.selectedModel} model.\n\n` +
-        `Your prompt was: "${prompt.substring(0, 100)}${prompt.length > 100 ? '...' : ''}"`;
+      // Use the actual MLC implementation for generation
+      const result = await this.mlcImpl.generate({
+        modelId: this.selectedModel,
+        prompt,
+        systemPrompt: options.systemPrompt,
+        maxTokens: options.maxTokens,
+        temperature: options.temperature,
+        topP: options.topP,
+        stopSequences: options.stopSequences,
+      });
       
       // Update last used timestamp
       this.modelStates.set(this.selectedModel, {
@@ -444,21 +435,23 @@ export class MLCLLMService {
       
       return {
         success: true,
-        text: response,
-        tokensGenerated: response.split(' ').length,
+        text: result.text,
+        tokensGenerated: result.usage?.completionTokens,
         latencyMs: Date.now() - startTime,
+        isNative: this.mlcImpl.isNative,
       };
     } catch (error) {
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Generation failed',
         latencyMs: Date.now() - startTime,
+        isNative: this.mlcImpl.isNative,
       };
     }
   }
   
   /**
-   * Generate text with streaming
+   * Generate text with streaming using native MLC inference
    */
   async *generateStream(
     prompt: string,
@@ -473,14 +466,27 @@ export class MLCLLMService {
       throw new Error(`Model is not ready (status: ${state.status})`);
     }
     
-    // In production, this would use the actual MLC streaming API
-    // For now, simulate streaming
-    const words = `This is a streaming response from ${this.selectedModel}. Each word is yielded separately.`.split(' ');
+    // Use the actual MLC implementation for streaming
+    const stream = this.mlcImpl.stream({
+      modelId: this.selectedModel,
+      prompt,
+      systemPrompt: options.systemPrompt,
+      maxTokens: options.maxTokens,
+      temperature: options.temperature,
+      topP: options.topP,
+      stopSequences: options.stopSequences,
+    });
     
-    for (const word of words) {
-      await new Promise(resolve => setTimeout(resolve, 50));
-      yield word + ' ';
+    for await (const chunk of stream) {
+      yield chunk;
     }
+    
+    // Update last used timestamp
+    this.modelStates.set(this.selectedModel, {
+      ...state,
+      lastUsed: Date.now(),
+    });
+    await this.saveState();
   }
   
   /**
@@ -508,8 +514,6 @@ export class MLCLLMService {
    */
   dispose(): void {
     this.listeners.clear();
-    this.mlcInstance = null;
-    this.isInitialized = false;
   }
 }
 

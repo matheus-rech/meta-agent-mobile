@@ -34,6 +34,10 @@ const config: ExpoConfig = {
   ios: {
     supportsTablet: true,
     bundleIdentifier: env.iosBundleId,
+    // Required for MLC-LLM on-device inference
+    entitlements: {
+      'com.apple.developer.kernel.increased-memory-limit': true,
+    },
   },
   android: {
     adaptiveIcon: {

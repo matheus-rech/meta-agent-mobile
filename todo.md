@@ -368,3 +368,17 @@
 - [x] Show current LLM tier (cloud/local/template)
 - [x] Add visual feedback for model download progress
 - [x] Integrate indicator into app header (OfflineIndicatorCompact)
+
+
+## MLC-LLM Native Module Integration (v2.3)
+- [x] Install @react-native-ai/mlc package
+- [x] Install Vercel AI SDK (ai package)
+- [x] Enable New Architecture in app.config.ts (already enabled)
+- [x] Add Increased Memory Limit capability for iOS entitlements
+- [x] Update MLC-LLM service to use native module (lib/llm/mlc-llm-service.ts)
+- [x] Implement actual model download from MLC (lib/llm/mlc-native.ts)
+- [x] Wire up generateText with Vercel AI SDK
+- [x] Add streaming support for real-time responses (generateStream)
+- [x] Create useMLCChat hook for React components (hooks/use-mlc-chat.ts)
+- [x] Test on-device inference with mock (198 tests passing)
+- [x] Automatic fallback to mock when native unavailable
