@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ScreenContainer } from '@/components/screen-container';
-import { TutorialProgressBar } from '@/components/tutorial';
+import { TutorialProgressBar, CertificateModal } from '@/components/tutorial';
 import { tutorialService, TutorialModule, TutorialState } from '@/lib/tutorial';
 
 export default function TutorialHubScreen() {
@@ -22,6 +22,7 @@ export default function TutorialHubScreen() {
   const [state, setState] = useState<TutorialState | null>(null);
   const [modules, setModules] = useState<TutorialModule[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [showCertificate, setShowCertificate] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -170,6 +171,31 @@ export default function TutorialHubScreen() {
           </View>
         )}
 
+        {/* Certificate Button */}
+        <Pressable
+          onPress={() => setShowCertificate(true)}
+          style={({ pressed }) => [
+            styles.certificateButton,
+            pressed && styles.certificateButtonPressed,
+            stats.modulesCompleted >= stats.totalModules && styles.certificateButtonReady,
+          ]}
+        >
+          <Text style={styles.certificateIcon}>🎓</Text>
+          <View style={styles.certificateTextContainer}>
+            <Text style={styles.certificateTitle}>
+              {stats.modulesCompleted >= stats.totalModules
+                ? 'Get Your Certificate!'
+                : 'Completion Certificate'}
+            </Text>
+            <Text style={styles.certificateSubtitle}>
+              {stats.modulesCompleted >= stats.totalModules
+                ? 'Tap to generate and share'
+                : `Complete all ${stats.totalModules} modules to unlock`}
+            </Text>
+          </View>
+          <Text style={styles.certificateArrow}>→</Text>
+        </Pressable>
+
         {/* Reset All */}
         <Pressable
           onPress={() => tutorialService.resetAllProgress()}
@@ -181,6 +207,12 @@ export default function TutorialHubScreen() {
           <Text style={styles.resetButtonText}>Reset All Progress</Text>
         </Pressable>
       </ScrollView>
+
+      {/* Certificate Modal */}
+      <CertificateModal
+        visible={showCertificate}
+        onClose={() => setShowCertificate(false)}
+      />
     </ScreenContainer>
   );
 }
@@ -568,6 +600,44 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#94a3b8',
     textAlign: 'center',
+  },
+  certificateButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1e293b',
+    borderRadius: 16,
+    padding: 16,
+    marginTop: 16,
+    borderWidth: 1,
+    borderColor: '#334155',
+  },
+  certificateButtonPressed: {
+    opacity: 0.8,
+  },
+  certificateButtonReady: {
+    borderColor: '#22c55e',
+    backgroundColor: '#22c55e10',
+  },
+  certificateIcon: {
+    fontSize: 32,
+    marginRight: 12,
+  },
+  certificateTextContainer: {
+    flex: 1,
+  },
+  certificateTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#f8fafc',
+  },
+  certificateSubtitle: {
+    fontSize: 13,
+    color: '#64748b',
+    marginTop: 2,
+  },
+  certificateArrow: {
+    fontSize: 18,
+    color: '#64748b',
   },
   resetButton: {
     alignItems: 'center',

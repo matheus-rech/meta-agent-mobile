@@ -606,3 +606,30 @@
 - [x] Add tutorial trigger points in terminal
 - [x] Write unit tests for tutorial service (40 tests)
 - [x] All 336 tests passing
+
+## Tutorial Enhancements (v3.2)
+
+### Start Tutorial Button
+- [x] Add prominent "Start Tutorial" button to home screen
+- [x] Show tutorial progress indicator for returning users
+- [x] Add Sample Data button to quick actions bar
+
+### Practice Datasets
+- [x] Create BCG vaccine trials sample dataset (13 studies)
+- [x] Create aspirin CVD prevention dataset (9 studies)
+- [x] Create CBT for depression dataset (12 studies)
+- [x] Create homework effect dataset (10 studies)
+- [x] Add dataset loading integration with terminal
+- [x] Create PracticeDatasets modal with category filtering
+
+### Completion Certificates
+- [x] Design certificate HTML template with user name and date
+- [x] Generate HTML certificates on tutorial completion
+- [x] Add share functionality for certificates
+- [x] Store certificates in app for later access
+- [x] Add CertificateModal to tutorial hub
+
+### Testing
+- [x] Write tests for practice datasets (20 tests)
+- [x] Write tests for certificate data structure (4 tests)
+- [x] All 360 tests passing

@@ -11,10 +11,11 @@ import {
   ExportSheet,
 } from "@/components/terminal";
 import type { CSVData } from "@/components/terminal";
+import { PracticeDatasets } from "@/components/tutorial";
 import { useAgent } from "@/hooks/use-agent";
 import { useColors } from "@/hooks/use-colors";
 import { hasCompletedOnboarding } from "@/app/onboarding";
-import { useTutorialAction } from "@/hooks/use-tutorial";
+import { useTutorialAction, useTutorial } from "@/hooks/use-tutorial";
 
 /**
  * Terminal Screen
@@ -35,6 +36,9 @@ export default function TerminalScreen() {
     resetHistoryNavigation,
   } = useAgent();
   const { completeAction, completeSocratic, isInTutorial } = useTutorialAction();
+  const { statistics, modules } = useTutorial();
+  const tutorialProgress = Math.round((statistics.modulesCompleted / statistics.totalModules) * 100);
+  const hasStartedTutorial = statistics.modulesCompleted > 0 || tutorialProgress > 0;
 
   // Check if onboarding is needed on first launch
   useEffect(() => {
@@ -64,6 +68,7 @@ export default function TerminalScreen() {
   const [showCSVPicker, setShowCSVPicker] = useState(false);
   const [showSnippets, setShowSnippets] = useState(false);
   const [showExport, setShowExport] = useState(false);
+  const [showPracticeData, setShowPracticeData] = useState(false);
   const [exportContent, setExportContent] = useState<{
     type: "image" | "text" | "code" | "csv";
     data: string;
@@ -140,6 +145,47 @@ export default function TerminalScreen() {
             gap: 8,
           }}
         >
+          {/* Tutorial Button - Prominent for new users */}
+          <TouchableOpacity
+            onPress={() => router.push('/tutorial' as any)}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: hasStartedTutorial ? colors.terminal : '#0ea5e9',
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              borderRadius: 16,
+              gap: 4,
+            }}
+          >
+            <Text style={{ fontSize: 14 }}>📚</Text>
+            <Text style={{ 
+              color: hasStartedTutorial ? colors.foreground : '#ffffff', 
+              fontSize: 12, 
+              fontWeight: "600" 
+            }}>
+              {hasStartedTutorial ? `Tutorial ${tutorialProgress}%` : 'Start Tutorial'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => setShowPracticeData(true)}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: colors.terminal,
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              borderRadius: 16,
+              gap: 4,
+            }}
+          >
+            <Text style={{ fontSize: 14 }}>🧪</Text>
+            <Text style={{ color: colors.foreground, fontSize: 12, fontWeight: "500" }}>
+              Sample Data
+            </Text>
+          </TouchableOpacity>
+
           <TouchableOpacity
             onPress={() => setShowCSVPicker(true)}
             style={{
@@ -154,7 +200,7 @@ export default function TerminalScreen() {
           >
             <Text style={{ fontSize: 14 }}>📁</Text>
             <Text style={{ color: colors.foreground, fontSize: 12, fontWeight: "500" }}>
-              Import CSV
+              Import
             </Text>
           </TouchableOpacity>
 
@@ -257,6 +303,20 @@ export default function TerminalScreen() {
           setExportContent(undefined);
         }}
         content={exportContent}
+      />
+
+      {/* Practice Datasets Modal */}
+      <PracticeDatasets
+        visible={showPracticeData}
+        onClose={() => setShowPracticeData(false)}
+        onLoadDataset={(data) => {
+          setShowPracticeData(false);
+          const summary = `📊 Loaded: ${data.fileName}\n` +
+            `   Columns: ${data.headers.join(", ")}\n` +
+            `   Rows: ${data.rows.length} studies`;
+          addSystemMessage(summary);
+          sendMessage(`/data load ${data.fileName}`, { csvData: data });
+        }}
       />
     </ScreenContainer>
   );
