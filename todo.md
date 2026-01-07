@@ -492,3 +492,18 @@
 - [x] Add METAFOR_FUNCTIONS reference (rma, escalc, forest, funnel)
 - [x] Create containsRError() detection function
 - [x] All 296 tests passing
+
+
+## Knowledge Base Setup Script (v2.10)
+- [x] Research Gemini File Search upload API requirements
+- [x] Research Gemini Embeddings API (gemini-embedding-001, task types, dimensions)
+- [x] Create setup-knowledge-base.ts for File Search stores
+- [x] Create generate-embeddings.ts for local vector store
+- [x] Add Cochrane Handbook content (Chapters 6, 8, 10, 13)
+- [x] Add seminal papers (DerSimonian-Laird, Higgins I², Egger)
+- [x] Add R documentation (metafor, meta packages, error patterns)
+- [x] Create LocalVectorStore for offline semantic search
+- [x] Create HybridRAGService (online embeddings + offline fallback)
+- [x] Add keyword-based fallback search when embeddings unavailable
+- [x] Create README-knowledge-base.md documentation
+- [x] All 296 tests passing
