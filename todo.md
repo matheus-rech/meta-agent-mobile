@@ -446,3 +446,17 @@
 - [x] Add provider selection in settings
 - [x] Add model selection per provider
 - [x] Add comprehensive tests (248 tests passing)
+
+
+## AgentSkills Integration (v2.8)
+- [x] Research AgentSkills specification from agentskills.io
+- [x] Review Claude best practices for agent skills
+- [x] Analyze existing skills loader implementation
+- [x] Create comprehensive meta-analysis skill definitions (8 skills)
+- [x] Implement system prompt injection for all providers (generateWithSkills)
+- [x] Ensure consistent behavior across OpenAI, Anthropic, Gemini, OpenRouter, MiniMax
+- [x] Add teaching/tutorial capabilities to skills (teaching-meta-analysis skill)
+- [x] Test skill injection across different models (25 tests passing)
+- [x] Create skill matching algorithm (matchSkillsToQuery)
+- [x] Build context-aware prompt builder (buildContextAwarePrompt)
+- [x] Add response guidelines for Cochrane methodology

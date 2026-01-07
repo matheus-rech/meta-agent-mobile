@@ -23,3 +23,12 @@ export {
   type GenerateResult,
   type StreamChunk,
 } from './providers';
+
+export {
+  generateWithSkills,
+  generateStreamWithSkills,
+  getMatchedSkillsForQuery,
+  getFullSystemPrompt,
+  getAvailableSkillsXML,
+  META_AGENT_BASE_PROMPT,
+} from './skill-provider';
