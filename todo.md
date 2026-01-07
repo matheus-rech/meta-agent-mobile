@@ -571,3 +571,38 @@
 - [ ] Test BYOK API key flow
 - [ ] Test offline mode indicator
 - [ ] Test onboarding wizard flow
+
+## In-App Tutorial System (v3.1)
+
+### Tutorial Infrastructure
+- [x] Design tutorial structure with learning modules (6 modules, 40+ steps)
+- [x] Create TutorialService for state management
+- [x] Define TutorialStep and TutorialModule types
+- [x] Implement tutorial progress persistence with AsyncStorage
+
+### Tutorial UI Components
+- [x] Create TutorialTooltip component with arrow positioning
+- [x] Create TutorialHighlight component for element focus
+- [x] Create TutorialProgress indicator (steps completed)
+- [x] Create TutorialOverlay for dimming background
+- [x] Create TutorialCard for step content display
+
+### Tutorial Content Modules
+- [x] Module 1: Welcome & App Overview (6 steps)
+- [x] Module 2: Understanding Meta-Analysis Basics (8 steps with quizzes)
+- [x] Module 3: Your First Forest Plot (6 steps with R code)
+- [x] Module 4: Working with Study Data (6 steps)
+- [x] Module 5: Interpreting Results (7 steps with quizzes)
+- [x] Module 6: Using AI Assistant & Socratic Mode (8 steps)
+
+### Tutorial Screens
+- [x] Create tutorial hub screen with module selection
+- [x] Implement step-by-step walkthrough navigation
+- [x] Add skip/resume tutorial functionality
+- [x] Integrate with terminal for action tracking
+
+### Integration & Testing
+- [x] Connect tutorial to Socratic teaching mode
+- [x] Add tutorial trigger points in terminal
+- [x] Write unit tests for tutorial service (40 tests)
+- [x] All 336 tests passing

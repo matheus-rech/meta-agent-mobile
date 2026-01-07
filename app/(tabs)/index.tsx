@@ -14,6 +14,7 @@ import type { CSVData } from "@/components/terminal";
 import { useAgent } from "@/hooks/use-agent";
 import { useColors } from "@/hooks/use-colors";
 import { hasCompletedOnboarding } from "@/app/onboarding";
+import { useTutorialAction } from "@/hooks/use-tutorial";
 
 /**
  * Terminal Screen
@@ -33,6 +34,7 @@ export default function TerminalScreen() {
     navigateHistoryNext,
     resetHistoryNavigation,
   } = useAgent();
+  const { completeAction, completeSocratic, isInTutorial } = useTutorialAction();
 
   // Check if onboarding is needed on first launch
   useEffect(() => {
@@ -49,10 +51,14 @@ export default function TerminalScreen() {
       // Send a Socratic teaching request
       const teachPrompt = `Please teach me about "${params.teachTopic}" using the Socratic method. Ask me guiding questions to help me understand the concept deeply.${params.teachContext ? `\n\nContext: ${params.teachContext}` : ''}`;
       sendMessage(teachPrompt);
+      // Complete Socratic tutorial step if in tutorial
+      if (isInTutorial) {
+        completeSocratic();
+      }
       // Clear the params to prevent re-triggering
       router.setParams({ teachTopic: undefined, teachContext: undefined });
     }
-  }, [params.teachTopic, params.teachContext, sendMessage]);
+  }, [params.teachTopic, params.teachContext, sendMessage, isInTutorial, completeSocratic]);
 
   // Modal states
   const [showCSVPicker, setShowCSVPicker] = useState(false);
@@ -206,7 +212,19 @@ export default function TerminalScreen() {
 
         {/* Command Input */}
         <TerminalInput
-          onSubmit={sendMessage}
+          onSubmit={(command: string) => {
+            sendMessage(command);
+            // Track tutorial actions
+            if (isInTutorial) {
+              if (command.startsWith('/')) {
+                completeAction(`command:${command.split(' ')[0]}`);
+              } else {
+                completeAction(`message:${command}`);
+                // Also check for Socratic completion on AI interactions
+                completeSocratic();
+              }
+            }
+          }}
           disabled={isThinking}
           placeholder="Type a command or message..."
           isConnected={isConnected}
