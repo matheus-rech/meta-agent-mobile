@@ -23,3 +23,19 @@ export {
   type MemoryEntry,
   type MetaContext,
 } from '../meta-agent/meta-agent.service';
+
+// Gemini File Search for RAG
+export {
+  geminiFileSearchService,
+  KNOWLEDGE_BASE_DOCUMENTS,
+  type KnowledgeDocument,
+} from './gemini-file-search.service';
+
+// Mini-Agent integration for Glass backend
+export {
+  miniAgentService,
+  type MiniAgentConfig,
+  type ChatMessage,
+  type MiniAgentResponse,
+  type SkillReference,
+} from './mini-agent.service';

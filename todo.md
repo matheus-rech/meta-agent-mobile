@@ -761,3 +761,40 @@
 - [ ] Verify citation accuracy
 - [ ] Test multilingual queries
 
+
+## Glass Mascot & Integration (v3.6)
+
+### Gemini FileSearchStore
+- [x] Configure Gemini File Search API (gemini-file-search.service.ts)
+- [x] Define 7 knowledge base documents structure
+- [ ] Upload documents to Gemini (requires API key)
+- [x] Integrate with Glass service
+
+### Glass Fox Mascot
+- [x] Generate fox illustration for light mode (glass-fox-light.png)
+- [x] Generate fox illustration for dark mode (glass-fox-dark.png)
+- [x] Add toggle between light/dark mascot
+- [x] Keep ASCII art alongside illustration (6 animation frames)
+
+### Animated TUI Interface
+- [x] Create animated fox component with react-native-reanimated (GlassMascot.tsx)
+- [x] Add idle animation (blinking, breathing)
+- [x] Add talking animation for responses
+- [x] Add thinking animation for processing
+- [x] Add happy and sleep states
+
+### Contextual Information Display
+- [x] Show current date/time (GlassStatusBar.tsx)
+- [x] Display next lessons from tutorial
+- [x] Show active AI model name
+- [x] Add theme toggle button
+
+### Mini-Agent Integration
+- [x] Create Mini-Agent service (mini-agent.service.ts)
+- [x] Configure 13 skills loading
+- [x] Implement chat interface with history
+- [x] Add multilingual response detection
+
+### Testing
+- [x] Glass integration tests (25 tests)
+- [x] All 385 tests passing

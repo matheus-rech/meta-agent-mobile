@@ -203,3 +203,35 @@ export const META_AGENT_AVATAR = GLASS_AGENT_AVATAR;
 export const META_GREETINGS = GLASS_GREETINGS;
 export const META_ENCOURAGEMENTS = GLASS_ENCOURAGEMENTS;
 export const metaSays = glassSays;
+
+
+// Fox animation frames for GlassMascot component
+export const ASCII_FOX = `
+   /\\   /\\
+  (  o.o  )
+   > ^ <`;
+
+export const ASCII_FOX_BLINK = `
+   /\\   /\\
+  (  -.-  )
+   > ^ <`;
+
+export const ASCII_FOX_TALK = `
+   /\\   /\\
+  (  o.o  )
+   > o <`;
+
+export const ASCII_FOX_HAPPY = `
+   /\\   /\\
+  (  ^.^  )
+   > w <`;
+
+export const ASCII_FOX_THINK = `
+   /\\   /\\
+  (  o.o  ) ?
+   > ~ <`;
+
+export const ASCII_FOX_SLEEP = `
+   /\\   /\\
+  (  -.-  ) z
+   > ~ <  Z`;
