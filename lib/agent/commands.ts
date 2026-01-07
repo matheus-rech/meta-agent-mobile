@@ -142,28 +142,16 @@ export const slashCommands: Record<string, SlashCommand> = {
 
   history: {
     name: "history",
-    description: "Show command history",
-    usage: "/history [search]",
-    handler: async (args) => {
-      const memory = getMemory();
-      const history = memory.getCommandHistory();
+    description: "Show persistent command history",
+    usage: "/history",
+    handler: async () => "__HISTORY__", // Handled by useAgent with persistent storage
+  },
 
-      if (args.length > 0) {
-        const query = args.join(" ");
-        const filtered = memory.searchHistory(query);
-        if (filtered.length === 0) {
-          return `No commands found matching "${query}"`;
-        }
-        return `Search results for "${query}":\n${filtered.slice(-20).map((cmd, i) => `${i + 1}. ${cmd}`).join("\n")}`;
-      }
-
-      if (history.length === 0) {
-        return "No command history yet.";
-      }
-
-      const recent = history.slice(-20);
-      return `Recent commands:\n${recent.map((cmd, i) => `${i + 1}. ${cmd}`).join("\n")}`;
-    },
+  "clear-history": {
+    name: "clear-history",
+    description: "Clear all command history",
+    usage: "/clear-history",
+    handler: async () => "__CLEAR_HISTORY__", // Handled by useAgent
   },
 
   reset: {

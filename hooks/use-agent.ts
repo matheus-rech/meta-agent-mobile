@@ -7,6 +7,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { trpc } from "@/lib/trpc";
 import { TerminalMessage, FileAttachment } from "@/components/terminal/terminal-output";
 import { initializeMemory, getMemory, executeSlashCommand } from "@/lib/agent";
+import { useCommandHistory } from "./use-command-history";
 
 interface UseAgentReturn {
   messages: TerminalMessage[];
@@ -19,6 +20,13 @@ interface UseAgentReturn {
   executeRCode: (code: string) => Promise<void>;
   checkRStatus: () => Promise<void>;
   addSystemMessage: (content: string) => void;
+  // Command history
+  commandHistory: string[];
+  navigateHistoryPrevious: (currentInput: string) => string | null;
+  navigateHistoryNext: () => string | null;
+  resetHistoryNavigation: () => void;
+  clearCommandHistory: () => Promise<void>;
+  formatHistoryDisplay: (limit?: number) => string;
 }
 
 interface REnvironmentStatus {
@@ -34,6 +42,17 @@ export function useAgent(): UseAgentReturn {
   const [sessionId, setSessionId] = useState("");
   const [rStatus, setRStatus] = useState<REnvironmentStatus | null>(null);
   const memoryRef = useRef(getMemory());
+  
+  // Command history hook
+  const {
+    history,
+    addCommand: addToHistory,
+    navigatePrevious,
+    navigateNext,
+    resetNavigation,
+    clearHistory,
+    formatHistoryDisplay,
+  } = useCommandHistory({ sessionId });
 
   // tRPC mutations and queries
   const chatMutation = trpc.agent.chat.useMutation();
@@ -205,7 +224,8 @@ ${packageList}
       const trimmed = input.trim();
       if (!trimmed) return;
 
-      // Add to command history
+      // Add to persistent command history
+      await addToHistory(trimmed);
       memoryRef.current.addToHistory(trimmed);
 
       // Check for slash commands
@@ -234,6 +254,27 @@ ${packageList}
         // Handle R status command
         if (slashResult.response === "__R_STATUS__") {
           await checkRStatus();
+          return;
+        }
+
+        // Handle history command
+        if (slashResult.response === "__HISTORY__") {
+          addMessage({
+            type: "system",
+            content: formatHistoryDisplay(20),
+            timestamp: Date.now(),
+          });
+          return;
+        }
+
+        // Handle clear history command
+        if (slashResult.response === "__CLEAR_HISTORY__") {
+          await clearHistory();
+          addMessage({
+            type: "success",
+            content: "Command history cleared.",
+            timestamp: Date.now(),
+          });
           return;
         }
 
@@ -335,5 +376,12 @@ ${packageList}
     executeRCode,
     checkRStatus,
     addSystemMessage,
+    // Command history
+    commandHistory: history.map(h => h.command),
+    navigateHistoryPrevious: navigatePrevious,
+    navigateHistoryNext: navigateNext,
+    resetHistoryNavigation: resetNavigation,
+    clearCommandHistory: clearHistory,
+    formatHistoryDisplay,
   };
 }

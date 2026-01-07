@@ -19,7 +19,12 @@ interface TerminalInputProps {
   placeholder?: string;
   isConnected?: boolean;
   sessionId?: string;
-  commandHistory?: string[];
+  /** Navigate to previous command in history */
+  onHistoryPrevious?: (currentInput: string) => string | null;
+  /** Navigate to next command in history */
+  onHistoryNext?: () => string | null;
+  /** Reset history navigation */
+  onHistoryReset?: () => void;
 }
 
 export function TerminalInput({
@@ -28,12 +33,13 @@ export function TerminalInput({
   placeholder = "Type a command or message...",
   isConnected = true,
   sessionId,
-  commandHistory = [],
+  onHistoryPrevious,
+  onHistoryNext,
+  onHistoryReset,
 }: TerminalInputProps) {
   const colors = useColors();
   const [text, setText] = useState("");
   const [showAutocomplete, setShowAutocomplete] = useState(false);
-  const [historyIndex, setHistoryIndex] = useState(-1);
   const [cursorBlink] = useState(new Animated.Value(1));
   const inputRef = useRef<TextInput>(null);
 
@@ -66,16 +72,16 @@ export function TerminalInput({
     }
 
     setShowAutocomplete(false);
-    setHistoryIndex(-1);
+    onHistoryReset?.();
     onSubmit(trimmed);
     setText("");
-  }, [text, disabled, onSubmit]);
+  }, [text, disabled, onSubmit, onHistoryReset]);
 
   const handleTextChange = useCallback((newText: string) => {
     setText(newText);
-    setHistoryIndex(-1);
+    onHistoryReset?.();
     setShowAutocomplete(newText.length > 0);
-  }, []);
+  }, [onHistoryReset]);
 
   const handleAutocompleteSelect = useCallback((suggestion: string) => {
     setText(suggestion + " ");
@@ -83,23 +89,27 @@ export function TerminalInput({
     inputRef.current?.focus();
   }, []);
 
-  const navigateHistory = useCallback((direction: 'up' | 'down') => {
-    if (commandHistory.length === 0) return;
-    
-    let newIndex: number;
-    if (direction === 'up') {
-      newIndex = historyIndex < commandHistory.length - 1 ? historyIndex + 1 : historyIndex;
-    } else {
-      newIndex = historyIndex > 0 ? historyIndex - 1 : -1;
+  const navigateHistoryUp = useCallback(() => {
+    if (!onHistoryPrevious) return;
+    const previousCommand = onHistoryPrevious(text);
+    if (previousCommand !== null) {
+      setText(previousCommand);
+      if (Platform.OS !== "web") {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
     }
-    
-    setHistoryIndex(newIndex);
-    if (newIndex >= 0 && newIndex < commandHistory.length) {
-      setText(commandHistory[commandHistory.length - 1 - newIndex]);
-    } else {
-      setText("");
+  }, [onHistoryPrevious, text]);
+
+  const navigateHistoryDown = useCallback(() => {
+    if (!onHistoryNext) return;
+    const nextCommand = onHistoryNext();
+    if (nextCommand !== null) {
+      setText(nextCommand);
+      if (Platform.OS !== "web") {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
     }
-  }, [commandHistory, historyIndex]);
+  }, [onHistoryNext]);
 
   const handleKeyPress = (e: any) => {
     // Handle Enter key on web/desktop
@@ -114,11 +124,11 @@ export function TerminalInput({
     // Navigate history with arrow keys
     if (e.nativeEvent.key === "ArrowUp") {
       e.preventDefault?.();
-      navigateHistory('up');
+      navigateHistoryUp();
     }
     if (e.nativeEvent.key === "ArrowDown") {
       e.preventDefault?.();
-      navigateHistory('down');
+      navigateHistoryDown();
     }
   };
 

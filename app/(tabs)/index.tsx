@@ -21,7 +21,17 @@ import { hasCompletedOnboarding } from "@/app/onboarding";
  */
 export default function TerminalScreen() {
   const colors = useColors();
-  const { messages, isThinking, isConnected, sessionId, sendMessage, addSystemMessage } = useAgent();
+  const { 
+    messages, 
+    isThinking, 
+    isConnected, 
+    sessionId, 
+    sendMessage, 
+    addSystemMessage,
+    navigateHistoryPrevious,
+    navigateHistoryNext,
+    resetHistoryNavigation,
+  } = useAgent();
 
   // Check if onboarding is needed on first launch
   useEffect(() => {
@@ -187,6 +197,11 @@ export default function TerminalScreen() {
           onSubmit={sendMessage}
           disabled={isThinking}
           placeholder="Type a command or message..."
+          isConnected={isConnected}
+          sessionId={sessionId}
+          onHistoryPrevious={navigateHistoryPrevious}
+          onHistoryNext={navigateHistoryNext}
+          onHistoryReset={resetHistoryNavigation}
         />
       </KeyboardAvoidingView>
 

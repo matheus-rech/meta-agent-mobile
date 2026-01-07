@@ -418,3 +418,14 @@
 - [x] Create help command with ASCII formatting (HelpOutput)
 - [x] Enhanced autocomplete with icons and badges
 - [x] Added keyboard hints for web (↑↓ history • Tab autocomplete)
+
+
+## Command History Persistence (v2.6)
+- [x] Create CommandHistoryService with AsyncStorage (lib/history/command-history.ts)
+- [x] Implement max history limit (100 commands)
+- [x] Add deduplication for consecutive identical commands
+- [x] Create useCommandHistory hook (hooks/use-command-history.ts)
+- [x] Integrate with terminal input for arrow key navigation
+- [x] Add /history command to view recent commands (formatted ASCII box)
+- [x] Add /clear-history command to reset history
+- [x] Add comprehensive tests (28 tests passing)
