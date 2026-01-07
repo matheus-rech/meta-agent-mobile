@@ -1,5 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { KeyboardAvoidingView, Platform, View, TouchableOpacity, Text } from "react-native";
+import { router } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import {
   TerminalOutput,
@@ -12,6 +13,7 @@ import {
 import type { CSVData } from "@/components/terminal";
 import { useAgent } from "@/hooks/use-agent";
 import { useColors } from "@/hooks/use-colors";
+import { hasCompletedOnboarding } from "@/app/onboarding";
 
 /**
  * Terminal Screen
@@ -20,6 +22,15 @@ import { useColors } from "@/hooks/use-colors";
 export default function TerminalScreen() {
   const colors = useColors();
   const { messages, isThinking, isConnected, sessionId, sendMessage, addSystemMessage } = useAgent();
+
+  // Check if onboarding is needed on first launch
+  useEffect(() => {
+    hasCompletedOnboarding().then((completed) => {
+      if (!completed) {
+        router.replace('/onboarding' as any);
+      }
+    });
+  }, []);
 
   // Modal states
   const [showCSVPicker, setShowCSVPicker] = useState(false);

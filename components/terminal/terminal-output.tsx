@@ -4,6 +4,17 @@ import { useColors } from "@/hooks/use-colors";
 import { MarkdownRenderer } from "./markdown-renderer";
 import { FileThumbnail } from "./file-thumbnail";
 import { FileViewer } from "./file-viewer";
+import {
+  ASCIILogoCompact,
+  CommandPrompt,
+  ThinkingIndicator as StyledThinkingIndicator,
+  SuccessMessage,
+  ErrorMessage,
+  InfoMessage,
+  CodeBlock,
+  ROutput,
+  SessionBanner,
+} from "./ascii-art";
 
 export interface FileAttachment {
   type: "image" | "plot" | "file";
@@ -14,26 +25,31 @@ export interface FileAttachment {
 
 export interface TerminalMessage {
   id: string;
-  type: "user" | "agent" | "system" | "error" | "success" | "code";
+  type: "user" | "agent" | "system" | "error" | "success" | "code" | "r-output" | "r-error";
   content: string;
   timestamp: number;
-  // Optional file attachments for visualization
   files?: FileAttachment[];
 }
 
 interface TerminalOutputProps {
   messages: TerminalMessage[];
   isThinking?: boolean;
+  sessionId?: string;
+  isConnected?: boolean;
 }
 
-export function TerminalOutput({ messages, isThinking }: TerminalOutputProps) {
+export function TerminalOutput({ 
+  messages, 
+  isThinking, 
+  sessionId = "local",
+  isConnected = true,
+}: TerminalOutputProps) {
   const colors = useColors();
   const scrollViewRef = useRef<ScrollView>(null);
   const [selectedFile, setSelectedFile] = useState<FileAttachment | null>(null);
   const [viewerVisible, setViewerVisible] = useState(false);
 
   useEffect(() => {
-    // Auto-scroll to bottom when new messages arrive
     setTimeout(() => {
       scrollViewRef.current?.scrollToEnd({ animated: true });
     }, 100);
@@ -47,25 +63,6 @@ export function TerminalOutput({ messages, isThinking }: TerminalOutputProps) {
   const handleCloseViewer = () => {
     setViewerVisible(false);
     setTimeout(() => setSelectedFile(null), 300);
-  };
-
-  const getMessageStyle = (type: TerminalMessage["type"]) => {
-    switch (type) {
-      case "user":
-        return { color: colors.prompt };
-      case "agent":
-        return { color: colors.foreground };
-      case "system":
-        return { color: colors.muted };
-      case "error":
-        return { color: colors.error };
-      case "success":
-        return { color: colors.success };
-      case "code":
-        return { color: colors.code };
-      default:
-        return { color: colors.foreground };
-    }
   };
 
   const renderFileAttachments = (files: FileAttachment[]) => {
@@ -83,47 +80,99 @@ export function TerminalOutput({ messages, isThinking }: TerminalOutputProps) {
   };
 
   const renderMessage = (message: TerminalMessage) => {
-    const style = getMessageStyle(message.type);
-
-    // User messages - simple text with prompt
+    // User messages - styled with command prompt
     if (message.type === "user") {
       return (
-        <View key={message.id} style={styles.messageContainer}>
-          <Text style={[styles.terminalText, style]} selectable>
-            {">"} {message.content}
-          </Text>
+        <View key={message.id} style={styles.userMessageContainer}>
+          <View style={styles.userMessageRow}>
+            <Text style={[styles.promptSymbol, { color: colors.success }]}>❯</Text>
+            <Text style={[styles.userText, { color: colors.foreground }]} selectable>
+              {message.content}
+            </Text>
+          </View>
         </View>
       );
     }
 
-    // Agent messages - use markdown renderer
+    // Agent messages - use markdown renderer with styled container
     if (message.type === "agent") {
       return (
         <View key={message.id} style={styles.agentMessageContainer}>
-          <MarkdownRenderer content={message.content} />
+          <View style={styles.agentHeader}>
+            <Text style={[styles.agentLabel, { color: colors.primary }]}>◆ META</Text>
+            <Text style={[styles.timestamp, { color: colors.muted }]}>
+              {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </Text>
+          </View>
+          <View style={[styles.agentContent, { borderLeftColor: colors.primary }]}>
+            <MarkdownRenderer content={message.content} />
+            {message.files && message.files.length > 0 && renderFileAttachments(message.files)}
+          </View>
+        </View>
+      );
+    }
+
+    // R Output
+    if (message.type === "r-output") {
+      return (
+        <View key={message.id} style={styles.messageContainer}>
+          <ROutput output={message.content} isError={false} />
           {message.files && message.files.length > 0 && renderFileAttachments(message.files)}
         </View>
       );
     }
 
-    // Code blocks
-    if (message.type === "code") {
+    // R Error
+    if (message.type === "r-error") {
       return (
-        <View
-          key={message.id}
-          style={[styles.codeBlock, { backgroundColor: colors.surface, borderColor: colors.border }]}
-        >
-          <Text style={[styles.terminalText, style]} selectable>
-            {message.content}
-          </Text>
+        <View key={message.id} style={styles.messageContainer}>
+          <ROutput output={message.content} isError={true} />
         </View>
       );
     }
 
-    // System, error, success messages
+    // Code blocks - enhanced styling
+    if (message.type === "code") {
+      return (
+        <View key={message.id} style={styles.messageContainer}>
+          <CodeBlock code={message.content} language="r" />
+        </View>
+      );
+    }
+
+    // Success messages
+    if (message.type === "success") {
+      return (
+        <View key={message.id} style={styles.messageContainer}>
+          <SuccessMessage message={message.content} />
+          {message.files && message.files.length > 0 && renderFileAttachments(message.files)}
+        </View>
+      );
+    }
+
+    // Error messages
+    if (message.type === "error") {
+      return (
+        <View key={message.id} style={styles.messageContainer}>
+          <ErrorMessage message={message.content} />
+        </View>
+      );
+    }
+
+    // System/info messages
+    if (message.type === "system") {
+      return (
+        <View key={message.id} style={styles.messageContainer}>
+          <InfoMessage message={message.content} />
+          {message.files && message.files.length > 0 && renderFileAttachments(message.files)}
+        </View>
+      );
+    }
+
+    // Default fallback
     return (
       <View key={message.id} style={styles.messageContainer}>
-        <Text style={[styles.terminalText, style]} selectable>
+        <Text style={[styles.terminalText, { color: colors.foreground }]} selectable>
           {message.content}
         </Text>
         {message.files && message.files.length > 0 && renderFileAttachments(message.files)}
@@ -140,32 +189,24 @@ export function TerminalOutput({ messages, isThinking }: TerminalOutputProps) {
         showsVerticalScrollIndicator={true}
         keyboardShouldPersistTaps="handled"
       >
-        {/* ASCII Banner */}
+        {/* Enhanced ASCII Banner */}
         <View style={styles.bannerContainer}>
-          <Text style={[styles.bannerText, { color: colors.prompt }]}>
-{`╔═══════════════════════════════════════════════════╗
-║  __  __      _           _                    _   ║
-║ |  \\/  | ___| |_ __ _   / \\   __ _  ___ _ __ | |_ ║
-║ | |\\/| |/ _ \\ __/ _\` | / _ \\ / _\` |/ _ \\ '_ \\| __|║
-║ | |  | |  __/ || (_| |/ ___ \\ (_| |  __/ | | | |_ ║
-║ |_|  |_|\\___|\\__\\__,_/_/   \\_\\__, |\\___|_| |_|\\__|║
-║                              |___/                ║
-║                                                   ║
-║  AI-Powered Agent SDK for Mobile                  ║
-╚═══════════════════════════════════════════════════╝`}
-          </Text>
+          <ASCIILogoCompact />
           <Text style={[styles.welcomeText, { color: colors.muted }]}>
             Type a command or message. Use /help for available commands.
           </Text>
         </View>
 
+        {/* Session Banner */}
+        <SessionBanner sessionId={sessionId} />
+
         {/* Messages */}
         {messages.map(renderMessage)}
 
-        {/* Thinking Indicator */}
+        {/* Enhanced Thinking Indicator */}
         {isThinking && (
-          <View style={styles.messageContainer}>
-            <ThinkingIndicator color={colors.muted} />
+          <View style={styles.thinkingContainer}>
+            <StyledThinkingIndicator message="Processing" />
           </View>
         )}
       </ScrollView>
@@ -180,23 +221,6 @@ export function TerminalOutput({ messages, isThinking }: TerminalOutputProps) {
   );
 }
 
-function ThinkingIndicator({ color }: { color: string }) {
-  const [dots, setDots] = React.useState("");
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDots((prev) => (prev.length >= 3 ? "" : prev + "."));
-    }, 400);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <Text style={[styles.terminalText, { color }]}>
-      Thinking{dots}
-    </Text>
-  );
-}
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -206,16 +230,8 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   bannerContainer: {
-    marginBottom: 16,
-  },
-  bannerText: {
-    fontFamily: Platform.select({
-      ios: "Menlo",
-      android: "monospace",
-      default: "Courier New",
-    }),
-    fontSize: 10,
-    lineHeight: 12,
+    marginBottom: 8,
+    alignItems: 'center',
   },
   welcomeText: {
     fontFamily: Platform.select({
@@ -225,13 +241,70 @@ const styles = StyleSheet.create({
     }),
     fontSize: 12,
     marginTop: 8,
+    textAlign: 'center',
   },
   messageContainer: {
     marginVertical: 4,
   },
+  userMessageContainer: {
+    marginVertical: 8,
+    marginTop: 12,
+  },
+  userMessageRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  promptSymbol: {
+    fontFamily: Platform.select({
+      ios: "Menlo",
+      android: "monospace",
+      default: "Courier New",
+    }),
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginRight: 8,
+    lineHeight: 20,
+  },
+  userText: {
+    fontFamily: Platform.select({
+      ios: "Menlo",
+      android: "monospace",
+      default: "Courier New",
+    }),
+    fontSize: 14,
+    lineHeight: 20,
+    flex: 1,
+  },
   agentMessageContainer: {
     marginVertical: 8,
-    paddingLeft: 4,
+  },
+  agentHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  agentLabel: {
+    fontFamily: Platform.select({
+      ios: "Menlo",
+      android: "monospace",
+      default: "Courier New",
+    }),
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  timestamp: {
+    fontFamily: Platform.select({
+      ios: "Menlo",
+      android: "monospace",
+      default: "Courier New",
+    }),
+    fontSize: 10,
+  },
+  agentContent: {
+    borderLeftWidth: 2,
+    paddingLeft: 12,
+    marginLeft: 2,
   },
   terminalText: {
     fontFamily: Platform.select({
@@ -242,14 +315,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
   },
-  codeBlock: {
-    marginVertical: 8,
-    padding: 12,
-    borderRadius: 6,
-    borderWidth: 1,
-  },
   filesContainer: {
     marginTop: 8,
     gap: 4,
+  },
+  thinkingContainer: {
+    marginVertical: 8,
+    paddingLeft: 4,
   },
 });

@@ -1,10 +1,12 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import {
   View,
   TextInput,
+  Text,
   StyleSheet,
   Platform,
   TouchableOpacity,
+  Animated,
 } from "react-native";
 import * as Haptics from "expo-haptics";
 import { useColors } from "@/hooks/use-colors";
@@ -15,17 +17,45 @@ interface TerminalInputProps {
   onSubmit: (command: string) => void;
   disabled?: boolean;
   placeholder?: string;
+  isConnected?: boolean;
+  sessionId?: string;
+  commandHistory?: string[];
 }
 
 export function TerminalInput({
   onSubmit,
   disabled = false,
-  placeholder = "Type a command...",
+  placeholder = "Type a command or message...",
+  isConnected = true,
+  sessionId,
+  commandHistory = [],
 }: TerminalInputProps) {
   const colors = useColors();
   const [text, setText] = useState("");
   const [showAutocomplete, setShowAutocomplete] = useState(false);
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const [cursorBlink] = useState(new Animated.Value(1));
   const inputRef = useRef<TextInput>(null);
+
+  // Cursor blink animation
+  useEffect(() => {
+    const blink = Animated.loop(
+      Animated.sequence([
+        Animated.timing(cursorBlink, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(cursorBlink, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    blink.start();
+    return () => blink.stop();
+  }, []);
 
   const handleSubmit = useCallback(() => {
     const trimmed = text.trim();
@@ -36,13 +66,14 @@ export function TerminalInput({
     }
 
     setShowAutocomplete(false);
+    setHistoryIndex(-1);
     onSubmit(trimmed);
     setText("");
   }, [text, disabled, onSubmit]);
 
   const handleTextChange = useCallback((newText: string) => {
     setText(newText);
-    // Show autocomplete when typing
+    setHistoryIndex(-1);
     setShowAutocomplete(newText.length > 0);
   }, []);
 
@@ -51,6 +82,24 @@ export function TerminalInput({
     setShowAutocomplete(false);
     inputRef.current?.focus();
   }, []);
+
+  const navigateHistory = useCallback((direction: 'up' | 'down') => {
+    if (commandHistory.length === 0) return;
+    
+    let newIndex: number;
+    if (direction === 'up') {
+      newIndex = historyIndex < commandHistory.length - 1 ? historyIndex + 1 : historyIndex;
+    } else {
+      newIndex = historyIndex > 0 ? historyIndex - 1 : -1;
+    }
+    
+    setHistoryIndex(newIndex);
+    if (newIndex >= 0 && newIndex < commandHistory.length) {
+      setText(commandHistory[commandHistory.length - 1 - newIndex]);
+    } else {
+      setText("");
+    }
+  }, [commandHistory, historyIndex]);
 
   const handleKeyPress = (e: any) => {
     // Handle Enter key on web/desktop
@@ -62,6 +111,15 @@ export function TerminalInput({
     if (e.nativeEvent.key === "Escape") {
       setShowAutocomplete(false);
     }
+    // Navigate history with arrow keys
+    if (e.nativeEvent.key === "ArrowUp") {
+      e.preventDefault?.();
+      navigateHistory('up');
+    }
+    if (e.nativeEvent.key === "ArrowDown") {
+      e.preventDefault?.();
+      navigateHistory('down');
+    }
   };
 
   const handleFocus = () => {
@@ -71,7 +129,6 @@ export function TerminalInput({
   };
 
   const handleBlur = () => {
-    // Delay hiding to allow selection
     setTimeout(() => setShowAutocomplete(false), 200);
   };
 
@@ -101,6 +158,19 @@ export function TerminalInput({
           },
         ]}
       >
+        {/* CLI-style prompt */}
+        <View style={styles.promptContainer}>
+          <Text style={[styles.promptDot, { color: isConnected ? colors.success : colors.error }]}>
+            ●
+          </Text>
+          <Text style={[styles.promptText, { color: colors.primary }]}>
+            meta
+          </Text>
+          <Text style={[styles.promptArrow, { color: colors.primary }]}>
+            ❯
+          </Text>
+        </View>
+
         <TextInput
           ref={inputRef}
           style={[
@@ -124,6 +194,7 @@ export function TerminalInput({
           multiline={false}
           blurOnSubmit={false}
         />
+
         <TouchableOpacity
           onPress={handleSubmit}
           disabled={disabled || !text.trim()}
@@ -143,6 +214,15 @@ export function TerminalInput({
           />
         </TouchableOpacity>
       </View>
+
+      {/* Keyboard hints */}
+      {Platform.OS === 'web' && (
+        <View style={styles.hintsContainer}>
+          <Text style={[styles.hintText, { color: colors.muted }]}>
+            ↑↓ history • Tab autocomplete • Enter send
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -159,9 +239,37 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 12,
     borderWidth: 1,
-    paddingLeft: 16,
+    paddingLeft: 12,
     paddingRight: 6,
     paddingVertical: 6,
+  },
+  promptContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  promptDot: {
+    fontSize: 8,
+    marginRight: 6,
+  },
+  promptText: {
+    fontFamily: Platform.select({
+      ios: "Menlo",
+      android: "monospace",
+      default: "Courier New",
+    }),
+    fontSize: 13,
+    fontWeight: 'bold',
+  },
+  promptArrow: {
+    fontFamily: Platform.select({
+      ios: "Menlo",
+      android: "monospace",
+      default: "Courier New",
+    }),
+    fontSize: 13,
+    fontWeight: 'bold',
+    marginLeft: 4,
   },
   input: {
     flex: 1,
@@ -180,5 +288,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginLeft: 8,
+  },
+  hintsContainer: {
+    marginTop: 6,
+    alignItems: 'center',
+  },
+  hintText: {
+    fontFamily: Platform.select({
+      ios: "Menlo",
+      android: "monospace",
+      default: "Courier New",
+    }),
+    fontSize: 10,
   },
 });

@@ -394,3 +394,27 @@
 - [x] Add expandable "Learn More" section with full details
 - [x] Add license links that open in browser
 - [x] Add "Why Open Source?" info section
+
+
+## Onboarding Wizard (v2.5)
+- [x] Create device detection utility (RAM, device model) - lib/device/device-info.ts
+- [x] Build multi-step onboarding wizard UI - app/onboarding.tsx
+- [x] Add use case selection screen (research, quick lookups, code help)
+- [x] Implement model recommendation algorithm (getRecommendedModel)
+- [x] Add first-launch detection with AsyncStorage
+- [x] Create wizard navigation flow (4 steps)
+- [x] Add skip option for experienced users
+- [x] Show recommended model with explanation
+
+
+## Terminal UI Enhancement (v2.5)
+- [x] Create new ASCII art logo for terminal header (ASCIILogo, ASCIILogoCompact)
+- [x] Design CLI-style command output formatting (StyledBox, ROutput)
+- [x] Add syntax highlighting for R code blocks (CodeBlock)
+- [x] Create styled boxes for different message types
+- [x] Add command prompt styling (CommandPrompt with ● meta ❯)
+- [x] Implement thinking/processing animations (ThinkingIndicator)
+- [x] Add success/error/warning styled outputs (SuccessMessage, ErrorMessage, etc.)
+- [x] Create help command with ASCII formatting (HelpOutput)
+- [x] Enhanced autocomplete with icons and badges
+- [x] Added keyboard hints for web (↑↓ history • Tab autocomplete)

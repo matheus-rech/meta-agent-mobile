@@ -11,3 +11,23 @@ export { SnippetsLibrary, snippets, snippetCategories } from "./snippets-library
 export type { Snippet } from "./snippets-library";
 export { ExportSheet } from "./export-sheet";
 export { StreamingOutput, type StreamLine } from "./streaming-output";
+export {
+  ASCIILogo,
+  ASCIILogoCompact,
+  ASCIILogoMini,
+  StyledBox,
+  CommandPrompt,
+  ThinkingIndicator,
+  SuccessMessage,
+  ErrorMessage,
+  WarningMessage,
+  InfoMessage,
+  Divider,
+  SectionHeader,
+  CodeBlock,
+  HelpOutput,
+  WelcomeMessage,
+  SessionBanner,
+  ROutput,
+  ProgressBar,
+} from "./ascii-art";
