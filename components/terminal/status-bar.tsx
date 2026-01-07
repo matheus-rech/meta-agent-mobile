@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Platform } from "react-native";
 import { useColors } from "@/hooks/use-colors";
+import { GLASS_LOGO_MINI, STATUS_ACTIVE, STATUS_PENDING } from "@/constants/ascii-art";
 
 interface StatusBarProps {
   isConnected: boolean;
@@ -26,6 +27,10 @@ export function TerminalStatusBar({
       ]}
     >
       <View style={styles.leftSection}>
+        {/* Glass ASCII Logo */}
+        <Text style={[styles.metaLogo, { color: colors.primary }]}>
+          {GLASS_LOGO_MINI}
+        </Text>
         <View
           style={[
             styles.statusDot,
@@ -35,19 +40,19 @@ export function TerminalStatusBar({
           ]}
         />
         <Text style={[styles.statusText, { color: colors.muted }]}>
-          {isConnected ? "Connected" : "Disconnected"}
+          {isConnected ? STATUS_ACTIVE : STATUS_PENDING} {isConnected ? "Online" : "Offline"}
         </Text>
       </View>
 
       <View style={styles.rightSection}>
         {isThinking && (
           <Text style={[styles.thinkingText, { color: colors.warning }]}>
-            Processing...
+            ▶ Processing...
           </Text>
         )}
         {sessionId && (
           <Text style={[styles.sessionText, { color: colors.muted }]}>
-            Session: {sessionId.slice(0, 8)}
+            #{sessionId.slice(0, 8)}
           </Text>
         )}
       </View>
@@ -67,17 +72,26 @@ const styles = StyleSheet.create({
   leftSection: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 8,
   },
   rightSection: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
   },
+  metaLogo: {
+    fontFamily: Platform.select({
+      ios: "Menlo",
+      android: "monospace",
+      default: "Courier New",
+    }),
+    fontSize: 12,
+    fontWeight: "700",
+  },
   statusDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    marginRight: 8,
   },
   statusText: {
     fontFamily: Platform.select({

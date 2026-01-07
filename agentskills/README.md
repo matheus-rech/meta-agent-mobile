@@ -21,6 +21,11 @@
 | [grade-assessment](./grade-assessment/) | Advanced | Apply GRADE framework for certainty of evidence |
 | [r-code-generation](./r-code-generation/) | Intermediate | Generate production-ready R code for meta-analysis |
 | [socratic-teaching](./socratic-teaching/) | Beginner | Pedagogical approach for teaching meta-analysis |
+| [network-meta-analysis](./network-meta-analysis/) | Advanced | Compare multiple interventions simultaneously |
+| [bayesian-meta-analysis](./bayesian-meta-analysis/) | Advanced | Bayesian inference with prior distributions |
+| [ipd-meta-analysis](./ipd-meta-analysis/) | Advanced | Individual patient data synthesis |
+| [trial-sequential-analysis](./trial-sequential-analysis/) | Advanced | Control errors in cumulative meta-analysis |
+| [diagnostic-meta-analysis](./diagnostic-meta-analysis/) | Advanced | Diagnostic test accuracy synthesis |
 
 ## Quick Start
 
@@ -81,6 +86,13 @@ meta-analysis-fundamentals (no prerequisites)
             └── heterogeneity-analysis
 
 socratic-teaching (standalone, enhances all skills)
+
+Advanced Skills (require fundamentals + heterogeneity):
+    ├── network-meta-analysis
+    ├── bayesian-meta-analysis
+    ├── ipd-meta-analysis
+    ├── trial-sequential-analysis
+    └── diagnostic-meta-analysis
 ```
 
 ## Learning Path
@@ -91,7 +103,7 @@ socratic-teaching (standalone, enhances all skills)
 3. r-code-generation (15 min)
 4. Practice with sample data
 
-### Path 2: Comprehensive (6 hours)
+### Path 2: Comprehensive (4 hours)
 1. meta-analysis-fundamentals (15 min)
 2. data-extraction (15 min)
 3. forest-plot-creation (10 min)
@@ -101,7 +113,14 @@ socratic-teaching (standalone, enhances all skills)
 7. r-code-generation (15 min)
 8. Complete a practice meta-analysis
 
-### Path 3: Teaching Focus
+### Path 3: Advanced Methods (2.5 hours)
+1. network-meta-analysis (25 min)
+2. bayesian-meta-analysis (25 min)
+3. ipd-meta-analysis (30 min)
+4. trial-sequential-analysis (25 min)
+5. diagnostic-meta-analysis (30 min)
+
+### Path 4: Teaching Focus
 1. socratic-teaching (varies)
 2. All content skills as needed
 
@@ -117,7 +136,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ### Ways to Contribute
 
-- **Add new skills:** Network meta-analysis, Bayesian methods, etc.
+- **Add new skills:** More specialized methods, domain-specific applications
 - **Improve existing skills:** Better examples, clearer explanations
 - **Translate skills:** Make meta-analysis education accessible in more languages
 - **Report issues:** Found an error? Let us know!

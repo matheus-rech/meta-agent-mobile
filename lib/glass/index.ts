@@ -1,0 +1,25 @@
+/**
+ * Glass - The Meta-Analysis Teaching Agent 🦊
+ * 
+ * Named after Gene Glass, who coined "meta-analysis" in 1976.
+ * Inspired by Zenko (善狐), the benevolent fox from Japanese mythology.
+ */
+
+export {
+  getKnowledgeBase,
+  KnowledgeBaseService,
+  KB_CATEGORIES,
+  type KBDocument,
+  type RAGResult,
+  type Citation,
+  type SupportedLanguage,
+} from './knowledge-base.service';
+
+// Re-export Meta agent service (Glass is the new name)
+export {
+  getMetaAgent,
+  MetaAgentService,
+  type MetaUserProfile,
+  type MemoryEntry,
+  type MetaContext,
+} from '../meta-agent/meta-agent.service';

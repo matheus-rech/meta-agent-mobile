@@ -666,3 +666,67 @@
 - [x] Write installation and usage instructions
 - [x] Create CONTRIBUTING.md guidelines
 - [x] Add Apache 2.0 LICENSE
+
+## Meta Branding & Agent Experience (v3.4)
+
+### ASCII Art Branding
+- [ ] Create ASCII "Meta" logo for home screen
+- [ ] Design TUI-inspired visual identity throughout app
+- [ ] Add ASCII art to terminal interface
+- [ ] Create consistent retro-tech aesthetic
+
+### Meta Agent Onboarding
+- [ ] Design Meta as the primary AI guide
+- [ ] Create interactive onboarding flow with Meta
+- [ ] Implement shared memory system for agents
+- [ ] Add personalized welcome experience
+- [ ] Meta presents app capabilities interactively
+
+### Advanced Skills
+- [ ] Create Network Meta-Analysis skill
+- [ ] Create Bayesian Meta-Analysis skill
+- [ ] Create IPD (Individual Patient Data) skill
+
+### Portuguese Translation
+- [ ] Translate meta-analysis-fundamentals to Portuguese
+- [ ] Translate forest-plot-creation to Portuguese
+- [ ] Translate heterogeneity-analysis to Portuguese
+- [ ] Translate publication-bias-detection to Portuguese
+- [ ] Translate data-extraction to Portuguese
+- [ ] Translate grade-assessment to Portuguese
+- [ ] Translate r-code-generation to Portuguese
+- [ ] Translate socratic-teaching to Portuguese
+
+## Glass Agent & RAG System (v3.4)
+
+### Glass Identity & Branding
+- [x] Rename Meta agent to Glass (Gene Glass tribute)
+- [x] Design raposa (fox) mascot identity
+- [x] Create ASCII art for Glass branding
+- [x] Update onboarding with Glass introduction
+
+### Knowledge Base RAG (Gemini File Search)
+- [x] Design RAG architecture documentation
+- [x] Create KnowledgeBaseService for Glass
+- [x] Define document categories (Cochrane, seminal, guidelines, software)
+- [x] Implement language detection (PT/EN/ES/ZH)
+- [x] Create Glass system prompt with Socratic method
+- [ ] Upload Cochrane Handbook chapters to FileSearchStore
+- [ ] Upload seminal articles (Glass 1976, DerSimonian, Higgins)
+- [ ] Upload PRISMA/GRADE/QUADAS guidelines
+- [ ] Upload metafor/netmeta documentation
+- [ ] Test RAG retrieval accuracy
+
+### Advanced AgentSkills Created
+- [x] Network Meta-Analysis skill
+- [x] Bayesian Meta-Analysis skill
+- [x] IPD Meta-Analysis skill
+- [x] Trial Sequential Analysis (TSA) skill
+- [x] Diagnostic Meta-Analysis skill
+- [x] Add Adaptation Guidelines to all 13 skills
+
+### AgentSkills Documentation
+- [x] Update README with 13 total skills
+- [x] Add advanced learning path (2.5 hours)
+- [x] Update skill dependency diagram
+

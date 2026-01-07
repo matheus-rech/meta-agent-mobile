@@ -294,3 +294,19 @@ dat <- escalc(measure = "SMD", ...)
 - `meta-analysis-fundamentals` - Understanding effect sizes
 - `r-code-generation` - Automating calculations
 - `grade-assessment` - Evaluating certainty of evidence
+
+## Adaptation Guidelines
+
+**Glass (the teaching agent) MUST adapt this content to the learner:**
+
+1. **Language Detection:** Detect the user's language from their messages and respond naturally in that language
+2. **Cultural Context:** Adapt examples to local healthcare systems and research contexts when relevant
+3. **Technical Terms:** Maintain standard English terms (e.g., "forest plot", "effect size", "I²") but explain them in the user's language
+4. **Level Adaptation:** Adjust complexity based on user's demonstrated knowledge level
+5. **Socratic Method:** Ask guiding questions in the detected language to promote deep understanding
+6. **Local Examples:** When possible, reference studies or guidelines familiar to the user's region
+
+**Example Adaptations:**
+- 🇧🇷 Portuguese: Use Brazilian health system examples (SUS, ANVISA guidelines)
+- 🇪🇸 Spanish: Reference PAHO/OPS guidelines for Latin America
+- 🇨🇳 Chinese: Include examples from Chinese medical literature

@@ -19,6 +19,7 @@ import {
   StyleSheet,
   Animated,
   Dimensions,
+  Platform,
 } from 'react-native';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -36,6 +37,13 @@ import {
   MLCModelId,
   MLCModelInfo,
 } from '@/lib/llm/mlc-llm-service';
+import {
+  GLASS_LOGO_LARGE,
+  GLASS_AGENT_AVATAR,
+  GLASS_FOX_SMALL,
+  GLASS_GREETINGS,
+  createBox,
+} from '@/constants/ascii-art';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -272,10 +280,23 @@ export default function OnboardingScreen() {
   
   const renderStep0 = () => (
     <View style={styles.stepContent}>
-      <Text style={styles.welcomeEmoji}>🤖</Text>
-      <Text style={[styles.stepTitle, { color: colors.foreground }]}>
-        Welcome to Meta Agent
-      </Text>
+      {/* ASCII Glass Logo */}
+      <View style={[styles.asciiContainer, { backgroundColor: colors.terminal }]}>
+        <Text style={[styles.asciiLogo, { color: colors.primary }]}>
+          {GLASS_LOGO_LARGE}
+        </Text>
+      </View>
+      
+      {/* Glass Fox Introduction */}
+      <View style={styles.metaIntro}>
+        <Text style={[styles.asciiAvatar, { color: colors.success }]}>
+          {GLASS_FOX_SMALL}
+        </Text>
+        <Text style={[styles.metaGreeting, { color: colors.foreground }]}>
+          {GLASS_GREETINGS[0]}
+        </Text>
+      </View>
+      
       <Text style={[styles.stepSubtitle, { color: colors.muted }]}>
         Your AI-powered meta-analysis assistant
       </Text>
@@ -860,5 +881,43 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize: 14,
+  },
+  // ASCII Art styles for Meta branding
+  asciiContainer: {
+    width: '100%',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  asciiLogo: {
+    fontFamily: Platform.select({
+      ios: 'Menlo',
+      android: 'monospace',
+      default: 'Courier New',
+    }),
+    fontSize: 10,
+    lineHeight: 12,
+    textAlign: 'center',
+  },
+  metaIntro: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  asciiAvatar: {
+    fontFamily: Platform.select({
+      ios: 'Menlo',
+      android: 'monospace',
+      default: 'Courier New',
+    }),
+    fontSize: 12,
+    lineHeight: 14,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  metaGreeting: {
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });
