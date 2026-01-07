@@ -278,6 +278,28 @@ ${packageList}
           return;
         }
 
+        // Handle knowledge browse command
+        if (slashResult.response === "__KNOWLEDGE_BROWSE__") {
+          // Return marker for navigation - handled by terminal screen
+          addMessage({
+            type: "system",
+            content: "__NAVIGATE_KNOWLEDGE__",
+            timestamp: Date.now(),
+          });
+          return;
+        }
+
+        // Handle knowledge search command
+        if (slashResult.response?.startsWith("__KNOWLEDGE_SEARCH__:")) {
+          const query = slashResult.response.slice("__KNOWLEDGE_SEARCH__:".length);
+          addMessage({
+            type: "system",
+            content: `__KNOWLEDGE_SEARCH__:${query}`,
+            timestamp: Date.now(),
+          });
+          return;
+        }
+
         // Add system response
         if (slashResult.response) {
           addMessage({

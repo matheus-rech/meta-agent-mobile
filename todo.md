@@ -507,3 +507,17 @@
 - [x] Add keyword-based fallback search when embeddings unavailable
 - [x] Create README-knowledge-base.md documentation
 - [x] All 296 tests passing
+
+
+## Knowledge Base Features (v2.11)
+- [x] Run embeddings generation script with Gemini API
+- [x] Generate local embeddings.json file (454 KB, 19 chunks)
+- [x] Add /knowledge command to terminal
+- [x] Add /kb alias for /knowledge
+- [x] Implement knowledge base search functionality (useKnowledgeSearch hook)
+- [x] Create knowledge base browser screen (app/knowledge.tsx)
+- [x] Add category navigation (Cochrane, Seminal Papers, R Docs)
+- [x] Display content with proper formatting
+- [x] Add search within knowledge base
+- [x] Add formatKnowledgeResults for terminal display
+- [x] All 296 tests passing

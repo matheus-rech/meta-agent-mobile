@@ -17,6 +17,7 @@ Available Commands:
 /status            Show agent status
 /skills            List available skills
 /version           Show version info
+/knowledge <query> Search the knowledge base
 
 R/Statistics Commands:
 /r <code>          Execute R code
@@ -272,6 +273,32 @@ A funnel plot helps identify:
 
 Provide your meta-analysis data and ask "generate a funnel plot"
 or "check for publication bias".`;
+    },
+  },
+
+  knowledge: {
+    name: "knowledge",
+    description: "Search the knowledge base",
+    usage: "/knowledge <query>",
+    handler: async (args) => {
+      if (args.length === 0) {
+        return `__KNOWLEDGE_BROWSE__`; // Open knowledge browser
+      }
+      const query = args.join(" ");
+      return `__KNOWLEDGE_SEARCH__:${query}`;
+    },
+  },
+
+  kb: {
+    name: "kb",
+    description: "Alias for /knowledge",
+    usage: "/kb <query>",
+    handler: async (args) => {
+      if (args.length === 0) {
+        return `__KNOWLEDGE_BROWSE__`;
+      }
+      const query = args.join(" ");
+      return `__KNOWLEDGE_SEARCH__:${query}`;
     },
   },
 };

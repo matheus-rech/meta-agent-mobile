@@ -77,6 +77,12 @@ interface GeminiEmbeddingResponse {
   }>;
 }
 
+interface GeminiBatchEmbeddingResponse {
+  embeddings: Array<{
+    values: number[];
+  }>;
+}
+
 // ============================================================================
 // Gemini Embeddings API
 // ============================================================================
@@ -86,7 +92,8 @@ async function generateEmbeddings(
   taskType: string = TASK_TYPES.document,
   dimensions: number = DEFAULT_DIMENSIONS
 ): Promise<number[][]> {
-  const url = `${BASE_URL}/models/${EMBEDDING_MODEL}:embedContent?key=${GEMINI_API_KEY}`;
+  // Use batchEmbedContents for multiple texts
+  const url = `${BASE_URL}/models/${EMBEDDING_MODEL}:batchEmbedContents?key=${GEMINI_API_KEY}`;
   
   // Process in batches of 100 (API limit)
   const batchSize = 100;
@@ -101,12 +108,14 @@ async function generateEmbeddings(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: `models/${EMBEDDING_MODEL}`,
-        content: {
-          parts: batch.map(text => ({ text })),
-        },
-        taskType,
-        outputDimensionality: dimensions,
+        requests: batch.map(text => ({
+          model: `models/${EMBEDDING_MODEL}`,
+          content: {
+            parts: [{ text }],
+          },
+          taskType,
+          outputDimensionality: dimensions,
+        })),
       }),
     });
 
@@ -115,14 +124,24 @@ async function generateEmbeddings(
       throw new Error(`Embeddings API Error ${response.status}: ${error}`);
     }
 
-    const result = await response.json() as GeminiEmbeddingResponse;
+    const result = await response.json() as GeminiBatchEmbeddingResponse;
+    
+    // Check if embeddings exist
+    if (!result.embeddings || !Array.isArray(result.embeddings)) {
+      console.error('Unexpected API response:', JSON.stringify(result).slice(0, 500));
+      throw new Error('Invalid embeddings response from API');
+    }
     
     // Normalize embeddings for dimensions < 3072
     const embeddings = result.embeddings.map(e => {
       const values = e.values;
+      if (!values || !Array.isArray(values)) {
+        console.error('Invalid embedding values:', e);
+        throw new Error('Invalid embedding values in response');
+      }
       if (dimensions < 3072) {
         const norm = Math.sqrt(values.reduce((sum, v) => sum + v * v, 0));
-        return values.map(v => v / norm);
+        return norm > 0 ? values.map(v => v / norm) : values;
       }
       return values;
     });
