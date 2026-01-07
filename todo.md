@@ -730,3 +730,34 @@
 - [x] Add advanced learning path (2.5 hours)
 - [x] Update skill dependency diagram
 
+
+## RAG Knowledge Base Upload (v3.5)
+
+### Document Collection
+- [x] Download Cochrane Handbook Chapter 10 (Meta-analyses)
+- [x] Download Cochrane Handbook Chapter 11 (Network Meta-analysis)
+- [x] Download Cochrane Handbook Chapter 14 (GRADE)
+- [x] Download Cochrane Handbook Chapter 26 (IPD)
+- [x] Create seminal articles reference document (Glass 1976, DerSimonian-Laird 1986, Higgins I²)
+- [x] Create metafor R package guide
+- [ ] Compile PRISMA/GRADE guidelines
+
+### Knowledge Base Contents (7 files, 4599 lines)
+- cochrane-chapter-10-meta-analysis.md (968 lines)
+- cochrane-chapter-11-network-meta-analysis.md (1475 lines)
+- cochrane-chapter-14-grade.md (1267 lines)
+- cochrane-chapter-26-ipd.md (459 lines)
+- seminal-articles-references.md (123 lines)
+- metafor-package-guide.md (249 lines)
+- cochrane-handbook-structure.md (58 lines)
+
+### Gemini File Search Setup
+- [ ] Create FileSearchStore in Gemini
+- [ ] Upload knowledge base documents
+- [ ] Configure retrieval parameters
+
+### Testing
+- [ ] Test RAG retrieval with sample queries
+- [ ] Verify citation accuracy
+- [ ] Test multilingual queries
+
