@@ -32,3 +32,15 @@ export {
   getAvailableSkillsXML,
   META_AGENT_BASE_PROMPT,
 } from './skill-provider';
+
+export {
+  initializeRAG,
+  initializeRAGWithStore,
+  getRAGService,
+  generateWithRAG,
+  generateStreamWithRAG,
+  searchKnowledge,
+  getKnowledgeContext,
+  isRAGReady,
+  getRAGStats,
+} from './rag-provider';

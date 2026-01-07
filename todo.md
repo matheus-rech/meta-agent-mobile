@@ -521,3 +521,18 @@
 - [x] Add search within knowledge base
 - [x] Add formatKnowledgeResults for terminal display
 - [x] All 296 tests passing
+
+
+## Knowledge Base Expansion (v2.12)
+- [x] Add more Cochrane Handbook chapters (5, 7, 9, 11, 12, 14)
+- [x] Add GRADE methodology content (certainty of evidence)
+- [x] Add PRISMA 2020 guidelines content
+- [x] Add Bradford Hill causation criteria
+- [x] Add network meta-analysis guidance
+- [x] Regenerate embeddings with expanded content (36 chunks, 1.1MB)
+- [x] Wire knowledge results to AI context injection (rag-provider.ts)
+- [x] Create RAG-enhanced prompt builder (generateWithRAG)
+- [x] Add Learn More button to knowledge search results
+- [x] Integrate Socratic teaching mode with Learn More
+- [x] Test end-to-end knowledge-to-AI flow
+- [x] All 296 tests passing

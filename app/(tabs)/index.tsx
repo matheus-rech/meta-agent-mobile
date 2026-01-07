@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { KeyboardAvoidingView, Platform, View, TouchableOpacity, Text } from "react-native";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import {
   TerminalOutput,
@@ -21,6 +21,7 @@ import { hasCompletedOnboarding } from "@/app/onboarding";
  */
 export default function TerminalScreen() {
   const colors = useColors();
+  const params = useLocalSearchParams<{ teachTopic?: string; teachContext?: string }>();
   const { 
     messages, 
     isThinking, 
@@ -41,6 +42,17 @@ export default function TerminalScreen() {
       }
     });
   }, []);
+
+  // Handle Learn More navigation from knowledge base
+  useEffect(() => {
+    if (params.teachTopic) {
+      // Send a Socratic teaching request
+      const teachPrompt = `Please teach me about "${params.teachTopic}" using the Socratic method. Ask me guiding questions to help me understand the concept deeply.${params.teachContext ? `\n\nContext: ${params.teachContext}` : ''}`;
+      sendMessage(teachPrompt);
+      // Clear the params to prevent re-triggering
+      router.setParams({ teachTopic: undefined, teachContext: undefined });
+    }
+  }, [params.teachTopic, params.teachContext, sendMessage]);
 
   // Modal states
   const [showCSVPicker, setShowCSVPicker] = useState(false);

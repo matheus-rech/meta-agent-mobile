@@ -267,6 +267,26 @@ export default function KnowledgeScreen() {
       color: colors.primary,
       fontWeight: '500',
     },
+    resultActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginTop: 8,
+    },
+    learnMoreButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.primary + '15',
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 16,
+      gap: 4,
+    },
+    learnMoreText: {
+      fontSize: 13,
+      color: colors.primary,
+      fontWeight: '600',
+    },
     loadingContainer: {
       padding: 32,
       alignItems: 'center',
@@ -413,11 +433,29 @@ export default function KnowledgeScreen() {
                   >
                     {result.text}
                   </Text>
-                  <Pressable style={styles.expandButton}>
-                    <Text style={styles.expandButtonText}>
-                      {expandedResult === result.id ? 'Show less' : 'Show more'}
-                    </Text>
-                  </Pressable>
+                  <View style={styles.resultActions}>
+                    <Pressable style={styles.expandButton}>
+                      <Text style={styles.expandButtonText}>
+                        {expandedResult === result.id ? 'Show less' : 'Show more'}
+                      </Text>
+                    </Pressable>
+                    <Pressable 
+                      style={styles.learnMoreButton}
+                      onPress={() => {
+                        // Navigate to terminal with Socratic teaching prompt
+                        router.push({
+                          pathname: '/(tabs)',
+                          params: {
+                            teachTopic: result.title,
+                            teachContext: result.text.substring(0, 500),
+                          },
+                        });
+                      }}
+                    >
+                      <Ionicons name="school-outline" size={14} color={colors.primary} />
+                      <Text style={styles.learnMoreText}>Learn More</Text>
+                    </Pressable>
+                  </View>
                 </Pressable>
               ))}
             </View>

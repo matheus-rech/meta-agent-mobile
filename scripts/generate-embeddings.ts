@@ -460,6 +460,344 @@ Use PEESE if PET rejects H0.
     });
   });
 
+  // Chapter 5: Defining the Review Question
+  const ch5Content = `
+# Defining the Review Question and Developing Criteria
+
+## PICO Framework
+Population: Who are the participants? (age, condition, setting)
+Intervention: What is being tested? (drug, procedure, program)
+Comparison: What is the alternative? (placebo, standard care, no treatment)
+Outcome: What are we measuring? (primary, secondary, timing)
+
+## Eligibility Criteria
+Must be pre-specified and explicit. Include:
+- Study design (RCTs only, or include observational?)
+- Participants (inclusion/exclusion criteria)
+- Interventions (dose, duration, delivery)
+- Comparators (acceptable controls)
+- Outcomes (which ones, how measured, timing)
+- Setting (hospital, community, country)
+- Language/date restrictions (justify if any)
+
+## Hierarchy of Evidence
+1. Systematic reviews of RCTs
+2. Individual RCTs
+3. Cohort studies
+4. Case-control studies
+5. Case series/reports
+6. Expert opinion
+
+## Protocol Development
+Register on PROSPERO before starting searches.
+Include: rationale, objectives, methods, analysis plan.
+Amendments must be documented and justified.
+`;
+
+  const ch5Chunks = chunkText(ch5Content);
+  ch5Chunks.forEach((text, i) => {
+    chunks.push({
+      text,
+      metadata: {
+        source: 'Cochrane Handbook',
+        category: 'cochrane',
+        title: 'Chapter 5: Defining the Review Question',
+        section: `Part ${i + 1}`,
+        keywords: extractKeywords(text),
+      },
+    });
+  });
+
+  // Chapter 7: Searching for Studies
+  const ch7Content = `
+# Searching for and Selecting Studies
+
+## Comprehensive Searching
+Goal: Find all relevant studies to minimize selection bias.
+Sources: Bibliographic databases, trial registries, grey literature, reference lists, experts.
+
+## Database Selection
+MEDLINE: Biomedical literature, 1946-present
+Embase: European focus, more drug/pharma coverage
+CENTRAL: Cochrane's RCT database, highly specific
+PsycINFO: Psychology and behavioral sciences
+CINAHL: Nursing and allied health
+
+## Search Strategy Development
+1. Break PICO into concepts
+2. Identify synonyms and related terms
+3. Use MeSH/Emtree subject headings
+4. Combine with Boolean operators (AND, OR, NOT)
+5. Apply filters cautiously (may miss relevant studies)
+
+## Search Filters
+RCT filters: Validated, but may miss some studies
+Systematic review filters: Use Cochrane's validated filters
+Avoid: Date limits unless justified, language restrictions
+
+## Grey Literature
+Conference abstracts, dissertations, regulatory documents.
+Trial registries: ClinicalTrials.gov, WHO ICTRP, ISRCTN
+Important for reducing publication bias.
+
+## Study Selection
+Two reviewers independently screen titles/abstracts.
+Full-text review of potentially eligible studies.
+Resolve disagreements by discussion or third reviewer.
+Document reasons for exclusion at full-text stage.
+
+## PRISMA Flow Diagram
+Document: Records identified, duplicates removed, screened, excluded (with reasons), included.
+`;
+
+  const ch7Chunks = chunkText(ch7Content);
+  ch7Chunks.forEach((text, i) => {
+    chunks.push({
+      text,
+      metadata: {
+        source: 'Cochrane Handbook',
+        category: 'cochrane',
+        title: 'Chapter 7: Searching for Studies',
+        section: `Part ${i + 1}`,
+        keywords: extractKeywords(text),
+      },
+    });
+  });
+
+  // Chapter 9: Summarizing Study Characteristics
+  const ch9Content = `
+# Summarizing Study Characteristics and Risk of Bias
+
+## Data Extraction
+Use standardized forms (paper or electronic).
+Pilot test on 2-3 studies before full extraction.
+Two reviewers extract independently, compare, resolve.
+
+## What to Extract
+Study identifiers: Author, year, country, funding
+Methods: Design, randomization, blinding, duration
+Participants: N, age, sex, condition severity, setting
+Interventions: Details, dose, duration, co-interventions
+Outcomes: Definition, measurement, timing, completeness
+Results: Effect estimates, variability, sample sizes
+
+## Dealing with Missing Data
+Contact authors (allow 2-4 weeks for response).
+Use available data methods when possible.
+Document what was missing and how handled.
+
+## Risk of Bias Tables
+Present assessment for each study and domain.
+Provide supporting quotes or evidence.
+Use traffic light visualization.
+
+## Characteristics of Included Studies Table
+Standardized format for each study.
+Include: Methods, Participants, Interventions, Outcomes, Notes.
+
+## Characteristics of Excluded Studies
+List studies excluded at full-text with reasons.
+Group by reason if many exclusions.
+`;
+
+  const ch9Chunks = chunkText(ch9Content);
+  ch9Chunks.forEach((text, i) => {
+    chunks.push({
+      text,
+      metadata: {
+        source: 'Cochrane Handbook',
+        category: 'cochrane',
+        title: 'Chapter 9: Summarizing Study Characteristics',
+        section: `Part ${i + 1}`,
+        keywords: extractKeywords(text),
+      },
+    });
+  });
+
+  // Chapter 11: Network Meta-Analysis
+  const ch11Content = `
+# Network Meta-Analysis
+
+## What is Network Meta-Analysis?
+Extension of pairwise meta-analysis to compare multiple interventions simultaneously.
+Combines direct evidence (head-to-head trials) with indirect evidence (via common comparator).
+
+## When to Use NMA
+- Multiple treatment options exist
+- No single trial compares all treatments
+- Need to rank treatments
+- Want to estimate effects for comparisons lacking direct evidence
+
+## Key Assumptions
+Transitivity: Indirect comparisons are valid if studies are similar in effect modifiers.
+Consistency: Direct and indirect evidence agree.
+
+## Network Geometry
+Nodes: Treatments being compared
+Edges: Direct comparisons from trials
+Well-connected networks are more reliable.
+
+## Statistical Models
+Frequentist: netmeta package in R
+Bayesian: gemtc, multinma packages
+Both give similar results with sufficient data.
+
+## Assessing Consistency
+Node-splitting: Compare direct vs indirect for each comparison.
+Design-by-treatment interaction: Global test.
+Inconsistency suggests transitivity violation.
+
+## Ranking Treatments
+SUCRA (Surface Under Cumulative Ranking): 0-100%, higher = better
+P-scores: Frequentist equivalent of SUCRA
+Mean ranks: Average position across simulations
+Caution: Rankings can be misleading with overlapping CIs.
+
+## Presenting Results
+Network plot: Shows geometry and evidence
+Forest plot: Effect estimates vs reference
+League table: All pairwise comparisons
+Rankogram: Probability of each rank
+`;
+
+  const ch11Chunks = chunkText(ch11Content);
+  ch11Chunks.forEach((text, i) => {
+    chunks.push({
+      text,
+      metadata: {
+        source: 'Cochrane Handbook',
+        category: 'cochrane',
+        title: 'Chapter 11: Network Meta-Analysis',
+        section: `Part ${i + 1}`,
+        keywords: extractKeywords(text),
+      },
+    });
+  });
+
+  // Chapter 12: GRADE
+  const ch12Content = `
+# GRADE: Certainty of Evidence
+
+## What is GRADE?
+Grading of Recommendations Assessment, Development and Evaluation.
+Standardized approach to rating certainty of evidence.
+
+## Starting Point
+RCTs start at HIGH certainty.
+Observational studies start at LOW certainty.
+
+## Factors That Lower Certainty
+
+### Risk of Bias
+Serious limitations in study design or execution.
+Down one level for serious, two for very serious.
+
+### Inconsistency
+Unexplained heterogeneity in results.
+Consider: I², prediction intervals, direction of effects.
+
+### Indirectness
+Evidence doesn't directly apply to PICO.
+Types: Population, intervention, comparator, outcome differences.
+
+### Imprecision
+Wide confidence intervals, few events.
+Consider: CI crosses clinical decision threshold, OIS not met.
+Optimal Information Size (OIS): Sample size for adequate power.
+
+### Publication Bias
+Suspected missing studies.
+Evidence: Funnel plot asymmetry, small-study effects.
+
+## Factors That Raise Certainty (Observational Only)
+- Large effect (RR > 2 or < 0.5)
+- Dose-response gradient
+- Plausible confounding would reduce effect
+
+## Certainty Levels
+HIGH: Very confident effect is close to true effect.
+MODERATE: Moderately confident; true effect likely close.
+LOW: Limited confidence; true effect may be different.
+VERY LOW: Very little confidence; true effect likely different.
+
+## Summary of Findings Table
+Present: Outcomes, effect estimates, certainty, plain language summary.
+Use GRADEpro GDT software.
+`;
+
+  const ch12Chunks = chunkText(ch12Content);
+  ch12Chunks.forEach((text, i) => {
+    chunks.push({
+      text,
+      metadata: {
+        source: 'Cochrane Handbook',
+        category: 'cochrane',
+        title: 'Chapter 12: GRADE Certainty of Evidence',
+        section: `Part ${i + 1}`,
+        keywords: extractKeywords(text),
+      },
+    });
+  });
+
+  // Chapter 14: Interpreting Results
+  const ch14Content = `
+# Interpreting Results and Drawing Conclusions
+
+## Statistical vs Clinical Significance
+Statistical: p < 0.05, CI excludes null.
+Clinical: Effect size is meaningful for patients.
+A statistically significant result may not be clinically important.
+
+## Minimal Clinically Important Difference (MCID)
+Smallest change patients perceive as beneficial.
+Use to interpret effect sizes.
+CI crossing MCID = uncertain clinical importance.
+
+## Interpreting Heterogeneity
+I² tells you heterogeneity exists, not why.
+Explore with subgroup analysis, meta-regression.
+Consider clinical and methodological diversity.
+
+## Interpreting Subgroup Analyses
+Pre-specified subgroups are more credible.
+Test for interaction, not just within-subgroup significance.
+Beware of multiple testing and ecological fallacy.
+
+## Interpreting Publication Bias
+Funnel asymmetry ≠ publication bias.
+Consider alternative explanations.
+Adjusted estimates (trim-fill) are sensitivity analyses.
+
+## Drawing Conclusions
+Implications for practice: What should clinicians do?
+Implications for research: What studies are needed?
+Be appropriately cautious with limited evidence.
+
+## Plain Language Summary
+Write for patients and public.
+Avoid jargon, explain uncertainty.
+State what the evidence shows, not what to do.
+
+## Updating Reviews
+Plan for updates at protocol stage.
+Consider: New studies, new methods, changed practice.
+Document search date and update frequency.
+`;
+
+  const ch14Chunks = chunkText(ch14Content);
+  ch14Chunks.forEach((text, i) => {
+    chunks.push({
+      text,
+      metadata: {
+        source: 'Cochrane Handbook',
+        category: 'cochrane',
+        title: 'Chapter 14: Interpreting Results',
+        section: `Part ${i + 1}`,
+        keywords: extractKeywords(text),
+      },
+    });
+  });
+
   return chunks;
 }
 
@@ -621,6 +959,281 @@ Asymmetry could arise from:
         source: 'Egger et al 1997',
         category: 'seminal',
         title: 'Publication Bias Detection Test',
+        section: `Part ${i + 1}`,
+        keywords: extractKeywords(text),
+      },
+    });
+  });
+
+  // PRISMA 2020
+  const prismaContent = `
+# PRISMA 2020: Reporting Guidelines for Systematic Reviews
+
+## Citation
+Page MJ, et al. The PRISMA 2020 statement: an updated guideline for reporting systematic reviews. BMJ. 2021;372:n71.
+
+## What is PRISMA?
+Preferred Reporting Items for Systematic Reviews and Meta-Analyses.
+Checklist of 27 items for transparent reporting.
+
+## Key Sections
+
+### Title and Abstract
+- Identify as systematic review in title
+- Structured abstract with background, methods, results, conclusions
+
+### Introduction
+- Rationale: Why is review needed?
+- Objectives: PICO question
+
+### Methods
+- Protocol registration (PROSPERO)
+- Eligibility criteria
+- Information sources and search strategy
+- Selection process
+- Data extraction
+- Risk of bias assessment
+- Effect measures and synthesis methods
+
+### Results
+- Study selection (flow diagram)
+- Study characteristics
+- Risk of bias in studies
+- Results of syntheses
+- Reporting biases
+- Certainty of evidence
+
+### Discussion
+- Summary of evidence
+- Limitations
+- Implications
+
+## PRISMA Flow Diagram
+Boxes show: Identification, Screening, Eligibility, Included
+Must report numbers at each stage with exclusion reasons.
+
+## PRISMA Extensions
+- PRISMA-P: Protocols
+- PRISMA-NMA: Network meta-analysis
+- PRISMA-IPD: Individual participant data
+- PRISMA-S: Searches
+- PRISMA-ScR: Scoping reviews
+`;
+
+  const prismaChunks = chunkText(prismaContent);
+  prismaChunks.forEach((text, i) => {
+    chunks.push({
+      text,
+      metadata: {
+        source: 'PRISMA 2020',
+        category: 'seminal',
+        title: 'PRISMA Reporting Guidelines',
+        section: `Part ${i + 1}`,
+        keywords: extractKeywords(text),
+      },
+    });
+  });
+
+  // GRADE Working Group
+  const gradeContent = `
+# GRADE: Certainty of Evidence Framework
+
+## Citation
+Guyatt GH, et al. GRADE: an emerging consensus on rating quality of evidence and strength of recommendations. BMJ. 2008;336:924-926.
+
+## What is GRADE?
+Grading of Recommendations Assessment, Development and Evaluation.
+Systematic approach to rating certainty of evidence.
+
+## Certainty Levels
+
+### High Certainty
+Very confident that true effect lies close to estimate.
+Further research unlikely to change confidence.
+
+### Moderate Certainty
+Moderately confident in effect estimate.
+Further research may change estimate.
+
+### Low Certainty
+Limited confidence in effect estimate.
+Further research likely to change estimate.
+
+### Very Low Certainty
+Very little confidence in effect estimate.
+True effect likely substantially different.
+
+## Domains for Rating Down
+
+### Risk of Bias
+Limitations in study design affecting internal validity.
+Consider: randomization, blinding, attrition, reporting.
+
+### Inconsistency
+Unexplained variability in results across studies.
+Consider: I², prediction intervals, direction of effects.
+
+### Indirectness
+Evidence doesn't directly address the question.
+Types: population, intervention, comparator, outcome.
+
+### Imprecision
+Wide confidence intervals around effect estimate.
+Consider: sample size, number of events, CI width.
+
+### Publication Bias
+Systematic non-publication of studies.
+Evidence: funnel plot asymmetry, registry comparisons.
+
+## Domains for Rating Up (Observational)
+- Large magnitude of effect (RR > 2 or < 0.5)
+- Dose-response gradient
+- Plausible confounding would reduce effect
+
+## Summary of Findings Tables
+Present key outcomes with:
+- Absolute and relative effects
+- Certainty rating
+- Plain language interpretation
+`;
+
+  const gradeChunks = chunkText(gradeContent);
+  gradeChunks.forEach((text, i) => {
+    chunks.push({
+      text,
+      metadata: {
+        source: 'GRADE Working Group',
+        category: 'seminal',
+        title: 'GRADE Certainty Framework',
+        section: `Part ${i + 1}`,
+        keywords: extractKeywords(text),
+      },
+    });
+  });
+
+  // Bradford Hill Criteria
+  const hillContent = `
+# Bradford Hill Criteria for Causation
+
+## Citation
+Hill AB. The Environment and Disease: Association or Causation? Proc R Soc Med. 1965;58:295-300.
+
+## Context
+Developed to assess whether observed associations are causal.
+Originally for occupational/environmental epidemiology.
+Widely applied in evidence synthesis.
+
+## The Nine Criteria
+
+### 1. Strength of Association
+Larger effects more likely causal.
+Weak associations may still be causal if confounding unlikely.
+
+### 2. Consistency
+Repeated observation across different populations, settings, times.
+Inconsistency doesn't rule out causation (effect modification).
+
+### 3. Specificity
+Specific exposure leads to specific outcome.
+Less applicable in modern epidemiology (multiple causes common).
+
+### 4. Temporality
+Cause must precede effect.
+The only criterion that is essential.
+
+### 5. Biological Gradient
+Dose-response relationship.
+Absence doesn't rule out causation (threshold effects).
+
+### 6. Plausibility
+Biologically plausible mechanism.
+Limited by current knowledge.
+
+### 7. Coherence
+Association coherent with known facts.
+Shouldn't contradict established knowledge.
+
+### 8. Experiment
+Experimental evidence supports causation.
+RCTs provide strongest evidence.
+
+### 9. Analogy
+Similar exposures cause similar effects.
+Weakest criterion.
+
+## Modern Interpretation
+Not a checklist - use judgment.
+No single criterion sufficient.
+Temporality is necessary but not sufficient.
+Strength of evidence varies by context.
+`;
+
+  const hillChunks = chunkText(hillContent);
+  hillChunks.forEach((text, i) => {
+    chunks.push({
+      text,
+      metadata: {
+        source: 'Bradford Hill 1965',
+        category: 'seminal',
+        title: 'Criteria for Causation',
+        section: `Part ${i + 1}`,
+        keywords: extractKeywords(text),
+      },
+    });
+  });
+
+  // Cochrane 1972
+  const cochraneContent = `
+# Archie Cochrane: Effectiveness and Efficiency
+
+## Citation
+Cochrane AL. Effectiveness and Efficiency: Random Reflections on Health Services. London: Nuffield Provincial Hospitals Trust; 1972.
+
+## Historical Significance
+Foundational text for evidence-based medicine.
+Inspired creation of Cochrane Collaboration.
+
+## Key Concepts
+
+### Effectiveness vs Efficacy
+Efficacy: Does it work under ideal conditions?
+Effectiveness: Does it work in real practice?
+
+### The RCT as Gold Standard
+"The RCT is a very beautiful technique, of wide applicability, but as with everything else there are snags."
+Advocated for randomized trials to evaluate treatments.
+
+### Efficiency
+Maximizing health outcomes with limited resources.
+Need to know what works before spending.
+
+### Criticism of Medical Practice
+Many treatments adopted without evidence.
+Need for systematic evaluation.
+
+## Famous Quote
+"It is surely a great criticism of our profession that we have not organised a critical summary, by specialty or subspecialty, adapted periodically, of all relevant randomised controlled trials."
+
+## Legacy
+- Cochrane Collaboration (1993)
+- Cochrane Library
+- Systematic review methodology
+- Evidence-based medicine movement
+
+## Relevance Today
+Principles remain fundamental.
+Systematic reviews address his call.
+Meta-analysis provides the "critical summary."
+`;
+
+  const cochraneChunks = chunkText(cochraneContent);
+  cochraneChunks.forEach((text, i) => {
+    chunks.push({
+      text,
+      metadata: {
+        source: 'Cochrane 1972',
+        category: 'seminal',
+        title: 'Effectiveness and Efficiency',
         section: `Part ${i + 1}`,
         keywords: extractKeywords(text),
       },
