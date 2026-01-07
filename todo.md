@@ -633,3 +633,36 @@
 - [x] Write tests for practice datasets (20 tests)
 - [x] Write tests for certificate data structure (4 tests)
 - [x] All 360 tests passing
+
+## AgentSkills Conversion & Website (v3.3)
+
+### AgentSkills Format Conversion
+- [x] Analyze AgentSkills repository structure
+- [x] Convert 8 core skills to AgentSkills Markdown format
+- [x] Create skill dependencies and prerequisites
+- [x] Add assessment questions and teaching frameworks
+- [x] Package as standalone skills repository
+
+### Skills Created
+- [x] meta-analysis-fundamentals (beginner, 15 min)
+- [x] forest-plot-creation (intermediate, 10 min)
+- [x] heterogeneity-analysis (intermediate, 12 min)
+- [x] publication-bias-detection (intermediate, 12 min)
+- [x] data-extraction (intermediate, 15 min)
+- [x] grade-assessment (advanced, 20 min)
+- [x] r-code-generation (intermediate, 15 min)
+- [x] socratic-teaching (beginner, varies)
+
+### Landing Page Website
+- [x] Design responsive landing page for low-profile launch
+- [x] Showcase 8 available skills with difficulty badges
+- [x] Add 3 learning paths (Quick Start, Comprehensive, Teaching)
+- [x] Include mission statement (democratizing meta-analysis education)
+- [x] Add "How It Works" section with 3 steps
+- [x] Create "Help Us Grow" contribution section
+
+### Distribution
+- [x] Prepare repository structure with README
+- [x] Write installation and usage instructions
+- [x] Create CONTRIBUTING.md guidelines
+- [x] Add Apache 2.0 LICENSE
