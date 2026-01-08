@@ -826,3 +826,43 @@
 - [x] Show contextual info (date/time, Mistral 7B model, next lesson)
 - [x] Add session ID display
 - [x] All 391 tests passing
+
+## Gemini RAG Upload (v3.8)
+
+### Document Upload
+- [ ] Create upload script for Gemini File Search API
+- [ ] Upload cochrane-chapter-10-meta-analysis.md
+- [ ] Upload cochrane-chapter-11-network-meta-analysis.md
+- [ ] Upload cochrane-chapter-14-grade.md
+- [ ] Upload cochrane-chapter-26-ipd.md
+- [ ] Upload seminal-articles-references.md
+- [ ] Upload metafor-package-guide.md
+- [ ] Upload cochrane-handbook-structure.md
+
+### RAG Testing
+- [ ] Test retrieval with meta-analysis query
+- [ ] Test retrieval with forest plot query
+- [ ] Test retrieval with heterogeneity query
+
+## Mini-Agent Installation (v3.8)
+
+### Repository Setup
+- [x] Clone Mini-Agent repository from MiniMax
+- [x] Analyze repository structure and requirements
+- [x] Install Mini-Agent via uv tool (56 packages)
+
+### Configuration
+- [x] Create config.yaml with MiniMax M2.1 model
+- [x] Create Glass system prompt (system_prompt.md)
+- [x] Configure AgentSkills directory (/home/ubuntu/meta-agent-mobile/agentskills)
+- [x] Configure knowledge base directory (/home/ubuntu/meta-agent-mobile/knowledge-base)
+
+### Integration
+- [x] Update mini-agent.service.ts for Anthropic-compatible API
+- [x] Integrate with Gemini File Search for RAG
+- [x] All 391 tests passing
+
+### Notes
+- MiniMax API key needs verification (returned 'invalid api key')
+- Gemini API key working (7 documents uploaded)
+- Mini-Agent CLI installed at /home/ubuntu/.local/bin/mini-agent

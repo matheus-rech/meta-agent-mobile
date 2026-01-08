@@ -4,6 +4,8 @@
  * Connects Glass 🦊 to MiniMax Mini-Agent for intelligent responses.
  * Mini-Agent supports AgentSkills and has built-in multilingual capabilities.
  * 
+ * Uses the installed Mini-Agent CLI from https://github.com/MiniMax-AI/Mini-Agent
+ * 
  * @see https://github.com/MiniMax-AI/Mini-Agent
  */
 
@@ -94,6 +96,10 @@ const GLASS_SKILLS: SkillReference[] = [
   { id: 'diagnostic-meta-analysis', name: 'Diagnostic Meta-Analysis', description: 'Sensitivity/specificity' },
 ];
 
+// Mini-Agent CLI path
+const MINI_AGENT_PATH = '/home/ubuntu/.local/bin/mini-agent';
+const MINI_AGENT_CONFIG_PATH = '/home/ubuntu/Mini-Agent/mini_agent/config/config.yaml';
+
 class MiniAgentService {
   private config: MiniAgentConfig | null = null;
   private conversationHistory: ChatMessage[] = [];
@@ -105,11 +111,13 @@ class MiniAgentService {
   async initialize(config: MiniAgentConfig): Promise<void> {
     this.config = {
       ...config,
-      baseUrl: config.baseUrl || 'https://api.minimax.chat/v1',
-      model: config.model || 'abab6.5s-chat',
+      baseUrl: config.baseUrl || 'https://api.minimax.io/v1',
+      model: config.model || 'MiniMax-M2.1',
     };
     this.initialized = true;
-    console.log('[MiniAgent] Service initialized');
+    console.log('[MiniAgent] Service initialized with MiniMax M2.1');
+    console.log('[MiniAgent] Skills directory: /home/ubuntu/meta-agent-mobile/agentskills');
+    console.log('[MiniAgent] Knowledge base: /home/ubuntu/meta-agent-mobile/knowledge-base');
   }
 
   /**
@@ -121,6 +129,7 @@ class MiniAgentService {
 
   /**
    * Send a message to Glass and get a response
+   * Uses the Anthropic-compatible API from MiniMax
    */
   async chat(
     userMessage: string,
@@ -156,22 +165,22 @@ class MiniAgentService {
         sources = ragResult.sources;
       }
 
-      // Build the messages array
-      const messages: ChatMessage[] = [
-        { role: 'system', content: GLASS_SYSTEM_PROMPT },
-        ...this.conversationHistory.slice(-10), // Keep last 10 messages for context
+      // Build the messages array for Anthropic-compatible API
+      const messages = [
+        ...this.conversationHistory.slice(-10).map(m => ({
+          role: m.role as 'user' | 'assistant',
+          content: m.content,
+        })),
       ];
 
-      // Add RAG context if available
+      // Add RAG context as a system message if available
+      let systemPrompt = GLASS_SYSTEM_PROMPT;
       if (ragContext) {
-        messages.push({
-          role: 'system',
-          content: `Knowledge Base Context:\n${ragContext}`,
-        });
+        systemPrompt += `\n\n## Knowledge Base Context\n${ragContext}`;
       }
 
-      // Call Mini-Agent API
-      const response = await fetch(`${this.config.baseUrl}/text/chatcompletion_v2`, {
+      // Call MiniMax API (Anthropic-compatible)
+      const response = await fetch(`${this.config.baseUrl}/chat/completions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -179,21 +188,20 @@ class MiniAgentService {
         },
         body: JSON.stringify({
           model: this.config.model,
-          messages: messages.map(m => ({
-            sender_type: m.role === 'user' ? 'USER' : m.role === 'assistant' ? 'BOT' : 'SYSTEM',
-            sender_name: m.role === 'user' ? 'User' : 'Glass',
-            text: m.content,
-          })),
-          tokens_to_generate: 1024,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            ...messages,
+          ],
+          max_tokens: 2048,
           temperature: 0.7,
-          top_p: 0.9,
+          stream: false,
         }),
       });
 
       const result = await response.json();
 
-      if (result.reply) {
-        const assistantMessage = result.reply;
+      if (result.choices && result.choices[0]?.message?.content) {
+        const assistantMessage = result.choices[0].message.content;
         
         // Add to history
         this.conversationHistory.push({
@@ -210,6 +218,15 @@ class MiniAgentService {
           sources,
           confidence: 0.85,
           language: this.detectLanguage(assistantMessage),
+        };
+      }
+
+      // Handle error response
+      if (result.error) {
+        console.error('[MiniAgent] API Error:', result.error);
+        return {
+          content: `Error: ${result.error.message || 'Unknown error'}`,
+          confidence: 0,
         };
       }
 
@@ -301,6 +318,20 @@ class MiniAgentService {
    */
   setHistory(history: ChatMessage[]): void {
     this.conversationHistory = history;
+  }
+
+  /**
+   * Get Mini-Agent CLI path for direct execution
+   */
+  getCliPath(): string {
+    return MINI_AGENT_PATH;
+  }
+
+  /**
+   * Get Mini-Agent config path
+   */
+  getConfigPath(): string {
+    return MINI_AGENT_CONFIG_PATH;
   }
 }
 

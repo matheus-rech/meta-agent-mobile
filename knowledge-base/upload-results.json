@@ -1,0 +1,55 @@
+{
+  "uploaded_at": "2026-01-07 20:21:58",
+  "total_files": 7,
+  "files": [
+    {
+      "filename": "cochrane-chapter-10-meta-analysis.md",
+      "display_name": "Cochrane Handbook Chapter 10: Meta-analyses",
+      "uri": "https://generativelanguage.googleapis.com/v1beta/files/9ttri7hnij5h",
+      "name": "files/9ttri7hnij5h",
+      "size": 151408
+    },
+    {
+      "filename": "cochrane-chapter-11-network-meta-analysis.md",
+      "display_name": "Cochrane Handbook Chapter 11: Network Meta-analysis",
+      "uri": "https://generativelanguage.googleapis.com/v1beta/files/uo59k2ptk9cw",
+      "name": "files/uo59k2ptk9cw",
+      "size": 99243
+    },
+    {
+      "filename": "cochrane-chapter-14-grade.md",
+      "display_name": "Cochrane Handbook Chapter 14: GRADE Assessment",
+      "uri": "https://generativelanguage.googleapis.com/v1beta/files/olxuldp809sq",
+      "name": "files/olxuldp809sq",
+      "size": 91906
+    },
+    {
+      "filename": "cochrane-chapter-26-ipd.md",
+      "display_name": "Cochrane Handbook Chapter 26: Individual Participant Data",
+      "uri": "https://generativelanguage.googleapis.com/v1beta/files/cauuexnhq3qq",
+      "name": "files/cauuexnhq3qq",
+      "size": 57633
+    },
+    {
+      "filename": "seminal-articles-references.md",
+      "display_name": "Seminal Articles in Meta-Analysis",
+      "uri": "https://generativelanguage.googleapis.com/v1beta/files/o0zye9oun5dr",
+      "name": "files/o0zye9oun5dr",
+      "size": 4782
+    },
+    {
+      "filename": "metafor-package-guide.md",
+      "display_name": "metafor R Package Guide",
+      "uri": "https://generativelanguage.googleapis.com/v1beta/files/p34ka5gw83re",
+      "name": "files/p34ka5gw83re",
+      "size": 5787
+    },
+    {
+      "filename": "cochrane-handbook-structure.md",
+      "display_name": "Cochrane Handbook Structure",
+      "uri": "https://generativelanguage.googleapis.com/v1beta/files/3yz88aq6x4mz",
+      "name": "files/3yz88aq6x4mz",
+      "size": 2065
+    }
+  ]
+}
