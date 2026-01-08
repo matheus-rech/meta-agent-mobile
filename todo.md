@@ -1026,3 +1026,14 @@
 - [x] Skip and resume tutorial functionality
 - [x] Quiz system with feedback and auto-advance
 - [x] 552 tests passing
+
+
+## Advanced Tutorials & Progress System (v3.6) - COMPLETED
+- [x] Heterogeneity analysis tutorial (I²/Q statistics, tau², prediction intervals) - 12 steps
+- [x] Subgroup analysis tutorial (moderator variables, BCG latitude example) - 12 steps
+- [x] Tutorial bookmarks system (save progress at any step)
+- [x] My Progress dashboard screen (completed tutorials, badges, statistics, streaks)
+- [x] Voice narration with MiniMax TTS for accessibility
+- [x] Resume from bookmark functionality
+- [x] Quiz score tracking and statistics
+- [x] 572 tests passing

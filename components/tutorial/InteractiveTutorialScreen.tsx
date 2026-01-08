@@ -38,11 +38,13 @@ export interface TutorialStepConfig {
   type: 'info' | 'action' | 'quiz' | 'celebration';
   highlightElement?: string;
   quizOptions?: {
+    id: string;
     text: string;
     isCorrect: boolean;
   }[];
   actionDescription?: string;
   autoAdvance?: boolean;
+  codeExample?: string;
 }
 
 interface InteractiveTutorialScreenProps {
