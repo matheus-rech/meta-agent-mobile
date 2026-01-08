@@ -1184,3 +1184,50 @@
 - [x] 599 tests passing
 - [x] 0 TypeScript errors
 - [x] Ready for deploy
+
+
+## Offline Mode & PDF Export (v3.9)
+
+### WebR Offline Mode
+- [ ] Set up WebR integration for browser-based R execution
+- [ ] Create WebR service wrapper for meta-analysis functions
+- [ ] Implement offline forest plot generation
+- [ ] Implement offline heterogeneity analysis (I², Q, tau²)
+- [ ] Implement offline meta-regression
+- [ ] Cache metafor package for offline use
+- [ ] Add offline status indicator in UI
+- [ ] Handle WebR initialization and loading states
+
+### PDF Report Export
+- [ ] Create PDF report generator service
+- [ ] Design report template with forest plot visualization
+- [ ] Include heterogeneity statistics in report
+- [ ] Include study table with effect sizes
+- [ ] Add meta-analysis summary section
+- [ ] Support multiple languages (PT, EN, ES)
+- [ ] Add export button to spreadsheet editor
+- [ ] Generate downloadable PDF file
+- [ ] Add report customization options (title, author, date)
+
+
+## Offline Mode & PDF Export (v3.9) - COMPLETED
+
+### WebR Offline Mode - COMPLETED
+- [x] Set up WebR integration for browser-based R execution
+- [x] Create WebR service wrapper for meta-analysis functions
+- [x] Implement offline forest plot generation
+- [x] Implement offline heterogeneity analysis (I², Q, tau²)
+- [x] Implement offline meta-regression
+- [x] Cache metafor package for offline use
+- [x] Add offline status indicator in UI (OfflineStatusIndicator)
+
+### PDF Report Export - COMPLETED
+- [x] Create PDF report generator service
+- [x] Design report template with forest plot visualization
+- [x] Include heterogeneity statistics in report
+- [x] Include study table with effect sizes
+- [x] Add meta-analysis summary section
+- [x] Support multiple languages (PT, EN, ES)
+- [x] ReportExportModal component with customization options
+- [x] Generate downloadable PDF/HTML file
+- [x] 642 tests passing
