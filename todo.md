@@ -798,3 +798,31 @@
 ### Testing
 - [x] Glass integration tests (25 tests)
 - [x] All 385 tests passing
+
+## API Configuration (v3.7)
+
+### API Keys Setup
+- [x] Configure GEMINI_API_KEY
+- [x] Configure MINIMAX_API_KEY
+- [x] Validate Gemini API key (working)
+- [ ] Validate MiniMax API key (invalid - needs user verification)
+
+### Gemini RAG Integration
+- [ ] Upload knowledge base documents to Gemini
+- [ ] Test RAG queries
+- [ ] Integrate with Glass chat
+
+### Home Screen Integration
+- [ ] Add GlassStatusBar to terminal screen
+- [ ] Show Glass mascot with animations
+- [ ] Display contextual information
+
+## Glass Home Screen Integration (v3.7)
+
+### GlassStatusBar Integration
+- [x] Replace current status bar with GlassStatusBarTUI
+- [x] Maintain TUI aesthetic and ASCII art style (box borders, monospace font)
+- [x] Add animated Glass fox mascot with blink/think states
+- [x] Show contextual info (date/time, Mistral 7B model, next lesson)
+- [x] Add session ID display
+- [x] All 391 tests passing

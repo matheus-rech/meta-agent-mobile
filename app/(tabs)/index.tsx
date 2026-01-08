@@ -5,11 +5,11 @@ import { ScreenContainer } from "@/components/screen-container";
 import {
   TerminalOutput,
   TerminalInput,
-  TerminalStatusBar,
   CSVPicker,
   SnippetsLibrary,
   ExportSheet,
 } from "@/components/terminal";
+import { GlassStatusBarTUI } from "@/components/glass";
 import type { CSVData } from "@/components/terminal";
 import { PracticeDatasets } from "@/components/tutorial";
 import { useAgent } from "@/hooks/use-agent";
@@ -36,7 +36,7 @@ export default function TerminalScreen() {
     resetHistoryNavigation,
   } = useAgent();
   const { completeAction, completeSocratic, isInTutorial } = useTutorialAction();
-  const { statistics, modules } = useTutorial();
+  const { statistics, modules, isModuleCompleted } = useTutorial();
   const tutorialProgress = Math.round((statistics.modulesCompleted / statistics.totalModules) * 100);
   const hasStartedTutorial = statistics.modulesCompleted > 0 || tutorialProgress > 0;
 
@@ -118,11 +118,13 @@ export default function TerminalScreen() {
         style={{ flex: 1 }}
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
       >
-        {/* Status Bar */}
-        <TerminalStatusBar
+        {/* Glass Status Bar with TUI style */}
+        <GlassStatusBarTUI
           isConnected={isConnected}
           sessionId={sessionId}
           isThinking={isThinking}
+          modelName="Mistral 7B"
+          nextLesson={modules.find(m => !isModuleCompleted(m.id))?.title}
         />
 
         {/* Terminal Output */}
