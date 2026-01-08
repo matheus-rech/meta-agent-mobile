@@ -1285,3 +1285,11 @@
 - [x] Auto-fill spreadsheet rows from search results
 - [x] PubMedSearch component with modal UI
 - [x] APA citation formatting
+
+### PlotDigitizer Integration (v2.4)
+- [x] Add PlotDigitizer toolbar button to SpreadsheetEditor
+- [x] Create modal wrapper for PlotDigitizer in spreadsheet context
+- [x] Implement data import flow from digitizer to spreadsheet rows
+- [x] Map extracted points to appropriate columns
+- [x] Add confirmation dialog before importing data
+- [x] Test integration end-to-end

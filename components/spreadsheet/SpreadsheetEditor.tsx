@@ -27,6 +27,7 @@ import {
   type ValidationResult,
   type ValidationError,
 } from "@/lib/spreadsheet";
+import { PlotDigitizer, DigitizedDataImporter } from "@/components/digitizer";
 
 // Default columns for meta-analysis data
 export const META_ANALYSIS_COLUMNS = [
@@ -110,6 +111,9 @@ export function SpreadsheetEditor({
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
   const [cellErrors, setCellErrors] = useState<Map<string, ValidationError>>(new Map());
   const [showGlassPrompt, setShowGlassPrompt] = useState<string | null>(null);
+  const [showDigitizer, setShowDigitizer] = useState(false);
+  const [showDataImporter, setShowDataImporter] = useState(false);
+  const [digitizedData, setDigitizedData] = useState<{ x: number; y: number }[]>([]);
 
   // Validate data whenever rows change
   useEffect(() => {
@@ -216,6 +220,63 @@ export function SpreadsheetEditor({
     
     Alert.alert("Export Ready", "CSV data has been prepared. Use the share function to export.");
   }, [columns, rows]);
+
+  // Handle digitized data export from PlotDigitizer
+  const handleDigitizerExport = useCallback((data: { x: number; y: number }[]) => {
+    if (Platform.OS !== "web") {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
+    setDigitizedData(data);
+    setShowDigitizer(false);
+    setShowDataImporter(true);
+  }, []);
+
+  // Handle import of digitized data into spreadsheet rows
+  const handleDigitizedDataImport = useCallback((studies: Array<{
+    study_id: string;
+    effect_size: number;
+    se?: number;
+    sample_size?: number;
+    year?: number;
+  }>) => {
+    if (Platform.OS !== "web") {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
+    
+    // Create new rows from imported studies
+    const newRows: Row[] = studies.map((study, index) => {
+      const row: Row = { id: `row_${Date.now()}_${index}_${Math.random().toString(36).substr(2, 9)}` };
+      
+      // Map study data to columns
+      columns.forEach(col => {
+        if (col.key === 'study') {
+          row[col.key] = study.study_id;
+        } else if (col.key === 'year' && study.year) {
+          row[col.key] = String(study.year);
+        } else if (col.key === 'effect_size' || col.key === 'mean_treatment') {
+          row[col.key] = study.effect_size.toFixed(4);
+        } else if ((col.key === 'se' || col.key === 'sd_treatment') && study.se) {
+          row[col.key] = study.se.toFixed(4);
+        } else if ((col.key === 'n_treatment' || col.key === 'n_control') && study.sample_size) {
+          row[col.key] = String(Math.round(study.sample_size / 2));
+        } else {
+          row[col.key] = '';
+        }
+      });
+      
+      return row;
+    });
+    
+    // Append new rows to existing data
+    setRows(prev => [...prev, ...newRows]);
+    setShowDataImporter(false);
+    setDigitizedData([]);
+    
+    Alert.alert(
+      "Data Imported",
+      `Successfully imported ${studies.length} studies from digitized plot.`
+    );
+  }, [columns]);
 
   const renderCell = (row: Row, col: Column, rowIndex: number, colIndex: number) => {
     const isSelected = selectedCell?.row === rowIndex && selectedCell?.col === colIndex;
@@ -423,11 +484,20 @@ export function SpreadsheetEditor({
           </TouchableOpacity>
 
           <TouchableOpacity
+            onPress={() => setShowDigitizer(true)}
+            style={[styles.footerButton, { backgroundColor: colors.warning + "20", borderColor: colors.warning, borderWidth: 1 }]}
+          >
+            <Text style={[styles.footerButtonText, { color: colors.warning }]}>
+              {"📊 Digitize"}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
             onPress={handleExportCSV}
             style={[styles.footerButton, { backgroundColor: colors.terminal, borderColor: colors.border, borderWidth: 1 }]}
           >
             <Text style={[styles.footerButtonText, { color: colors.foreground }]}>
-              {"📤 Export CSV"}
+              {"📤 Export"}
             </Text>
           </TouchableOpacity>
 
@@ -468,6 +538,24 @@ export function SpreadsheetEditor({
           </View>
         </View>
       </Modal>
+
+      {/* PlotDigitizer Modal */}
+      <PlotDigitizer
+        visible={showDigitizer}
+        onClose={() => setShowDigitizer(false)}
+        onExport={handleDigitizerExport}
+      />
+
+      {/* Digitized Data Importer Modal */}
+      <DigitizedDataImporter
+        visible={showDataImporter}
+        data={digitizedData}
+        onClose={() => {
+          setShowDataImporter(false);
+          setDigitizedData([]);
+        }}
+        onImport={handleDigitizedDataImport}
+      />
     </Modal>
   );
 }
