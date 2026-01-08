@@ -1013,3 +1013,16 @@
 - [x] Enhanced Glass mascot entrance animation (GlassAnimatedEntrance)
 - [x] Clarify pre-loaded model in device/model selection screen
 - [x] 538 tests passing
+
+
+## Interactive Tutorial System (v3.5) - COMPLETED
+- [x] Tutorial system architecture with step definitions (TutorialStepConfig)
+- [x] Tutorial overlay component with spotlight highlighting (TutorialOverlay)
+- [x] Glass guidance bubbles with animations (GlassTutorialGuide)
+- [x] Forest plot tutorial (12 steps: intro → components → quiz → BCG data → create plot → interpret → heterogeneity → celebration)
+- [x] Progress tracking with step indicators and dots
+- [x] Tutorial completion rewards and badges (TutorialCompletionBadge with confetti)
+- [x] Tutorial launcher from home screen (green "Forest Plot Tutorial" button)
+- [x] Skip and resume tutorial functionality
+- [x] Quiz system with feedback and auto-advance
+- [x] 552 tests passing

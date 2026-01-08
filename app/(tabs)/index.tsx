@@ -11,7 +11,8 @@ import {
 import { GlassStatusBarTUI, GlassChatInput, QuickPromptsBar, VoiceInputButton, GlassMascotLarge } from "@/components/glass";
 import { SpreadsheetEditor, SpreadsheetImporter, type SpreadsheetData } from "@/components/spreadsheet";
 import type { CSVData } from "@/components/terminal";
-import { PracticeDatasets } from "@/components/tutorial";
+import { PracticeDatasets, InteractiveTutorialScreen, TutorialCompletionBadge, TutorialLauncher } from "@/components/tutorial";
+import { forestPlotTutorialSteps, FOREST_PLOT_TUTORIAL_ID, FOREST_PLOT_TUTORIAL_TITLE, getForestPlotTutorialMeta } from "@/lib/tutorial/forest-plot-tutorial";
 import { useAgent } from "@/hooks/use-agent";
 import { useGlass } from "@/hooks/use-glass";
 import { useColors } from "@/hooks/use-colors";
@@ -124,6 +125,11 @@ export default function TerminalScreen() {
     filename?: string;
   } | undefined>(undefined);
 
+  // Interactive tutorial states
+  const [showInteractiveTutorial, setShowInteractiveTutorial] = useState(false);
+  const [showCompletionBadge, setShowCompletionBadge] = useState(false);
+  const [completedTutorialMeta, setCompletedTutorialMeta] = useState<ReturnType<typeof getForestPlotTutorialMeta> | null>(null);
+
   // Spreadsheet states
   const [showSpreadsheetEditor, setShowSpreadsheetEditor] = useState(false);
   const [showSpreadsheetImporter, setShowSpreadsheetImporter] = useState(false);
@@ -226,6 +232,28 @@ export default function TerminalScreen() {
     setShowSpreadsheetEditor(true);
   }, []);
 
+  // Handle interactive tutorial start
+  const handleStartInteractiveTutorial = useCallback((tutorialId: string) => {
+    if (tutorialId === FOREST_PLOT_TUTORIAL_ID) {
+      setShowInteractiveTutorial(true);
+    }
+  }, []);
+
+  // Handle interactive tutorial completion
+  const handleTutorialComplete = useCallback(() => {
+    setShowInteractiveTutorial(false);
+    const meta = getForestPlotTutorialMeta();
+    setCompletedTutorialMeta(meta);
+    setShowCompletionBadge(true);
+    addSystemMessage(`🎉 Tutorial completed: ${meta.title}\n   You earned the ${meta.badge.name} badge!`);
+  }, [addSystemMessage]);
+
+  // Handle tutorial exit
+  const handleTutorialExit = useCallback(() => {
+    setShowInteractiveTutorial(false);
+    addSystemMessage('📚 Tutorial paused. You can resume anytime from the Tutorials menu.');
+  }, [addSystemMessage]);
+
   return (
     <ScreenContainer
       edges={["top", "left", "right"]}
@@ -271,26 +299,26 @@ export default function TerminalScreen() {
             gap: 8,
           }}
         >
-          {/* Tutorial Button - Prominent for new users */}
+          {/* Interactive Forest Plot Tutorial - Prominent for new users */}
           <TouchableOpacity
-            onPress={() => router.push('/tutorial' as any)}
+            onPress={() => handleStartInteractiveTutorial(FOREST_PLOT_TUTORIAL_ID)}
             style={{
               flexDirection: "row",
               alignItems: "center",
-              backgroundColor: hasStartedTutorial ? colors.terminal : '#0ea5e9',
+              backgroundColor: '#22c55e',
               paddingHorizontal: 12,
               paddingVertical: 6,
               borderRadius: 16,
               gap: 4,
             }}
           >
-            <Text style={{ fontSize: 14 }}>{"📚"}</Text>
+            <Text style={{ fontSize: 14 }}>{"🌲"}</Text>
             <Text style={{ 
-              color: hasStartedTutorial ? colors.foreground : '#ffffff', 
+              color: '#ffffff', 
               fontSize: 12, 
               fontWeight: "600" 
             }}>
-              {hasStartedTutorial ? `Tutorial ${tutorialProgress}%` : 'Start Tutorial'}
+              Forest Plot Tutorial
             </Text>
           </TouchableOpacity>
 
@@ -473,6 +501,31 @@ export default function TerminalScreen() {
         onClose={() => setShowSpreadsheetImporter(false)}
         onImport={handleSpreadsheetImport}
       />
+
+      {/* Interactive Tutorial Screen */}
+      <InteractiveTutorialScreen
+        visible={showInteractiveTutorial}
+        tutorialId={FOREST_PLOT_TUTORIAL_ID}
+        tutorialTitle={FOREST_PLOT_TUTORIAL_TITLE}
+        steps={forestPlotTutorialSteps}
+        onComplete={handleTutorialComplete}
+        onExit={handleTutorialExit}
+      />
+
+      {/* Tutorial Completion Badge */}
+      {completedTutorialMeta && (
+        <TutorialCompletionBadge
+          visible={showCompletionBadge}
+          badgeIcon={completedTutorialMeta.badge.icon}
+          badgeName={completedTutorialMeta.badge.name}
+          badgeDescription={completedTutorialMeta.badge.description}
+          tutorialTitle={completedTutorialMeta.title}
+          onClose={() => {
+            setShowCompletionBadge(false);
+            setCompletedTutorialMeta(null);
+          }}
+        />
+      )}
     </ScreenContainer>
   );
 }
