@@ -13,3 +13,5 @@ export {
 } from "./SpreadsheetEditor";
 
 export { SpreadsheetImporter } from "./SpreadsheetImporter";
+export { TemplatePicker } from "./TemplatePicker";
+export { DataEntryVoice } from "./DataEntryVoice";

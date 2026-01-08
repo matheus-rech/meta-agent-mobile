@@ -20,6 +20,13 @@ import {
 import * as Haptics from "expo-haptics";
 import { useColors } from "@/hooks/use-colors";
 import { BOX } from "@/constants/ascii-art";
+import {
+  validateSpreadsheet,
+  validateCell,
+  getValidationColor,
+  type ValidationResult,
+  type ValidationError,
+} from "@/lib/spreadsheet";
 
 // Default columns for meta-analysis data
 export const META_ANALYSIS_COLUMNS = [
@@ -40,6 +47,7 @@ export interface Column {
   label: string;
   type: "text" | "number";
   width: number;
+  required?: boolean;
 }
 
 export interface Row {
@@ -99,6 +107,32 @@ export function SpreadsheetEditor({
   const [name, setName] = useState(initialData?.name || "New Study Data");
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null);
   const [editingCell, setEditingCell] = useState<{ row: number; col: number } | null>(null);
+  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
+  const [cellErrors, setCellErrors] = useState<Map<string, ValidationError>>(new Map());
+  const [showGlassPrompt, setShowGlassPrompt] = useState<string | null>(null);
+
+  // Validate data whenever rows change
+  useEffect(() => {
+    const data: SpreadsheetData = { columns, rows, name, createdAt: Date.now(), updatedAt: Date.now() };
+    const result = validateSpreadsheet(data);
+    setValidationResult(result);
+
+    // Build cell error map for quick lookup
+    const errorMap = new Map<string, ValidationError>();
+    [...result.errors, ...result.warnings, ...result.infos].forEach(error => {
+      const key = `${error.rowIndex}-${error.columnKey}`;
+      // Only keep the most severe error per cell
+      if (!errorMap.has(key) || error.severity === 'error') {
+        errorMap.set(key, error);
+      }
+    });
+    setCellErrors(errorMap);
+  }, [rows, columns, name]);
+
+  // Get validation error for a specific cell
+  const getCellError = useCallback((rowIndex: number, colKey: string): ValidationError | null => {
+    return cellErrors.get(`${rowIndex}-${colKey}`) || null;
+  }, [cellErrors]);
 
   function createEmptyRow(): Row {
     const row: Row = { id: `row_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` };
@@ -187,17 +221,41 @@ export function SpreadsheetEditor({
     const isSelected = selectedCell?.row === rowIndex && selectedCell?.col === colIndex;
     const isEditing = editingCell?.row === rowIndex && editingCell?.col === colIndex;
     const value = row[col.key];
+    const cellError = getCellError(rowIndex, col.key);
+    
+    // Get validation-based background color
+    const validationBg = cellError 
+      ? getValidationColor(cellError, { error: colors.error, warning: colors.warning, success: colors.success })
+      : undefined;
+    
+    const baseBg = isSelected ? colors.primary + "20" : (validationBg || colors.terminal);
+    const borderColor = cellError?.severity === 'error' 
+      ? colors.error 
+      : cellError?.severity === 'warning' 
+      ? colors.warning 
+      : isSelected 
+      ? colors.primary 
+      : colors.border;
 
     return (
       <TouchableOpacity
         key={`${row.id}-${col.key}`}
         onPress={() => handleCellPress(rowIndex, colIndex)}
+        onLongPress={() => {
+          if (cellError?.glassPrompt) {
+            setShowGlassPrompt(cellError.glassPrompt);
+            if (Platform.OS !== "web") {
+              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+            }
+          }
+        }}
         style={[
           styles.cell,
           {
             width: col.width,
-            backgroundColor: isSelected ? colors.primary + "20" : colors.terminal,
-            borderColor: isSelected ? colors.primary : colors.border,
+            backgroundColor: baseBg,
+            borderColor: borderColor,
+            borderWidth: cellError ? 1.5 : 1,
           },
         ]}
         activeOpacity={0.7}
@@ -214,15 +272,22 @@ export function SpreadsheetEditor({
             selectTextOnFocus
           />
         ) : (
-          <Text
-            style={[
-              styles.cellText,
-              { color: value ? colors.foreground : colors.muted },
-            ]}
-            numberOfLines={1}
-          >
-            {value || "—"}
-          </Text>
+          <View style={styles.cellContent}>
+            <Text
+              style={[
+                styles.cellText,
+                { color: value ? colors.foreground : colors.muted },
+              ]}
+              numberOfLines={1}
+            >
+              {value || "—"}
+            </Text>
+            {cellError && (
+              <Text style={styles.errorIndicator}>
+                {cellError.severity === 'error' ? '❌' : cellError.severity === 'warning' ? '⚠️' : 'ℹ️'}
+              </Text>
+            )}
+          </View>
         )}
       </TouchableOpacity>
     );
@@ -263,6 +328,20 @@ export function SpreadsheetEditor({
         <Text style={[styles.tuiTitle, { color: colors.border }]}>
           {BOX.topLeft}{BOX.horizontal}{" Study Data Entry "}{BOX.horizontal.repeat(15)}{BOX.topRight}
         </Text>
+
+        {/* Validation Summary */}
+        {validationResult && (validationResult.errors.length > 0 || validationResult.warnings.length > 0) && (
+          <View style={[styles.validationSummary, { backgroundColor: validationResult.errors.length > 0 ? colors.error + "15" : colors.warning + "15" }]}>
+            <Text style={styles.validationSummaryText}>
+              {validationResult.errors.length > 0 ? `❌ ${validationResult.errors.length} error${validationResult.errors.length > 1 ? "s" : ""}` : ""}
+              {validationResult.errors.length > 0 && validationResult.warnings.length > 0 ? " • " : ""}
+              {validationResult.warnings.length > 0 ? `⚠️ ${validationResult.warnings.length} warning${validationResult.warnings.length > 1 ? "s" : ""}` : ""}
+            </Text>
+            <Text style={[styles.validationSummaryText, { color: colors.muted, textAlign: "right" }]}>
+              {"Long-press cell for help"}
+            </Text>
+          </View>
+        )}
 
         {/* Column Headers */}
         <ScrollView
@@ -359,6 +438,36 @@ export function SpreadsheetEditor({
           </View>
         </View>
       </View>
+
+      {/* Glass Prompt Modal */}
+      <Modal
+        visible={showGlassPrompt !== null}
+        animationType="fade"
+        transparent
+        onRequestClose={() => setShowGlassPrompt(null)}
+      >
+        <View style={styles.glassPromptOverlay}>
+          <View style={[styles.glassPromptContent, { backgroundColor: colors.background }]}>
+            <View style={styles.glassPromptHeader}>
+              <Text style={styles.glassPromptEmoji}>{"\uD83E\uDD8A"}</Text>
+              <Text style={[styles.glassPromptTitle, { color: colors.foreground }]}>
+                {"Glass says..."}
+              </Text>
+            </View>
+            <Text style={[styles.glassPromptText, { color: colors.foreground }]}>
+              {showGlassPrompt}
+            </Text>
+            <TouchableOpacity
+              onPress={() => setShowGlassPrompt(null)}
+              style={[styles.glassPromptButton, { backgroundColor: colors.primary }]}
+            >
+              <Text style={[styles.glassPromptButtonText, { color: colors.background }]}>
+                {"Got it!"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </Modal>
   );
 }
@@ -523,6 +632,82 @@ const styles = StyleSheet.create({
       default: "Courier New",
     }),
     fontSize: 11,
+  },
+  cellContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    flex: 1,
+  },
+  errorIndicator: {
+    fontSize: 10,
+    marginLeft: 4,
+  },
+  glassPromptOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  glassPromptContent: {
+    width: "100%",
+    maxWidth: 400,
+    borderRadius: 16,
+    padding: 20,
+  },
+  glassPromptHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 16,
+  },
+  glassPromptEmoji: {
+    fontSize: 32,
+  },
+  glassPromptTitle: {
+    fontFamily: Platform.select({
+      ios: "Menlo",
+      android: "monospace",
+      default: "Courier New",
+    }),
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  glassPromptText: {
+    fontFamily: Platform.select({
+      ios: "Menlo",
+      android: "monospace",
+      default: "Courier New",
+    }),
+    fontSize: 14,
+    lineHeight: 22,
+    marginBottom: 20,
+  },
+  glassPromptButton: {
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  glassPromptButtonText: {
+    fontWeight: "600",
+    fontSize: 14,
+  },
+  validationSummary: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    gap: 8,
+  },
+  validationSummaryText: {
+    fontFamily: Platform.select({
+      ios: "Menlo",
+      android: "monospace",
+      default: "Courier New",
+    }),
+    fontSize: 11,
+    flex: 1,
   },
 });
 

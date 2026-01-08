@@ -973,3 +973,22 @@
 - [x] Larger animated Glass mascot with front/back loop animation (GlassMascotLarge)
 - [x] Integration with meta-analysis workflow (home screen integration)
 - [x] 468 tests passing
+
+
+## Data Validation & Templates (v3.3)
+- [ ] Data validation with cell highlighting for invalid values
+- [ ] Glass prompts to help users fix validation errors
+- [ ] Spreadsheet template system with save/load functionality
+- [ ] Pre-built templates for RCT, cohort, case-control studies
+- [ ] Voice output for data entry verification (read back values)
+- [ ] Accessibility improvements for data entry
+
+
+## Data Validation & Templates (v3.3) - COMPLETED
+- [x] Data validation with cell highlighting (error/warning colors)
+- [x] Glass prompts for fixing errors (long-press cells for help)
+- [x] Spreadsheet templates for study types (RCT, cohort, case-control, cross-sectional, diagnostic)
+- [x] Save/load custom templates (TemplatePicker component)
+- [x] Voice output for data entry verification (DataEntryVoice component)
+- [x] Validation summary bar showing error/warning counts
+- [x] 503 tests passing
