@@ -16,3 +16,5 @@ export { SpreadsheetImporter } from "./SpreadsheetImporter";
 export { TemplatePicker } from "./TemplatePicker";
 export { DataEntryVoice } from "./DataEntryVoice";
 export { RCodePreview } from "./RCodePreview";
+export { PubMedSearch } from "./PubMedSearch";
+export { CollaboratorPresence, CollaboratorCursor, CollaboratorList } from "./CollaboratorPresence";

@@ -11,6 +11,8 @@ import * as path from "path";
 import * as os from "os";
 import axios from "axios";
 import * as cheerio from "cheerio";
+import { protectedProcedure } from "./_core/trpc";
+import * as db from "./db";
 
 // Agent system prompt with R capabilities, pedagogical approach, and social skills
 const AGENT_SYSTEM_PROMPT = `You are Meta Agent, a warm and knowledgeable AI research mentor running in a mobile CLI terminal. You combine deep expertise in meta-analysis and systematic reviews with a genuine interest in helping students and researchers grow.
@@ -771,6 +773,261 @@ Respond with a JSON object containing:
           };
         }
       }),
+  }),
+
+  // Cloud sync endpoints
+  sync: router({
+    // Spreadsheet operations
+    spreadsheets: router({
+      // List user's spreadsheets
+      list: protectedProcedure.query(async ({ ctx }) => {
+        const result = await db.getUserSpreadsheets(ctx.user.id);
+        return {
+          success: true,
+          ...result,
+          timestamp: Date.now(),
+        };
+      }),
+
+      // Get single spreadsheet
+      get: protectedProcedure
+        .input(z.object({ id: z.number() }))
+        .query(async ({ input }) => {
+          const spreadsheet = await db.getSpreadsheetById(input.id);
+          return {
+            success: !!spreadsheet,
+            spreadsheet,
+            timestamp: Date.now(),
+          };
+        }),
+
+      // Get by share ID (for collaboration)
+      getByShareId: publicProcedure
+        .input(z.object({ shareId: z.string() }))
+        .query(async ({ input }) => {
+          const spreadsheet = await db.getSpreadsheetByShareId(input.shareId);
+          if (!spreadsheet) {
+            return { success: false, spreadsheet: null, timestamp: Date.now() };
+          }
+          // Only return if public or user has access
+          return {
+            success: true,
+            spreadsheet: spreadsheet.isPublic ? spreadsheet : null,
+            timestamp: Date.now(),
+          };
+        }),
+
+      // Create new spreadsheet
+      create: protectedProcedure
+        .input(z.object({
+          name: z.string().min(1).max(255),
+          columns: z.any(),
+          rows: z.any(),
+          templateType: z.string().optional(),
+        }))
+        .mutation(async ({ ctx, input }) => {
+          const result = await db.createSpreadsheet({
+            userId: ctx.user.id,
+            name: input.name,
+            columns: input.columns,
+            rows: input.rows,
+            templateType: input.templateType,
+          });
+          return {
+            success: true,
+            ...result,
+            timestamp: Date.now(),
+          };
+        }),
+
+      // Update spreadsheet
+      update: protectedProcedure
+        .input(z.object({
+          id: z.number(),
+          name: z.string().min(1).max(255).optional(),
+          columns: z.any().optional(),
+          rows: z.any().optional(),
+          isPublic: z.boolean().optional(),
+        }))
+        .mutation(async ({ ctx, input }) => {
+          const canEdit = await db.canEditSpreadsheet(input.id, ctx.user.id);
+          if (!canEdit) {
+            return { success: false, error: "Not authorized", timestamp: Date.now() };
+          }
+          
+          const { id, ...data } = input;
+          const result = await db.updateSpreadsheet(id, ctx.user.id, data);
+          return {
+            success: true,
+            ...result,
+            timestamp: Date.now(),
+          };
+        }),
+
+      // Delete spreadsheet
+      delete: protectedProcedure
+        .input(z.object({ id: z.number() }))
+        .mutation(async ({ ctx, input }) => {
+          await db.deleteSpreadsheet(input.id, ctx.user.id);
+          return { success: true, timestamp: Date.now() };
+        }),
+    }),
+
+    // Collaboration operations
+    collaboration: router({
+      // Add collaborator
+      invite: protectedProcedure
+        .input(z.object({
+          spreadsheetId: z.number(),
+          userId: z.number(),
+          role: z.enum(["viewer", "editor", "admin"]).optional(),
+        }))
+        .mutation(async ({ ctx, input }) => {
+          // Verify ownership
+          const sheet = await db.getSpreadsheetById(input.spreadsheetId);
+          if (!sheet || sheet.userId !== ctx.user.id) {
+            return { success: false, error: "Not authorized", timestamp: Date.now() };
+          }
+          
+          const result = await db.addCollaborator(
+            input.spreadsheetId,
+            input.userId,
+            input.role
+          );
+          return {
+            success: true,
+            ...result,
+            timestamp: Date.now(),
+          };
+        }),
+
+      // Accept invite
+      acceptInvite: protectedProcedure
+        .input(z.object({ inviteCode: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+          await db.acceptInvite(input.inviteCode, ctx.user.id);
+          return { success: true, timestamp: Date.now() };
+        }),
+
+      // Get collaborators
+      list: protectedProcedure
+        .input(z.object({ spreadsheetId: z.number() }))
+        .query(async ({ input }) => {
+          const collaborators = await db.getCollaborators(input.spreadsheetId);
+          return {
+            success: true,
+            collaborators,
+            timestamp: Date.now(),
+          };
+        }),
+    }),
+
+    // Active sessions for real-time collaboration
+    sessions: router({
+      // Register session
+      register: protectedProcedure
+        .input(z.object({
+          spreadsheetId: z.number(),
+          displayName: z.string().optional(),
+        }))
+        .mutation(async ({ ctx, input }) => {
+          const sessionId = await db.registerSession({
+            spreadsheetId: input.spreadsheetId,
+            userId: ctx.user.id,
+            displayName: input.displayName || ctx.user.name || "Anonymous",
+          });
+          return {
+            success: true,
+            sessionId,
+            timestamp: Date.now(),
+          };
+        }),
+
+      // Heartbeat
+      heartbeat: protectedProcedure
+        .input(z.object({
+          sessionId: z.number(),
+          cursorPosition: z.any().optional(),
+        }))
+        .mutation(async ({ input }) => {
+          await db.updateSessionHeartbeat(input.sessionId, input.cursorPosition);
+          return { success: true, timestamp: Date.now() };
+        }),
+
+      // Get active sessions
+      list: publicProcedure
+        .input(z.object({ spreadsheetId: z.number() }))
+        .query(async ({ input }) => {
+          const sessions = await db.getActiveSessions(input.spreadsheetId);
+          return {
+            success: true,
+            sessions,
+            timestamp: Date.now(),
+          };
+        }),
+
+      // Leave session
+      leave: protectedProcedure
+        .input(z.object({ sessionId: z.number() }))
+        .mutation(async ({ input }) => {
+          await db.removeSession(input.sessionId);
+          return { success: true, timestamp: Date.now() };
+        }),
+    }),
+
+    // User progress sync
+    progress: router({
+      // Get progress
+      get: protectedProcedure.query(async ({ ctx }) => {
+        const progress = await db.getUserProgress(ctx.user.id);
+        return {
+          success: true,
+          progress,
+          timestamp: Date.now(),
+        };
+      }),
+
+      // Update progress
+      update: protectedProcedure
+        .input(z.object({
+          tutorialProgress: z.any().optional(),
+          completedTutorials: z.array(z.string()).optional(),
+          badges: z.array(z.string()).optional(),
+          quizData: z.any().optional(),
+          streakData: z.any().optional(),
+          totalLearningTime: z.number().optional(),
+        }))
+        .mutation(async ({ ctx, input }) => {
+          await db.updateUserProgress(ctx.user.id, input);
+          return { success: true, timestamp: Date.now() };
+        }),
+
+      // Sync progress (merge device and server data)
+      sync: protectedProcedure
+        .input(z.object({
+          deviceProgress: z.object({
+            tutorialProgress: z.any().optional(),
+            completedTutorials: z.array(z.string()).optional(),
+            badges: z.array(z.string()).optional(),
+            quizData: z.any().optional(),
+            streakData: z.any().optional(),
+            totalLearningTime: z.number().optional(),
+          }),
+          deviceLastSync: z.string().transform(s => new Date(s)),
+        }))
+        .mutation(async ({ ctx, input }) => {
+          const mergedProgress = await db.syncUserProgress(
+            ctx.user.id,
+            input.deviceProgress,
+            input.deviceLastSync
+          );
+          return {
+            success: true,
+            progress: mergedProgress,
+            timestamp: Date.now(),
+          };
+        }),
+    }),
   }),
 });
 

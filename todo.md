@@ -1231,3 +1231,57 @@
 - [x] ReportExportModal component with customization options
 - [x] Generate downloadable PDF/HTML file
 - [x] 642 tests passing
+
+
+## Research Integration & Collaboration (v4.0)
+
+### PubMed & CrossRef Integration
+- [ ] Create PubMed API service for PMID search
+- [ ] Create CrossRef API service for DOI search
+- [ ] Auto-fill study metadata (authors, year, journal, sample size)
+- [ ] Batch import multiple PMIDs/DOIs
+- [ ] Search by title/author keywords
+- [ ] Add search UI to spreadsheet editor
+
+### Funnel Plots & Publication Bias
+- [x] Add funnel plot generation as standard output
+- [x] Implement Egger's test for asymmetry
+- [x] Add trim-and-fill analysis
+- [x] Create interactive SVG funnel plot component
+
+### WebPlotDigitizer-Style Tool
+- [x] Create image upload and canvas component
+- [x] Implement axis calibration (set X/Y scale)
+- [x] Add point extraction with click/tap
+- [x] Support curve tracing for continuous data
+- [x] Export extracted data to spreadsheet
+- [x] Save/load digitization sessions
+
+### Cloud Backup & Sync
+- [x] Create cloud storage service for spreadsheets
+- [x] Implement automatic backup on changes
+- [x] Add sync status indicator
+- [x] Handle offline/online transitions
+- [x] Conflict resolution for concurrent edits
+- [x] Database schema for spreadsheets, collaborators, history, progress
+- [x] tRPC API routes for sync operations
+- [x] useCloudSync hook for client-side sync
+
+### Real-Time Collaborative Editing
+- [x] Create polling-based service for real-time sync
+- [x] Implement session management for concurrent edits
+- [x] Show collaborator cursors/selections
+- [x] Add share link generation (shareId)
+- [x] Permission management (viewer/editor/admin)
+- [x] Presence indicators (who's online)
+- [x] CollaboratorPresence component
+- [x] useCollaboration hook
+
+### PubMed/CrossRef Integration
+- [x] PubMed E-utilities API integration
+- [x] CrossRef REST API integration
+- [x] Search by PMID, DOI, or keywords
+- [x] Parse and display study metadata
+- [x] Auto-fill spreadsheet rows from search results
+- [x] PubMedSearch component with modal UI
+- [x] APA citation formatting
