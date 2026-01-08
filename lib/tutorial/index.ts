@@ -44,3 +44,6 @@ export * from './badge-sharing.service';
 
 // Spaced repetition
 export * from './spaced-repetition.service';
+
+// AI feedback
+export * from './ai-feedback.service';

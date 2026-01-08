@@ -1101,3 +1101,86 @@
 - [x] Adaptive difficulty based on response time and correctness
 - [x] SpacedRepetitionQuiz component
 - [x] 599 tests passing
+
+
+## Community & Engagement Features (v3.8)
+
+### Achievement Notifications
+- [ ] Toast notification system for achievements
+- [ ] Glass celebrating animation on badge earned
+- [ ] Streak milestone notifications (7 days, 30 days, etc.)
+- [ ] Sound effects for achievements (optional)
+
+### Community Discovery System
+- [ ] Conference discovery feed (meta-analysis, systematic review conferences)
+- [ ] Call for papers aggregator
+- [ ] Research opportunity alerts
+- [ ] Connect with researchers with similar interests
+- [ ] Interest-based matching algorithm
+- [ ] Event calendar integration
+
+### Quiz Leaderboard
+- [ ] Local leaderboard for personal progress
+- [ ] Public leaderboard for competitive learning
+- [ ] Weekly/monthly rankings
+- [ ] Anonymous username system for privacy
+- [ ] Score calculation based on accuracy and speed
+
+### Dark/Light Theme Toggle
+- [ ] Theme toggle in settings
+- [ ] Light theme color scheme
+- [ ] Persist theme preference
+- [ ] Smooth transition animation
+
+### AI-Powered Personalized Feedback
+- [ ] Analyze quiz performance patterns
+- [ ] Suggest weak areas to review
+- [ ] Personalized study recommendations
+- [ ] Adaptive difficulty suggestions
+
+### Community Tutorial Sharing
+- [ ] Create custom tutorials
+- [ ] Share tutorials with community
+- [ ] Browse community tutorials
+- [ ] Rate and review tutorials
+
+
+## Community & Engagement Features (v3.8) - COMPLETED
+
+### Achievement Notifications - COMPLETED
+- [x] Toast notification system for achievements (AchievementToast component)
+- [x] Glass celebrating animation on badge earned
+- [x] Achievement service with 10+ achievement types
+- [x] Haptic feedback on achievement unlock
+
+### Community Discovery System - COMPLETED
+- [x] Conference discovery feed (CommunityDiscoveryScreen)
+- [x] Call for papers aggregator with deadlines
+- [x] Research grants and opportunities
+- [x] Interest-based filtering (meta-analysis, systematic review, etc.)
+- [x] TUI-styled community interface
+
+### Quiz Leaderboard - COMPLETED
+- [x] Local leaderboard for personal progress (LeaderboardScreen)
+- [x] Public leaderboard with rankings
+- [x] Weekly/monthly/all-time views
+- [x] Anonymous username system
+- [x] Score calculation with accuracy and speed
+
+### Dark/Light Theme Toggle - COMPLETED
+- [x] Theme toggle components (ThemeToggle, TUIThemeToggle)
+- [x] Light theme color scheme in theme.config.js
+- [x] Persist theme preference via ThemeProvider
+- [x] Smooth transition with Appearance API
+
+### AI-Powered Personalized Feedback - COMPLETED
+- [x] AI feedback service (ai-feedback.service.ts)
+- [x] Quiz performance analysis
+- [x] Personalized study recommendations
+- [x] Motivational messages based on activity
+- [x] Contextual tips for incorrect answers
+
+### All Tests Passing
+- [x] 599 tests passing
+- [x] 0 TypeScript errors
+- [x] Ready for deploy
