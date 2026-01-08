@@ -881,3 +881,55 @@
 - [x] API key validation test passing
 - [x] All 391 tests passing
 - [x] MiniMax M2.1 responding with "thinking" blocks
+
+
+## Glass Chat Integration (v3.10)
+
+### Chat Input on Home Screen
+- [ ] Create GlassChatInput component with text field
+- [ ] Integrate with MiniMax M2.1 backend
+- [ ] Show Glass responses in terminal output
+- [ ] Add typing indicator while Glass is thinking
+
+### Glass Testing
+- [ ] Test Glass with heterogeneity question
+- [ ] Validate RAG retrieval from knowledge base
+- [ ] Verify skills are being used in responses
+
+### Presentation Narration
+- [ ] Generate remaining Portuguese audio segments
+- [ ] Generate English audio segments
+- [ ] Compile all audio files for presentation
+
+
+## Glass Chat Integration (v3.8)
+
+### Chat Input Component
+- [x] Create GlassChatInput component with TUI styling
+- [x] Add fox emoji prompt indicator
+- [x] Add Glass state indicators (idle, thinking, talking, error)
+- [x] Add TUI box drawing borders
+- [x] Add MiniMax M2.1 attribution in hints
+
+### useGlass Hook
+- [x] Create useGlass hook for MiniMax M2.1 integration
+- [x] Initialize MiniMax service with API key
+- [x] Initialize Gemini RAG service
+- [x] Manage conversation history with AsyncStorage
+- [x] Support language detection (PT-BR, ES, EN)
+- [x] Detect skills used in responses
+- [x] Handle errors gracefully
+
+### Home Screen Integration
+- [x] Replace TerminalInput with GlassChatInput
+- [x] Route slash commands to agent, natural language to Glass
+- [x] Combine messages from both sources
+- [x] Update status bar to show MiniMax M2.1 model
+- [x] Display Glass state in status bar
+
+### Testing
+- [x] Create use-glass.test.ts with 30+ tests
+- [x] Create glass-chat-input.test.ts with 20+ tests
+- [x] Test Glass API with Portuguese meta-analysis question
+- [x] Verify skills detection and language detection
+- [x] All 437 tests passing
