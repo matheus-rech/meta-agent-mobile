@@ -94,6 +94,7 @@ const GLASS_SKILLS: SkillReference[] = [
   { id: 'ipd-meta-analysis', name: 'IPD Meta-Analysis', description: 'Individual data' },
   { id: 'trial-sequential-analysis', name: 'Trial Sequential Analysis', description: 'TSA' },
   { id: 'diagnostic-meta-analysis', name: 'Diagnostic Meta-Analysis', description: 'Sensitivity/specificity' },
+  { id: 'data-orchestrator', name: 'Data Orchestrator', description: 'Auto-detect data types and suggest analyses' },
 ];
 
 // Mini-Agent CLI path
@@ -267,6 +268,7 @@ class MiniAgentService {
       'ipd-meta-analysis': ['individual participant', 'ipd', 'one-stage', 'two-stage'],
       'trial-sequential-analysis': ['tsa', 'sequential', 'information size'],
       'diagnostic-meta-analysis': ['sensitivity', 'specificity', 'sroc', 'diagnostic'],
+      'data-orchestrator': ['detect', 'data type', 'suggest analysis', 'orchestrator', 'auto-detect', 'column mapping'],
     };
 
     for (const [skill, keywords] of Object.entries(skillKeywords)) {

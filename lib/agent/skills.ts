@@ -519,6 +519,9 @@ const dataVisualizationSkill: Skill = {
   ],
 };
 
+// Import orchestrator skill
+import { orchestratorSkill } from './skills/orchestrator-skill';
+
 // All available skills
 export const availableSkills: Skill[] = [
   researchSkill,
@@ -536,6 +539,7 @@ export const availableSkills: Skill[] = [
   neurosurgeryLiteratureSkill,
   systematicReviewSkill,
   dataVisualizationSkill,
+  orchestratorSkill,
 ];
 
 /**

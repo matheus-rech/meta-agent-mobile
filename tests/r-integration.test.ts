@@ -82,8 +82,8 @@ describe("R-Related Skills", () => {
     expect(rSkills.map(s => s.name)).toContain("visualization");
   });
 
-  it("should include all 15 skills in availableSkills", () => {
-    expect(availableSkills.length).toBe(15);
+  it("should include all 16 skills in availableSkills", () => {
+    expect(availableSkills.length).toBe(16);
     const skillNames = availableSkills.map(s => s.name);
     expect(skillNames).toContain("research");
     expect(skillNames).toContain("analysis");
@@ -100,6 +100,7 @@ describe("R-Related Skills", () => {
     expect(skillNames).toContain("neurosurgery-literature");
     expect(skillNames).toContain("systematic-review");
     expect(skillNames).toContain("visualization");
+    expect(skillNames).toContain("data-orchestrator");
   });
 });
 
