@@ -12,6 +12,16 @@ export const themeColors: {
   code: { light: string; dark: string };
   input: { light: string; dark: string };
   prompt: { light: string; dark: string };
+  // Glass fox mascot colors
+  foxOrange: { light: string; dark: string };
+  foxLight: { light: string; dark: string };
+  foxDark: { light: string; dark: string };
+  foxNose: { light: string; dark: string };
+  foxEyes: { light: string; dark: string };
+  // ASCII art colors
+  asciiBlue: { light: string; dark: string };
+  asciiGlow: { light: string; dark: string };
+  asciiDim: { light: string; dark: string };
 };
 
 declare const themeConfig: {

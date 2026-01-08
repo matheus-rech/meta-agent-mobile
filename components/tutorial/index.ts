@@ -12,6 +12,8 @@ export { GlassTutorialGuide } from './GlassTutorialGuide';
 export { InteractiveTutorialScreen } from './InteractiveTutorialScreen';
 export { TutorialCompletionBadge } from './TutorialCompletionBadge';
 export { TutorialLauncher } from './TutorialLauncher';
+export { ShareBadgeModal } from './ShareBadgeModal';
+export { SpacedRepetitionQuiz } from './SpacedRepetitionQuiz';
 
 // Types
 export type { TutorialStepConfig } from './InteractiveTutorialScreen';

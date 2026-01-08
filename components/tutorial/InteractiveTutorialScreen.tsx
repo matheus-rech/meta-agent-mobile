@@ -45,6 +45,16 @@ export interface TutorialStepConfig {
   actionDescription?: string;
   autoAdvance?: boolean;
   codeExample?: string;
+  // Glass mascot customization
+  glassMessage?: string;
+  glassEmotion?: 'excited' | 'teaching' | 'curious' | 'celebrating' | 'thinking';
+  // Badge for celebration steps
+  badge?: {
+    id: string;
+    name: string;
+    icon: string;
+    description: string;
+  };
 }
 
 interface InteractiveTutorialScreenProps {

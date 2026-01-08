@@ -14,3 +14,4 @@ export { QuickPrompts, QuickPromptsBar, QUICK_PROMPTS } from './QuickPrompts';
 export { VoiceInputButton } from './VoiceInputButton';
 export { GlassMascotLarge, type GlassLargeState } from './GlassMascotLarge';
 export { GlassAnimatedEntrance, GlassAnimatedCompact, GlassWalkingAnimation } from './GlassAnimatedEntrance';
+export { GlassFoxLarge, GlassFoxInline, GlassFoxWalking } from './GlassFoxLarge';

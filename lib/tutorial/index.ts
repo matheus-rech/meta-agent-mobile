@@ -12,6 +12,7 @@ export { certificateService, type CertificateData } from './certificate.service'
 export * from './forest-plot-tutorial';
 export * from './heterogeneity-tutorial';
 export * from './subgroup-tutorial';
+export * from './meta-regression-tutorial';
 
 // Progress and bookmarks
 export {
@@ -37,3 +38,9 @@ export type { TutorialProgress as TutorialProgressV2 } from './progress.service'
 
 // Voice narration
 export * from './voice-narration.service';
+
+// Badge sharing
+export * from './badge-sharing.service';
+
+// Spaced repetition
+export * from './spaced-repetition.service';

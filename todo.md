@@ -1037,3 +1037,67 @@
 - [x] Resume from bookmark functionality
 - [x] Quiz score tracking and statistics
 - [x] 572 tests passing
+
+
+## TUI Redesign & New Features (v3.7)
+
+### TUI Visual Overhaul
+- [ ] Black background theme for entire app
+- [ ] Glass-blue ASCII color scheme (#00BFFF cyan/glass blue)
+- [ ] Large animated Glass fox mascot in ASCII (fox fur orange color)
+- [ ] Fox animation moving across TUI screens
+- [ ] TUI-style ASCII buttons (microphone, folder, start tutorial, new data)
+- [ ] Box-drawing characters for all UI elements
+
+### Meta-Regression Tutorial
+- [ ] Tutorial structure and steps (12+ steps)
+- [ ] Continuous moderators explanation (year, dose, baseline risk)
+- [ ] Mixed-effects models explanation (random slopes)
+- [ ] R code examples with metafor package
+- [ ] Quiz questions for key concepts
+- [ ] BCG vaccine latitude example as case study
+- [ ] Bubble plot visualization explanation
+
+### Badge Sharing
+- [ ] Share badges to social media (Twitter, LinkedIn, WhatsApp)
+- [ ] Generate shareable badge images
+- [ ] Progress summary cards for sharing
+
+### Spaced Repetition Quizzes
+- [ ] Quiz scheduling based on forgetting curve
+- [ ] Review notifications for due quizzes
+- [ ] Quiz history and performance tracking
+- [ ] Adaptive difficulty based on performance
+
+
+## TUI Redesign & New Features (v3.7) - COMPLETED
+
+### TUI Visual Overhaul - COMPLETED
+- [x] Black background theme for entire app (theme.config.js updated)
+- [x] Glass-blue ASCII color scheme (#00BFFF cyan/glass blue)
+- [x] Large animated Glass fox mascot in ASCII (GlassFoxLarge component)
+- [x] Fox animation moving across TUI screens (GlassFoxWalking)
+- [x] TUI-style ASCII buttons (TUIButton, TUIIconButton, TUIActionBar)
+- [x] Box-drawing characters for all UI elements
+
+### Meta-Regression Tutorial - COMPLETED
+- [x] Tutorial structure and steps (18 steps)
+- [x] Continuous moderators explanation (year, dose, baseline risk)
+- [x] Mixed-effects models explanation (random slopes)
+- [x] R code examples with metafor package
+- [x] Quiz questions for key concepts (4 quizzes)
+- [x] BCG vaccine latitude example as case study
+- [x] Bubble plot visualization explanation
+
+### Badge Sharing - COMPLETED
+- [x] Share badges to social media (Twitter, LinkedIn, WhatsApp)
+- [x] Generate shareable badge content (ASCII cards)
+- [x] Progress summary cards for sharing (ShareBadgeModal)
+
+### Spaced Repetition Quizzes - COMPLETED
+- [x] Quiz scheduling based on SM-2 algorithm (forgetting curve)
+- [x] Due cards tracking and review sessions
+- [x] Quiz history and performance tracking
+- [x] Adaptive difficulty based on response time and correctness
+- [x] SpacedRepetitionQuiz component
+- [x] 599 tests passing
