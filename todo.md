@@ -1293,3 +1293,26 @@
 - [x] Map extracted points to appropriate columns
 - [x] Add confirmation dialog before importing data
 - [x] Test integration end-to-end
+
+
+### Glass Orchestrator Development Plan
+- [ ] Design Glass Orchestrator architecture document
+- [ ] Define data type detection logic (binary, continuous, diagnostic, network, IPD)
+- [ ] Create analysis selection matrix based on data type
+- [ ] Design ROB article analyzer component
+- [ ] Design reporting guideline selector (PRISMA variants)
+- [ ] Design missing data handler module
+- [ ] Design PRISMA-compliant methods/results generator
+- [ ] Define edge case handling strategies
+- [ ] Create implementation timeline and phases
+
+
+### MVP Orchestrator Implementation Plan
+- [x] Create orchestrator types (types.ts)
+- [x] Create DataTypeDetector module with column pattern matching
+- [x] Implement AnalysisSuggester for recommending appropriate analyses
+- [x] Build R code generator for primary analyses
+- [x] Create useOrchestrator hook for state management
+- [ ] Create Glass integration for orchestrator suggestions
+- [ ] Add UI component for displaying analysis recommendations
+- [x] Write comprehensive tests for MVP Orchestrator (26 tests passing)
