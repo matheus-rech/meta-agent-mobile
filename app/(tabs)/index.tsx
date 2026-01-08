@@ -8,7 +8,7 @@ import {
   SnippetsLibrary,
   ExportSheet,
 } from "@/components/terminal";
-import { GlassStatusBarTUI, GlassChatInput } from "@/components/glass";
+import { GlassStatusBarTUI, GlassChatInput, QuickPromptsBar } from "@/components/glass";
 import type { CSVData } from "@/components/terminal";
 import { PracticeDatasets } from "@/components/tutorial";
 import { useAgent } from "@/hooks/use-agent";
@@ -55,7 +55,7 @@ export default function TerminalScreen() {
   const tutorialProgress = Math.round((statistics.modulesCompleted / statistics.totalModules) * 100);
   const hasStartedTutorial = statistics.modulesCompleted > 0 || tutorialProgress > 0;
 
-  // Combine messages from both sources
+  // Combine messages from both sources with skills metadata
   const [combinedMessages, setCombinedMessages] = useState<TerminalMessage[]>([]);
   
   useEffect(() => {
@@ -65,6 +65,9 @@ export default function TerminalScreen() {
       type: msg.role === 'user' ? 'user' : msg.role === 'assistant' ? 'agent' : 'system',
       content: msg.content,
       timestamp: msg.timestamp,
+      // Include skills and language metadata for display
+      skillsUsed: msg.skillsUsed,
+      language: msg.language,
     }));
 
     // Merge and sort by timestamp
@@ -141,6 +144,15 @@ export default function TerminalScreen() {
     }
   }, [sendAgentMessage, sendGlassMessage, isInTutorial, completeAction, completeSocratic]);
 
+  // Handle quick prompt selection
+  const handleQuickPrompt = useCallback((prompt: string) => {
+    sendGlassMessage(prompt);
+    if (isInTutorial) {
+      completeAction(`message:${prompt}`);
+      completeSocratic();
+    }
+  }, [sendGlassMessage, isInTutorial, completeAction, completeSocratic]);
+
   // Handle CSV file selection
   const handleCSVSelected = useCallback((data: CSVData) => {
     setShowCSVPicker(false);
@@ -199,6 +211,11 @@ export default function TerminalScreen() {
             isThinking={isThinking}
           />
         </View>
+
+        {/* Quick Prompts Bar - Show when no messages yet */}
+        {combinedMessages.length === 0 && (
+          <QuickPromptsBar onSelectPrompt={handleQuickPrompt} />
+        )}
 
         {/* Quick Actions Bar */}
         <View

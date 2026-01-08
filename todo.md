@@ -933,3 +933,34 @@
 - [x] Test Glass API with Portuguese meta-analysis question
 - [x] Verify skills detection and language detection
 - [x] All 437 tests passing
+
+
+## Glass UX Enhancements (v3.9)
+
+### Voice Features with MiniMax TTS
+- [ ] Create MiniMax TTS service for text-to-speech
+- [ ] Add speak button to Glass responses
+- [ ] Implement audio playback for responses
+- [ ] Add voice selection (250+ voices available)
+- [ ] Support multilingual voices (PT-BR, EN, ES)
+
+### Skills Badges Display
+- [ ] Create SkillBadge component with TUI styling
+- [ ] Display skills used below each Glass response
+- [ ] Add skill icons/colors for visual distinction
+- [ ] Show skill descriptions on tap
+
+### Quick Prompts
+- [ ] Create QuickPrompts component with preset questions
+- [ ] Add common meta-analysis questions
+- [ ] Add R code example prompts
+- [ ] Style as TUI-themed buttons
+- [ ] Integrate with GlassChatInput
+
+
+## Glass UX Enhancements (v3.1)
+- [x] Voice output with MiniMax TTS API (SpeakButton component)
+- [x] Skills badges display (SkillBadge, SkillBadgesRow components)
+- [x] Quick prompts for common questions (QuickPrompts, QuickPromptsBar)
+- [x] Integration with home screen terminal output
+- [x] Tests for all new features (455 tests passing)

@@ -15,6 +15,7 @@ import {
   ROutput,
   SessionBanner,
 } from "./ascii-art";
+import { SkillBadgesRow, SpeakButton, type SkillId } from "@/components/glass";
 
 export interface FileAttachment {
   type: "image" | "plot" | "file";
@@ -29,6 +30,8 @@ export interface TerminalMessage {
   content: string;
   timestamp: number;
   files?: FileAttachment[];
+  skillsUsed?: string[];
+  language?: string;
 }
 
 interface TerminalOutputProps {
@@ -99,14 +102,20 @@ export function TerminalOutput({
       return (
         <View key={message.id} style={styles.agentMessageContainer}>
           <View style={styles.agentHeader}>
-            <Text style={[styles.agentLabel, { color: colors.primary }]}>◆ META</Text>
-            <Text style={[styles.timestamp, { color: colors.muted }]}>
-              {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </Text>
+            <Text style={[styles.agentLabel, { color: colors.primary }]}>{"◆ GLASS 🦊"}</Text>
+            <View style={styles.agentHeaderActions}>
+              <SpeakButton text={message.content} language={message.language} size="small" />
+              <Text style={[styles.timestamp, { color: colors.muted }]}>
+                {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </Text>
+            </View>
           </View>
           <View style={[styles.agentContent, { borderLeftColor: colors.primary }]}>
             <MarkdownRenderer content={message.content} />
             {message.files && message.files.length > 0 && renderFileAttachments(message.files)}
+            {message.skillsUsed && message.skillsUsed.length > 0 && (
+              <SkillBadgesRow skills={message.skillsUsed as SkillId[]} size="small" />
+            )}
           </View>
         </View>
       );
@@ -292,6 +301,11 @@ const styles = StyleSheet.create({
     }),
     fontSize: 12,
     fontWeight: 'bold',
+  },
+  agentHeaderActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   timestamp: {
     fontFamily: Platform.select({
