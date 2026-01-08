@@ -11,3 +11,5 @@ export { GlassChatInput } from './GlassChatInput';
 export { SpeakButton } from './SpeakButton';
 export { SkillBadge, SkillBadgesRow, GLASS_SKILLS, type SkillId } from './SkillBadge';
 export { QuickPrompts, QuickPromptsBar, QUICK_PROMPTS } from './QuickPrompts';
+export { VoiceInputButton } from './VoiceInputButton';
+export { GlassMascotLarge, type GlassLargeState } from './GlassMascotLarge';

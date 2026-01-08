@@ -8,7 +8,8 @@ import {
   SnippetsLibrary,
   ExportSheet,
 } from "@/components/terminal";
-import { GlassStatusBarTUI, GlassChatInput, QuickPromptsBar } from "@/components/glass";
+import { GlassStatusBarTUI, GlassChatInput, QuickPromptsBar, VoiceInputButton, GlassMascotLarge } from "@/components/glass";
+import { SpreadsheetEditor, SpreadsheetImporter, type SpreadsheetData } from "@/components/spreadsheet";
 import type { CSVData } from "@/components/terminal";
 import { PracticeDatasets } from "@/components/tutorial";
 import { useAgent } from "@/hooks/use-agent";
@@ -123,6 +124,11 @@ export default function TerminalScreen() {
     filename?: string;
   } | undefined>(undefined);
 
+  // Spreadsheet states
+  const [showSpreadsheetEditor, setShowSpreadsheetEditor] = useState(false);
+  const [showSpreadsheetImporter, setShowSpreadsheetImporter] = useState(false);
+  const [currentSpreadsheet, setCurrentSpreadsheet] = useState<SpreadsheetData | undefined>(undefined);
+
   // Handle message submission - route to appropriate handler
   const handleSubmit = useCallback((input: string) => {
     const trimmed = input.trim();
@@ -182,6 +188,42 @@ export default function TerminalScreen() {
   }) => {
     setExportContent(content);
     setShowExport(true);
+  }, []);
+
+  // Handle voice input transcript
+  const handleVoiceTranscript = useCallback((text: string) => {
+    if (text.trim()) {
+      sendGlassMessage(text);
+    }
+  }, [sendGlassMessage]);
+
+  // Handle spreadsheet save
+  const handleSpreadsheetSave = useCallback((data: SpreadsheetData) => {
+    setCurrentSpreadsheet(data);
+    // Convert to CSV format for agent
+    const csvContent = [
+      data.columns.map(c => c.label).join(','),
+      ...data.rows.map(row => data.columns.map(c => row[c.key] || '').join(','))
+    ].join('\n');
+    
+    addSystemMessage(`📊 Spreadsheet saved: ${data.name}\n   ${data.rows.length} studies • ${data.columns.length} columns`);
+    
+    // Make data available for analysis
+    const csvData: CSVData = {
+      fileName: `${data.name}.csv`,
+      headers: data.columns.map(c => c.label),
+      rows: data.rows.map(row => 
+        data.columns.map(c => String(row[c.key] || ''))
+      ),
+      filePath: '',
+    };
+    sendAgentMessage(`/data load ${data.name}`, { csvData });
+  }, [addSystemMessage, sendAgentMessage]);
+
+  // Handle spreadsheet import
+  const handleSpreadsheetImport = useCallback((data: SpreadsheetData) => {
+    setCurrentSpreadsheet(data);
+    setShowSpreadsheetEditor(true);
   }, []);
 
   return (
@@ -271,6 +313,24 @@ export default function TerminalScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
+            onPress={() => setShowSpreadsheetEditor(true)}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: colors.success + '20',
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              borderRadius: 16,
+              gap: 4,
+            }}
+          >
+            <Text style={{ fontSize: 14 }}>{"📝"}</Text>
+            <Text style={{ color: colors.success, fontSize: 12, fontWeight: "600" }}>
+              {"New Data"}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
             onPress={() => setShowCSVPicker(true)}
             style={{
               flexDirection: "row",
@@ -340,14 +400,24 @@ export default function TerminalScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Glass Chat Input - Direct connection to MiniMax M2.1 */}
-        <GlassChatInput
-          onSubmit={handleSubmit}
-          disabled={!glassReady && !isConnected}
-          isThinking={isThinking}
-          glassState={glassState}
-          placeholder="Ask Glass about meta-analysis..."
-        />
+        {/* Glass Chat Input with Voice Input */}
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 8, paddingHorizontal: 8, paddingBottom: 8 }}>
+          <View style={{ flex: 1 }}>
+            <GlassChatInput
+              onSubmit={handleSubmit}
+              disabled={!glassReady && !isConnected}
+              isThinking={isThinking}
+              glassState={glassState}
+              placeholder="Ask Glass about meta-analysis..."
+            />
+          </View>
+          <VoiceInputButton
+            onTranscript={handleVoiceTranscript}
+            disabled={isThinking}
+            size="medium"
+            language="pt-BR"
+          />
+        </View>
       </KeyboardAvoidingView>
 
       {/* CSV Picker Modal */}
@@ -386,6 +456,22 @@ export default function TerminalScreen() {
           addSystemMessage(summary);
           sendAgentMessage(`/data load ${data.fileName}`, { csvData: data });
         }}
+      />
+
+      {/* Spreadsheet Editor Modal */}
+      <SpreadsheetEditor
+        visible={showSpreadsheetEditor}
+        onClose={() => setShowSpreadsheetEditor(false)}
+        onSave={handleSpreadsheetSave}
+        initialData={currentSpreadsheet}
+        templateType="binary"
+      />
+
+      {/* Spreadsheet Importer Modal */}
+      <SpreadsheetImporter
+        visible={showSpreadsheetImporter}
+        onClose={() => setShowSpreadsheetImporter(false)}
+        onImport={handleSpreadsheetImport}
       />
     </ScreenContainer>
   );

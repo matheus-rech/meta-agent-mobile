@@ -964,3 +964,12 @@
 - [x] Quick prompts for common questions (QuickPrompts, QuickPromptsBar)
 - [x] Integration with home screen terminal output
 - [x] Tests for all new features (455 tests passing)
+
+
+## Voice Input & Spreadsheet Support (v3.2) - COMPLETED
+- [x] Voice input with speech-to-text for hands-free interaction (VoiceInputButton)
+- [x] Spreadsheet editor component for in-app data entry (SpreadsheetEditor)
+- [x] Spreadsheet upload and import CSV (SpreadsheetImporter)
+- [x] Larger animated Glass mascot with front/back loop animation (GlassMascotLarge)
+- [x] Integration with meta-analysis workflow (home screen integration)
+- [x] 468 tests passing
