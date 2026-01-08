@@ -29,3 +29,14 @@ export {
   type SpreadsheetTemplate,
   type StudyType,
 } from './template.service';
+
+export {
+  generateRCode,
+  generateRCodeSnippet,
+  detectAnalysisType,
+  getDefaultEffectMeasure,
+  type AnalysisType,
+  type EffectMeasure,
+  type RCodeOptions,
+  type GeneratedRCode,
+} from './r-code-generator.service';

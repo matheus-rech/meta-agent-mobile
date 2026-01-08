@@ -44,6 +44,7 @@ import {
   GLASS_GREETINGS,
   createBox,
 } from '@/constants/ascii-art';
+import { GlassAnimatedEntrance } from '@/components/glass';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -287,15 +288,12 @@ export default function OnboardingScreen() {
         </Text>
       </View>
       
-      {/* Glass Fox Introduction */}
-      <View style={styles.metaIntro}>
-        <Text style={[styles.asciiAvatar, { color: colors.success }]}>
-          {GLASS_FOX_SMALL}
-        </Text>
-        <Text style={[styles.metaGreeting, { color: colors.foreground }]}>
-          {GLASS_GREETINGS[0]}
-        </Text>
-      </View>
+      {/* Animated Glass Fox Introduction */}
+      <GlassAnimatedEntrance
+        greeting={GLASS_GREETINGS[0]}
+        showSparkles={true}
+        size="medium"
+      />
       
       <Text style={[styles.stepSubtitle, { color: colors.muted }]}>
         Your AI-powered meta-analysis assistant
@@ -496,6 +494,19 @@ export default function OnboardingScreen() {
         Our Recommendation
       </Text>
       
+      {/* Pre-loaded model notice */}
+      <View style={[styles.preloadedNotice, { backgroundColor: colors.success + '15', borderColor: colors.success }]}>
+        <Text style={[styles.preloadedIcon]}>🚀</Text>
+        <View style={styles.preloadedTextContainer}>
+          <Text style={[styles.preloadedTitle, { color: colors.success }]}>
+            Cloud AI Ready!
+          </Text>
+          <Text style={[styles.preloadedDescription, { color: colors.foreground }]}>
+            Glass já está funcionando com IA na nuvem. O modelo local é opcional para uso offline.
+          </Text>
+        </View>
+      </View>
+      
       {recommendation && (
         <>
           <View style={[styles.recommendationCard, { backgroundColor: colors.surface, borderColor: colors.primary }]}>
@@ -508,8 +519,13 @@ export default function OnboardingScreen() {
                   by {recommendation.model.creator}
                 </Text>
               </View>
-              <View style={[styles.recommendationBadge, { backgroundColor: colors.success }]}>
-                <Text style={styles.recommendationBadgeText}>Best Match</Text>
+              <View style={styles.recommendationBadgeRow}>
+                <View style={[styles.recommendationBadge, { backgroundColor: colors.success }]}>
+                  <Text style={styles.recommendationBadgeText}>Best Match</Text>
+                </View>
+                <View style={[styles.optionalBadge, { backgroundColor: colors.muted + '30' }]}>
+                  <Text style={[styles.optionalBadgeText, { color: colors.muted }]}>Opcional</Text>
+                </View>
               </View>
             </View>
             
@@ -919,5 +935,45 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
+  },
+  // Pre-loaded model notice styles
+  preloadedNotice: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginBottom: 20,
+    gap: 12,
+  },
+  preloadedIcon: {
+    fontSize: 32,
+  },
+  preloadedTextContainer: {
+    flex: 1,
+  },
+  preloadedTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  preloadedDescription: {
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  recommendationBadgeRow: {
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    gap: 4,
+  },
+  optionalBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+  },
+  optionalBadgeText: {
+    fontSize: 10,
+    fontWeight: '500',
   },
 });

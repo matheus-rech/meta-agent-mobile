@@ -992,3 +992,24 @@
 - [x] Voice output for data entry verification (DataEntryVoice component)
 - [x] Validation summary bar showing error/warning counts
 - [x] 503 tests passing
+
+
+## Spreadsheet Data Management (v3.4)
+- [ ] R code generation from spreadsheet data
+- [ ] Export R code for RStudio or in-app console
+- [ ] Auto-save every 30 seconds
+- [ ] Undo/redo history stack for edits
+- [ ] R code preview UI component
+- [ ] Enhanced Glass mascot entrance animation
+- [ ] Clarify pre-loaded model in device/model selection screen
+
+
+## Spreadsheet Data Management (v3.4) - COMPLETED
+- [x] R code generation from spreadsheet data (r-code-generator.service.ts)
+- [x] Export R code for RStudio or in-app console (RCodePreview component)
+- [x] Auto-save every 30 seconds (useAutoSave hook)
+- [x] Undo/redo history stack for edits (useHistory, useSpreadsheetHistory hooks)
+- [x] R code preview UI component with syntax highlighting
+- [x] Enhanced Glass mascot entrance animation (GlassAnimatedEntrance)
+- [x] Clarify pre-loaded model in device/model selection screen
+- [x] 538 tests passing
