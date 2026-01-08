@@ -111,7 +111,8 @@ class MiniAgentService {
   async initialize(config: MiniAgentConfig): Promise<void> {
     this.config = {
       ...config,
-      baseUrl: config.baseUrl || 'https://api.minimax.io/v1',
+      // Use Anthropic-compatible endpoint for international users
+      baseUrl: config.baseUrl || 'https://api.minimax.io/anthropic',
       model: config.model || 'MiniMax-M2.1',
     };
     this.initialized = true;
@@ -179,29 +180,32 @@ class MiniAgentService {
         systemPrompt += `\n\n## Knowledge Base Context\n${ragContext}`;
       }
 
-      // Call MiniMax API (Anthropic-compatible)
-      const response = await fetch(`${this.config.baseUrl}/chat/completions`, {
+      // Call MiniMax API (Anthropic-compatible format)
+      // Endpoint: https://api.minimax.io/anthropic/v1/messages
+      const response = await fetch(`${this.config.baseUrl}/v1/messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.config.apiKey}`,
+          'x-api-key': this.config.apiKey,
+          'anthropic-version': '2023-06-01',
         },
         body: JSON.stringify({
           model: this.config.model,
-          messages: [
-            { role: 'system', content: systemPrompt },
-            ...messages,
-          ],
+          system: systemPrompt,
+          messages: messages.map(m => ({
+            role: m.role,
+            content: [{ type: 'text', text: m.content }],
+          })),
           max_tokens: 2048,
-          temperature: 0.7,
-          stream: false,
         }),
       });
 
       const result = await response.json();
 
-      if (result.choices && result.choices[0]?.message?.content) {
-        const assistantMessage = result.choices[0].message.content;
+      // Handle Anthropic-style response
+      if (result.content && Array.isArray(result.content)) {
+        const textBlock = result.content.find((b: any) => b.type === 'text');
+        const assistantMessage = textBlock?.text || '';
         
         // Add to history
         this.conversationHistory.push({

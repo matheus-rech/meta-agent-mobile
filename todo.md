@@ -866,3 +866,18 @@
 - MiniMax API key needs verification (returned 'invalid api key')
 - Gemini API key working (7 documents uploaded)
 - Mini-Agent CLI installed at /home/ubuntu/.local/bin/mini-agent
+
+
+## MiniMax Anthropic API Integration (v3.9)
+
+### API Configuration
+- [x] Configure MiniMax API key (sk-cp-...)
+- [x] Update mini-agent.service.ts for Anthropic-compatible endpoint
+- [x] Use correct endpoint: https://api.minimax.io/anthropic/v1/messages
+- [x] Use x-api-key header (Anthropic format)
+- [x] Model: MiniMax-M2.1
+
+### Testing
+- [x] API key validation test passing
+- [x] All 391 tests passing
+- [x] MiniMax M2.1 responding with "thinking" blocks

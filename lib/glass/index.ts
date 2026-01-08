@@ -39,3 +39,12 @@ export {
   type MiniAgentResponse,
   type SkillReference,
 } from './mini-agent.service';
+
+// Glass System Prompt with AgentSkills integration
+export {
+  generateGlassSystemPrompt,
+  loadSkillContent,
+  getAvailableSkills,
+  AVAILABLE_SKILLS_XML,
+  GLASS_IDENTITY,
+} from './glass-system-prompt';

@@ -1,0 +1,145 @@
+<available_skills>
+<skill>
+<name>
+bayesian-meta-analysis
+</name>
+<description>
+Teach Bayesian approaches to meta-analysis including prior specification, MCMC methods, and interpretation of posterior distributions. Use when users want to incorporate prior knowledge, need probabilistic interpretations, or are working with sparse data.
+</description>
+<location>
+/home/ubuntu/meta-agent-mobile/agentskills/bayesian-meta-analysis/SKILL.md
+</location>
+</skill>
+<skill>
+<name>
+data-extraction
+</name>
+<description>
+Extract and prepare study data for meta-analysis including effect size calculation, variance estimation, and handling missing data. Use when users need to convert reported statistics into analyzable format or calculate effect sizes from raw data.
+</description>
+<location>
+/home/ubuntu/meta-agent-mobile/agentskills/data-extraction/SKILL.md
+</location>
+</skill>
+<skill>
+<name>
+diagnostic-meta-analysis
+</name>
+<description>
+Teach meta-analysis of diagnostic test accuracy studies including sensitivity, specificity, SROC curves, and bivariate models. Use when users need to synthesize diagnostic accuracy data, understand SROC curves, or assess quality with QUADAS-2.
+</description>
+<location>
+/home/ubuntu/meta-agent-mobile/agentskills/diagnostic-meta-analysis/SKILL.md
+</location>
+</skill>
+<skill>
+<name>
+forest-plot-creation
+</name>
+<description>
+Generate and interpret forest plots for meta-analysis visualization using R and the metafor package. Use when users need to create forest plots, understand visual representation of pooled effects, or interpret study weights and confidence intervals.
+</description>
+<location>
+/home/ubuntu/meta-agent-mobile/agentskills/forest-plot-creation/SKILL.md
+</location>
+</skill>
+<skill>
+<name>
+grade-assessment
+</name>
+<description>
+Apply the GRADE framework to assess certainty of evidence in systematic reviews. Use when users need to rate evidence quality, create Summary of Findings tables, or understand the factors that affect confidence in effect estimates.
+</description>
+<location>
+/home/ubuntu/meta-agent-mobile/agentskills/grade-assessment/SKILL.md
+</location>
+</skill>
+<skill>
+<name>
+heterogeneity-analysis
+</name>
+<description>
+Assess and interpret between-study heterogeneity in meta-analysis using I², Q statistic, tau², and prediction intervals. Use when users need to evaluate consistency across studies, understand sources of variation, or decide if pooling is appropriate.
+</description>
+<location>
+/home/ubuntu/meta-agent-mobile/agentskills/heterogeneity-analysis/SKILL.md
+</location>
+</skill>
+<skill>
+<name>
+ipd-meta-analysis
+</name>
+<description>
+Teach Individual Patient Data (IPD) meta-analysis methods for analyzing raw participant-level data from multiple studies. Use when users have access to original datasets, need to explore treatment-effect modifiers, or want to conduct time-to-event analyses.
+</description>
+<location>
+/home/ubuntu/meta-agent-mobile/agentskills/ipd-meta-analysis/SKILL.md
+</location>
+</skill>
+<skill>
+<name>
+meta-analysis-fundamentals
+</name>
+<description>
+Teach the foundational concepts of meta-analysis including effect sizes, statistical models, and evidence synthesis. Use when users ask about meta-analysis basics, want to understand pooled effects, or need guidance on fixed vs random effects models.
+</description>
+<location>
+/home/ubuntu/meta-agent-mobile/agentskills/meta-analysis-fundamentals/SKILL.md
+</location>
+</skill>
+<skill>
+<name>
+network-meta-analysis
+</name>
+<description>
+Teach network meta-analysis (NMA) for comparing multiple treatments simultaneously. Use when users need to compare more than two interventions, understand indirect comparisons, or create network plots and league tables.
+</description>
+<location>
+/home/ubuntu/meta-agent-mobile/agentskills/network-meta-analysis/SKILL.md
+</location>
+</skill>
+<skill>
+<name>
+publication-bias-detection
+</name>
+<description>
+Detect and assess publication bias in meta-analysis using funnel plots, Egger&#x27;s test, trim-and-fill, and selection models. Use when users need to evaluate whether missing studies might affect their conclusions.
+</description>
+<location>
+/home/ubuntu/meta-agent-mobile/agentskills/publication-bias-detection/SKILL.md
+</location>
+</skill>
+<skill>
+<name>
+r-code-generation
+</name>
+<description>
+Generate R code for meta-analysis using the metafor package, including data preparation, model fitting, visualization, and sensitivity analyses. Use when users need executable R code for their meta-analysis workflow.
+</description>
+<location>
+/home/ubuntu/meta-agent-mobile/agentskills/r-code-generation/SKILL.md
+</location>
+</skill>
+<skill>
+<name>
+socratic-teaching
+</name>
+<description>
+Apply Socratic teaching methodology to guide users through meta-analysis concepts using questions, scaffolding, and discovery-based learning. Use when teaching meta-analysis to students or researchers who want to deeply understand the methodology.
+</description>
+<location>
+/home/ubuntu/meta-agent-mobile/agentskills/socratic-teaching/SKILL.md
+</location>
+</skill>
+<skill>
+<name>
+trial-sequential-analysis
+</name>
+<description>
+Teach Trial Sequential Analysis (TSA) for controlling type I and II errors in cumulative meta-analyses. Use when users need to assess if meta-analysis has sufficient information, want to avoid premature conclusions, or need to plan future trials.
+</description>
+<location>
+/home/ubuntu/meta-agent-mobile/agentskills/trial-sequential-analysis/SKILL.md
+</location>
+</skill>
+</available_skills>
