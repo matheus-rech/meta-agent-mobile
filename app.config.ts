@@ -109,6 +109,18 @@ const config: ExpoConfig = {
     typedRoutes: true,
     reactCompiler: true,
   },
+  extra: {
+    eas: {
+      projectId: "74657178-3454-4986-a6c7-b4879df4f551",
+    },
+  },
+  updates: {
+    url: "https://u.expo.dev/74657178-3454-4986-a6c7-b4879df4f551",
+  },
+  runtimeVersion: {
+    policy: "appVersion",
+  },
+  owner: "mmrech",
 };
 
 export default config;

@@ -1397,3 +1397,28 @@
 - [ ] Configure environment variables on Railway
 - [ ] Test deployed API endpoints
 - [ ] Update app to use deployed API URL
+
+## Mobile Deployment (EAS Build)
+
+### EAS Configuration
+- [ ] Configure eas.json for iOS and Android builds
+- [ ] Set up build profiles (development, preview, production)
+- [ ] Configure app signing for iOS (provisioning profiles)
+- [ ] Configure app signing for Android (keystore)
+
+### Backend Deployment
+- [ ] Deploy server to Railway for production API
+- [ ] Configure production environment variables
+- [ ] Update app to use production API URL
+
+### Mobile Builds
+- [ ] Build Android APK/AAB for testing
+- [ ] Build iOS IPA for testing
+- [ ] Test builds on physical devices
+- [ ] Prepare for app store submission
+
+### Expo Go Deployment
+- [x] Configure app for Expo Go compatibility
+- [x] Generate QR code for Expo Go access
+- [x] Publish update to Expo servers (e9869b75-1d9b-4866-933b-fe18a7f1a5cc)
+- [ ] Test on physical device via Expo Go
