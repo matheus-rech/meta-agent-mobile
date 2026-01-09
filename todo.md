@@ -1368,3 +1368,32 @@
 - [x] Configure test suite to run on PRs
 - [x] Initialize git repository
 - [x] Push to GitHub (https://github.com/matheus-rech/meta-agent-mobile)
+
+
+### Railway Deployment
+- [ ] Create railway.toml configuration
+- [ ] Create Dockerfile for Glass API service
+- [ ] Set up environment variables template
+- [ ] Deploy Glass API to Railway
+- [ ] Test API endpoints
+- [ ] Document deployment URL and API keys
+
+## Glass AI Server Integration (v4.0)
+
+### Server-Side Glass Endpoint
+- [x] Create server-side Glass chat endpoint via tRPC
+- [x] Route Glass API calls through server to avoid CORS issues
+- [x] Implement MiniMax M2.1 API integration on server
+- [x] Add skill detection in server response
+- [x] Add language detection in server response
+- [x] Update useGlass hook to use tRPC endpoint
+- [x] Add Glass health check endpoint
+- [x] Write comprehensive tests for Glass server endpoint (6 tests)
+- [x] All 907 tests passing
+
+### Railway Deployment Preparation
+- [ ] Complete Railway CLI authentication
+- [ ] Deploy Glass API to Railway
+- [ ] Configure environment variables on Railway
+- [ ] Test deployed API endpoints
+- [ ] Update app to use deployed API URL

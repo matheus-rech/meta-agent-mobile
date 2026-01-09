@@ -1,13 +1,12 @@
 /**
  * useGlass Hook
  * 
- * Manages Glass 🦊 AI agent state and interactions using MiniMax M2.1 API
- * with Gemini RAG for knowledge-grounded responses.
+ * Manages Glass 🦊 AI agent state and interactions using server-side tRPC endpoint
+ * that proxies to MiniMax M2.1 API.
  */
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import { miniAgentService, type ChatMessage, type MiniAgentResponse } from "@/lib/glass/mini-agent.service";
-import { geminiFileSearchService } from "@/lib/glass/gemini-file-search.service";
+import { trpc } from "@/lib/trpc";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Storage keys
@@ -41,9 +40,22 @@ interface UseGlassReturn {
   getSkills: () => { id: string; name: string; description: string }[];
 }
 
-// API keys (from environment or hardcoded for testing)
-const MINIMAX_API_KEY = 'sk-cp-2UyY_RQ6sHxiAv43y3mVc_y1aiYTm3KkK1V45XyqFXS-jW9Bf2Z2PFNynpsIBqOWiacDMd9H8WocHAxjGSgyqYamXYMRG-cnD8e8GFz1DqdNBZHNASH2Xt0';
-const GEMINI_API_KEY = 'AIzaSyAyV5v8S1YRmVV6xwZ3ZJfwk1r1MID9Oco';
+// Available skills for Glass
+const GLASS_SKILLS = [
+  { id: 'meta-analysis-fundamentals', name: 'Meta-Analysis Fundamentals', description: 'Core concepts' },
+  { id: 'forest-plot-creation', name: 'Forest Plot Creation', description: 'Visualization' },
+  { id: 'heterogeneity-analysis', name: 'Heterogeneity Analysis', description: 'I² and tau²' },
+  { id: 'publication-bias-detection', name: 'Publication Bias', description: 'Funnel plots' },
+  { id: 'data-extraction', name: 'Data Extraction', description: 'Effect sizes' },
+  { id: 'grade-assessment', name: 'GRADE Assessment', description: 'Evidence certainty' },
+  { id: 'r-code-generation', name: 'R Code Generation', description: 'metafor package' },
+  { id: 'socratic-teaching', name: 'Socratic Teaching', description: 'Guided learning' },
+  { id: 'network-meta-analysis', name: 'Network Meta-Analysis', description: 'Indirect comparisons' },
+  { id: 'bayesian-meta-analysis', name: 'Bayesian Meta-Analysis', description: 'Bayesian approaches' },
+  { id: 'ipd-meta-analysis', name: 'IPD Meta-Analysis', description: 'Individual data' },
+  { id: 'trial-sequential-analysis', name: 'Trial Sequential Analysis', description: 'TSA' },
+  { id: 'diagnostic-meta-analysis', name: 'Diagnostic Meta-Analysis', description: 'Sensitivity/specificity' },
+];
 
 export function useGlass(): UseGlassReturn {
   const [messages, setMessages] = useState<GlassMessage[]>([]);
@@ -54,31 +66,22 @@ export function useGlass(): UseGlassReturn {
   const [currentLanguage, setCurrentLanguage] = useState('auto');
   const initRef = useRef(false);
 
+  // tRPC mutation for Glass chat
+  const glassChatMutation = trpc.glass.chat.useMutation();
+
   // Generate unique message ID
   const generateId = () => `glass_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
 
   // Generate session ID
   const generateSessionId = () => `session_${Date.now().toString(36)}`;
 
-  // Initialize services
+  // Initialize
   useEffect(() => {
     if (initRef.current) return;
     initRef.current = true;
 
     const initialize = async () => {
       try {
-        // Initialize MiniMax service
-        await miniAgentService.initialize({
-          apiKey: MINIMAX_API_KEY,
-          baseUrl: 'https://api.minimax.io/anthropic',
-          model: 'MiniMax-M2.1',
-        });
-
-        // Initialize Gemini RAG service
-        await geminiFileSearchService.initialize({
-          apiKey: GEMINI_API_KEY,
-        });
-
         // Load or create session
         const storedSession = await AsyncStorage.getItem(GLASS_SESSION_KEY);
         if (storedSession) {
@@ -95,13 +98,6 @@ export function useGlass(): UseGlassReturn {
           try {
             const history = JSON.parse(storedHistory) as GlassMessage[];
             setMessages(history.slice(-50)); // Keep last 50 messages
-            
-            // Restore to MiniMax service
-            const chatHistory: ChatMessage[] = history.map(m => ({
-              role: m.role,
-              content: m.content,
-            }));
-            miniAgentService.setHistory(chatHistory);
           } catch (e) {
             console.error('[useGlass] Failed to parse history:', e);
           }
@@ -151,40 +147,51 @@ export function useGlass(): UseGlassReturn {
     setGlassState('thinking');
 
     try {
-      // Call MiniMax with RAG
-      const response: MiniAgentResponse = await miniAgentService.chat(trimmed, {
-        useRAG: true,
+      // Build history for API call
+      const history = messages.slice(-10).map(m => ({
+        role: m.role as 'user' | 'assistant',
+        content: m.content,
+      }));
+
+      // Call server-side Glass endpoint via tRPC
+      const response = await glassChatMutation.mutateAsync({
+        message: trimmed,
+        history,
         language: currentLanguage !== 'auto' ? currentLanguage : undefined,
+        useRAG: true,
       });
 
-      // Add assistant message
-      const assistantMessage: GlassMessage = {
-        id: generateId(),
-        role: 'assistant',
-        content: response.content,
-        timestamp: Date.now(),
-        skillsUsed: response.skillsUsed,
-        sources: response.sources,
-        language: response.language,
-      };
+      if (response.success) {
+        // Add assistant message
+        const assistantMessage: GlassMessage = {
+          id: generateId(),
+          role: 'assistant',
+          content: response.content,
+          timestamp: Date.now(),
+          skillsUsed: response.skillsUsed,
+          language: response.language,
+        };
 
-      setMessages(prev => {
-        const updated = [...prev, assistantMessage];
-        saveMessages(updated);
-        return updated;
-      });
+        setMessages(prev => {
+          const updated = [...prev, assistantMessage];
+          saveMessages(updated);
+          return updated;
+        });
 
-      // Update language if detected
-      if (response.language && currentLanguage === 'auto') {
-        setCurrentLanguage(response.language);
+        // Update language if detected
+        if (response.language && currentLanguage === 'auto') {
+          setCurrentLanguage(response.language);
+        }
+
+        setGlassState('talking');
+        
+        // Return to idle after a brief delay
+        setTimeout(() => {
+          setGlassState('idle');
+        }, 1000);
+      } else {
+        throw new Error(response.content || 'Unknown error');
       }
-
-      setGlassState('talking');
-      
-      // Return to idle after a brief delay
-      setTimeout(() => {
-        setGlassState('idle');
-      }, 1000);
     } catch (error) {
       console.error('[useGlass] Chat error:', error);
       
@@ -211,12 +218,11 @@ export function useGlass(): UseGlassReturn {
     } finally {
       setIsThinking(false);
     }
-  }, [isReady, currentLanguage, saveMessages]);
+  }, [isReady, currentLanguage, saveMessages, messages, glassChatMutation]);
 
   // Clear all messages
   const clearMessages = useCallback(async () => {
     setMessages([]);
-    miniAgentService.clearHistory();
     await AsyncStorage.removeItem(GLASS_HISTORY_KEY);
     
     // Generate new session
@@ -232,7 +238,7 @@ export function useGlass(): UseGlassReturn {
 
   // Get available skills
   const getSkills = useCallback(() => {
-    return miniAgentService.getSkills();
+    return GLASS_SKILLS;
   }, []);
 
   return {

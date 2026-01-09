@@ -243,6 +243,167 @@ Respond with a JSON object containing:
     })),
   }),
 
+  // Glass AI chat endpoint (proxies to MiniMax M2.1)
+  glass: router({
+    chat: publicProcedure
+      .input(
+        z.object({
+          message: z.string().min(1).max(10000),
+          history: z.array(messageSchema).max(50).optional(),
+          language: z.string().optional(),
+          useRAG: z.boolean().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { message, history = [], language, useRAG } = input;
+
+        // Glass system prompt
+        const GLASS_SYSTEM_PROMPT = `You are Glass 🦊, a friendly and knowledgeable fox who teaches meta-analysis.
+
+## Personality
+- Named after Gene Glass, who coined "meta-analysis" in 1976
+- Inspired by Zenko (善狐), the benevolent fox from Japanese mythology
+- Patient, encouraging, and uses the Socratic method
+- Adapts language automatically to match the user
+
+## Teaching Style
+- Ask guiding questions rather than giving direct answers
+- Celebrate progress with encouragement
+- Break complex concepts into digestible steps
+- Use practical examples from real meta-analyses
+- Reference the Cochrane Handbook when appropriate
+
+## Available Skills
+You have access to these AgentSkills for teaching:
+1. meta-analysis-fundamentals - Core concepts and terminology
+2. forest-plot-creation - Creating and interpreting forest plots
+3. heterogeneity-analysis - Understanding I² and tau²
+4. publication-bias-detection - Funnel plots and Egger's test
+5. data-extraction - Extracting effect sizes from studies
+6. grade-assessment - GRADE evidence certainty
+7. r-code-generation - metafor package code
+8. socratic-teaching - Guided learning methodology
+9. network-meta-analysis - Indirect comparisons
+10. bayesian-meta-analysis - Bayesian approaches
+11. ipd-meta-analysis - Individual participant data
+12. trial-sequential-analysis - TSA methodology
+13. diagnostic-meta-analysis - Sensitivity/specificity
+
+## Response Format
+- Keep responses concise but informative
+- Use markdown formatting when helpful
+- Include R code examples when relevant
+- Always cite sources from the knowledge base
+- End with a guiding question when teaching`;
+
+        // Build messages array
+        const messages = [
+          ...history.slice(-10).map((m) => ({
+            role: m.role as "user" | "assistant",
+            content: [{ type: "text" as const, text: m.content }],
+          })),
+          { role: "user" as const, content: [{ type: "text" as const, text: message }] },
+        ];
+
+        try {
+          // Call MiniMax API (Anthropic-compatible format)
+          const response = await fetch("https://api.minimax.io/anthropic/v1/messages", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": "sk-cp-2UyY_RQ6sHxiAv43y3mVc_y1aiYTm3KkK1V45XyqFXS-jW9Bf2Z2PFNynpsIBqOWiacDMd9H8WocHAxjGSgyqYamXYMRG-cnD8e8GFz1DqdNBZHNASH2Xt0",
+              "anthropic-version": "2023-06-01",
+            },
+            body: JSON.stringify({
+              model: "MiniMax-M2.1",
+              system: GLASS_SYSTEM_PROMPT,
+              messages,
+              max_tokens: 2048,
+            }),
+          });
+
+          const result = await response.json() as {
+            content?: Array<{ type: string; text?: string }>;
+            error?: { message?: string };
+          };
+
+          // Handle Anthropic-style response
+          if (result.content && Array.isArray(result.content)) {
+            const textBlock = result.content.find((b) => b.type === "text");
+            const assistantMessage = textBlock?.text || "";
+
+            // Detect skills used
+            const skillsUsed: string[] = [];
+            const contentLower = assistantMessage.toLowerCase();
+            const skillKeywords: Record<string, string[]> = {
+              "meta-analysis-fundamentals": ["effect size", "pooled estimate", "systematic review"],
+              "forest-plot-creation": ["forest plot", "diamond", "confidence interval"],
+              "heterogeneity-analysis": ["i²", "i-squared", "tau²", "heterogeneity", "q statistic"],
+              "publication-bias-detection": ["funnel plot", "egger", "publication bias", "trim and fill"],
+              "r-code-generation": ["metafor", "rma(", "escalc(", "forest("],
+            };
+            for (const [skill, keywords] of Object.entries(skillKeywords)) {
+              if (keywords.some((kw) => contentLower.includes(kw))) {
+                skillsUsed.push(skill);
+              }
+            }
+
+            // Detect language
+            const ptWords = ["você", "está", "são", "não", "como", "para", "isso"];
+            const esWords = ["usted", "está", "son", "como", "para", "esto", "qué"];
+            const ptCount = ptWords.filter((w) => contentLower.includes(w)).length;
+            const esCount = esWords.filter((w) => contentLower.includes(w)).length;
+            const detectedLanguage = ptCount > 2 ? "pt-BR" : esCount > 2 ? "es" : "en";
+
+            return {
+              success: true as const,
+              content: assistantMessage,
+              skillsUsed,
+              language: detectedLanguage,
+              timestamp: Date.now(),
+            };
+          }
+
+          // Handle error response
+          if (result.error) {
+            console.error("[Glass] API Error:", result.error);
+            return {
+              success: false as const,
+              content: `Error: ${result.error.message || "Unknown error"}`,
+              skillsUsed: [],
+              language: "en",
+              timestamp: Date.now(),
+            };
+          }
+
+          return {
+            success: false as const,
+            content: "I couldn't generate a response. Let me try again.",
+            skillsUsed: [],
+            language: "en",
+            timestamp: Date.now(),
+          };
+        } catch (error) {
+          console.error("[Glass] Chat error:", error);
+          return {
+            success: false as const,
+            content: "I encountered an error. Please check your connection and try again.",
+            skillsUsed: [],
+            language: "en",
+            timestamp: Date.now(),
+            error: error instanceof Error ? error.message : "Unknown error",
+          };
+        }
+      }),
+
+    // Health check
+    health: publicProcedure.query(() => ({
+      status: "ok",
+      timestamp: Date.now(),
+      model: "MiniMax-M2.1",
+    })),
+  }),
+
   // R execution endpoints
   r: router({
     // Check R environment status

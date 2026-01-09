@@ -1,0 +1,55 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build outputs (we build in container)
+dist
+.expo
+.next
+.turbo
+
+# Development files
+*.log
+*.local
+.env
+.env.*
+!.env.example
+
+# Test files
+__tests__
+tests
+*.test.ts
+*.spec.ts
+coverage
+
+# Documentation
+docs
+*.md
+!README.md
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Mobile specific
+android
+ios
+*.apk
+*.ipa
+
+# Deploy configs (not needed in container)
+deploy/
+Caddyfile
+
+# Assets we don't need in API
+assets/images/
