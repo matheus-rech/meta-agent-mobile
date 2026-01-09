@@ -28,6 +28,8 @@ import {
   type ValidationError,
 } from "@/lib/spreadsheet";
 import { PlotDigitizer, DigitizedDataImporter } from "@/components/digitizer";
+import { AnalysisSuggestionCard } from "./AnalysisSuggestionCard";
+import { useOrchestrator } from "@/lib/glass/orchestrator";
 
 // Default columns for meta-analysis data
 export const META_ANALYSIS_COLUMNS = [
@@ -114,6 +116,18 @@ export function SpreadsheetEditor({
   const [showDigitizer, setShowDigitizer] = useState(false);
   const [showDataImporter, setShowDataImporter] = useState(false);
   const [digitizedData, setDigitizedData] = useState<{ x: number; y: number }[]>([]);
+  const [suggestionCardCollapsed, setSuggestionCardCollapsed] = useState(false);
+
+  // Orchestrator for analysis suggestions
+  const orchestrator = useOrchestrator();
+
+  // Analyze data with orchestrator when rows change
+  useEffect(() => {
+    if (rows.length > 0 && rows.some(r => Object.values(r).some(v => v !== '' && v !== r.id))) {
+      const spreadsheetColumns = columns.map(c => ({ key: c.key, label: c.label, type: c.type }));
+      orchestrator.analyzeData(spreadsheetColumns, rows);
+    }
+  }, [rows, columns]);
 
   // Validate data whenever rows change
   useEffect(() => {
@@ -390,6 +404,42 @@ export function SpreadsheetEditor({
           {BOX.topLeft}{BOX.horizontal}{" Study Data Entry "}{BOX.horizontal.repeat(15)}{BOX.topRight}
         </Text>
 
+        {/* Analysis Suggestion Card */}
+        <View style={styles.suggestionCardContainer}>
+          <AnalysisSuggestionCard
+            detection={orchestrator.detection}
+            suggestion={orchestrator.suggestion}
+            isLoading={orchestrator.isAnalyzing}
+            collapsed={suggestionCardCollapsed}
+            onToggleCollapse={() => setSuggestionCardCollapsed(!suggestionCardCollapsed)}
+            onRunAnalysis={() => {
+              if (orchestrator.generatedCode) {
+                Alert.alert(
+                  'Run Analysis',
+                  'R code has been generated. Copy to clipboard or view in terminal?',
+                  [
+                    { text: 'Cancel', style: 'cancel' },
+                    { text: 'View Code', onPress: () => setShowGlassPrompt(orchestrator.generatedCode?.script || '') },
+                  ]
+                );
+              }
+            }}
+            onGenerateCode={() => {
+              if (orchestrator.suggestion) {
+                orchestrator.regenerateCode();
+                Alert.alert('Code Generated', 'R code is ready. Tap "Run Analysis" to view.');
+              }
+            }}
+            onExplain={() => {
+              if (orchestrator.suggestion) {
+                setShowGlassPrompt(
+                  `Explain ${orchestrator.suggestion.defaultMeasure} effect measure and ${orchestrator.suggestion.model.type} effects model for meta-analysis.`
+                );
+              }
+            }}
+          />
+        </View>
+
         {/* Validation Summary */}
         {validationResult && (validationResult.errors.length > 0 || validationResult.warnings.length > 0) && (
           <View style={[styles.validationSummary, { backgroundColor: validationResult.errors.length > 0 ? colors.error + "15" : colors.warning + "15" }]}>
@@ -606,6 +656,10 @@ const styles = StyleSheet.create({
     fontSize: 10,
     textAlign: "center",
     paddingVertical: 8,
+  },
+  suggestionCardContainer: {
+    paddingHorizontal: 12,
+    paddingTop: 8,
   },
   headerRow: {
     flexGrow: 0,

@@ -1334,3 +1334,14 @@
 - [x] Add command suggestions for all orchestrator commands
 - [x] Test /analyze command end-to-end (18 tests passing)
 - [x] Update /help text with Orchestrator Commands section
+
+
+### Demo Polish
+- [x] Create AnalysisSuggestionCard component
+- [x] Show detected data type with icon and confidence
+- [x] Display suggested effect measure and model
+- [x] Add "Run Analysis" and "Generate Code" buttons
+- [x] Integrate card into SpreadsheetEditor header
+- [x] Create onboarding tutorial (3-step walkthrough)
+- [x] Existing onboarding already triggers on first app launch
+- [ ] Test demo flow end-to-end
