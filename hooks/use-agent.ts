@@ -300,6 +300,53 @@ ${packageList}
           return;
         }
 
+        // Handle orchestrator commands
+        if (slashResult.response === "__ORCHESTRATOR_ANALYZE__") {
+          addMessage({
+            type: "system",
+            content: "__ORCHESTRATOR_ANALYZE__",
+            timestamp: Date.now(),
+          });
+          return;
+        }
+
+        if (slashResult.response === "__ORCHESTRATOR_DETECT__") {
+          addMessage({
+            type: "system",
+            content: "__ORCHESTRATOR_DETECT__",
+            timestamp: Date.now(),
+          });
+          return;
+        }
+
+        if (slashResult.response === "__ORCHESTRATOR_SUGGEST__") {
+          addMessage({
+            type: "system",
+            content: "__ORCHESTRATOR_SUGGEST__",
+            timestamp: Date.now(),
+          });
+          return;
+        }
+
+        if (slashResult.response === "__ORCHESTRATOR_GENERATE__") {
+          addMessage({
+            type: "system",
+            content: "__ORCHESTRATOR_GENERATE__",
+            timestamp: Date.now(),
+          });
+          return;
+        }
+
+        if (slashResult.response?.startsWith("__ORCHESTRATOR_EXPLAIN__:")) {
+          const topic = slashResult.response.slice("__ORCHESTRATOR_EXPLAIN__:".length);
+          addMessage({
+            type: "system",
+            content: `__ORCHESTRATOR_EXPLAIN__:${topic}`,
+            timestamp: Date.now(),
+          });
+          return;
+        }
+
         // Add system response
         if (slashResult.response) {
           addMessage({

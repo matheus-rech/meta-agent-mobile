@@ -26,6 +26,12 @@ R/Statistics Commands:
 /forest            Generate forest plot
 /funnel            Generate funnel plot
 
+Orchestrator Commands:
+/analyze           Run full analysis workflow on spreadsheet
+/detect            Detect data type from spreadsheet
+/suggest           Get analysis suggestions
+/generate-code     Generate R code for analysis
+
 Tips:
 • Type any message to chat with the AI agent
 • The agent can help with research, analysis, and tasks
@@ -299,6 +305,71 @@ or "check for publication bias".`;
       }
       const query = args.join(" ");
       return `__KNOWLEDGE_SEARCH__:${query}`;
+    },
+  },
+
+  // Orchestrator commands
+  analyze: {
+    name: "analyze",
+    description: "Run full analysis workflow on current spreadsheet",
+    usage: "/analyze",
+    handler: async () => {
+      return `__ORCHESTRATOR_ANALYZE__`;
+    },
+  },
+
+  detect: {
+    name: "detect",
+    description: "Detect data type from current spreadsheet",
+    usage: "/detect",
+    handler: async () => {
+      return `__ORCHESTRATOR_DETECT__`;
+    },
+  },
+
+  suggest: {
+    name: "suggest",
+    description: "Get analysis suggestions based on detected data type",
+    usage: "/suggest",
+    handler: async () => {
+      return `__ORCHESTRATOR_SUGGEST__`;
+    },
+  },
+
+  "generate-code": {
+    name: "generate-code",
+    description: "Generate R code for the suggested analysis",
+    usage: "/generate-code",
+    handler: async () => {
+      return `__ORCHESTRATOR_GENERATE__`;
+    },
+  },
+
+  explain: {
+    name: "explain",
+    description: "Explain an effect measure or meta-analysis concept",
+    usage: "/explain <topic>",
+    handler: async (args) => {
+      if (args.length === 0) {
+        return `Usage: /explain <topic>
+
+Effect Measures:
+  /explain OR    - Odds Ratio
+  /explain RR    - Risk Ratio
+  /explain SMD   - Standardized Mean Difference
+  /explain MD    - Mean Difference
+  /explain HR    - Hazard Ratio
+
+Concepts:
+  /explain heterogeneity
+  /explain publication bias
+  /explain forest plot
+  /explain funnel plot
+  /explain random effects
+  /explain fixed effect`;
+      }
+      const topic = args.join(" ");
+      return `__ORCHESTRATOR_EXPLAIN__:${topic}`;
     },
   },
 };

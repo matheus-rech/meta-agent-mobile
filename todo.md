@@ -1324,3 +1324,13 @@
 - [x] Connect orchestrator to Glass conversation context (orchestrator-integration.ts)
 - [x] Enable Glass to trigger R code generation
 - [x] Test Glass orchestrator integration end-to-end (49 tests passing)
+
+
+### /analyze Slash Command
+- [x] Review existing slash command system in lib/agent/commands.ts
+- [x] Add /analyze command to command registry
+- [x] Add /detect, /suggest, /generate-code, /explain commands
+- [x] Connect commands to orchestrator integration via markers
+- [x] Add command suggestions for all orchestrator commands
+- [x] Test /analyze command end-to-end (18 tests passing)
+- [x] Update /help text with Orchestrator Commands section
