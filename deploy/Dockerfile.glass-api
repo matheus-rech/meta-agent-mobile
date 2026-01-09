@@ -1,0 +1,101 @@
+# =============================================================================
+# Glass API Server Dockerfile
+# =============================================================================
+# Multi-stage build for the Glass API server with R runtime
+# Includes metafor, meta, netmeta, mada, and other meta-analysis packages
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Stage 1: Build the Node.js application
+# -----------------------------------------------------------------------------
+FROM node:22-slim AS builder
+
+WORKDIR /app
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Copy source code
+COPY . .
+
+# Build the application
+RUN pnpm build
+
+# -----------------------------------------------------------------------------
+# Stage 2: Production runtime with R
+# -----------------------------------------------------------------------------
+FROM node:22-slim AS runner
+
+# Install R and system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    r-base \
+    r-base-dev \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libxml2-dev \
+    libfontconfig1-dev \
+    libfreetype6-dev \
+    libpng-dev \
+    libtiff5-dev \
+    libjpeg-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    firejail \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install R packages for meta-analysis
+RUN R -e "install.packages(c( \
+    'metafor', \
+    'meta', \
+    'netmeta', \
+    'mada', \
+    'robvis', \
+    'ggplot2', \
+    'dplyr', \
+    'tidyr', \
+    'jsonlite', \
+    'png', \
+    'grid', \
+    'gridExtra' \
+), repos='https://cloud.r-project.org/', Ncpus=4)"
+
+# Create non-root user for security
+RUN groupadd -r glass && useradd -r -g glass glass
+
+WORKDIR /app
+
+# Copy built application from builder stage
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
+
+# Copy R scripts and templates
+COPY --from=builder /app/lib/r-templates ./lib/r-templates
+
+# Create temp directory for R execution
+RUN mkdir -p /tmp/glass && chown -R glass:glass /tmp/glass
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV R_HOME=/usr/lib/R
+ENV R_LIBS_USER=/usr/local/lib/R/site-library
+
+# Expose port
+EXPOSE 4000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:4000/health || exit 1
+
+# Run as non-root user
+USER glass
+
+# Start the server
+CMD ["node", "dist/server/glass-api/index.js"]

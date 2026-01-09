@@ -1,0 +1,60 @@
+# =============================================================================
+# R Worker Dockerfile
+# =============================================================================
+# Isolated R execution environment with Firejail sandboxing
+# Processes R code jobs from Redis queue
+# =============================================================================
+
+FROM r-base:4.3.2
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libxml2-dev \
+    libfontconfig1-dev \
+    libfreetype6-dev \
+    libpng-dev \
+    libtiff5-dev \
+    libjpeg-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    firejail \
+    nodejs \
+    npm \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install R packages
+RUN R -e "install.packages(c( \
+    'metafor', \
+    'meta', \
+    'netmeta', \
+    'mada', \
+    'robvis', \
+    'ggplot2', \
+    'dplyr', \
+    'tidyr', \
+    'jsonlite', \
+    'png', \
+    'grid', \
+    'gridExtra', \
+    'forestplot', \
+    'gemtc' \
+), repos='https://cloud.r-project.org/', Ncpus=4)"
+
+# Install Node.js worker script dependencies
+WORKDIR /worker
+COPY deploy/r-worker/package.json ./
+RUN npm install
+
+COPY deploy/r-worker/ ./
+
+# Create work directory
+RUN mkdir -p /tmp/r-work && chmod 777 /tmp/r-work
+
+# Firejail profile for R
+COPY deploy/r-worker/r-sandbox.profile /etc/firejail/r-sandbox.profile
+
+ENV NODE_ENV=production
+
+CMD ["node", "worker.js"]

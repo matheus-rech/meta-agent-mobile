@@ -1,0 +1,89 @@
+# =============================================================================
+# Caddy Reverse Proxy Configuration
+# =============================================================================
+# Automatically handles HTTPS certificates via Let's Encrypt
+# Replace {$DOMAIN} with your actual domain
+# =============================================================================
+
+# Glass API - api.yourdomain.com
+{$GLASS_DOMAIN:api.localhost} {
+    # Enable compression
+    encode gzip zstd
+
+    # Rate limiting
+    @api_limit {
+        path /v1/*
+    }
+    rate_limit @api_limit {
+        zone api_zone {
+            key {remote_host}
+            events 100
+            window 1m
+        }
+    }
+
+    # CORS headers
+    header {
+        Access-Control-Allow-Origin *
+        Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        Access-Control-Allow-Headers "Authorization, Content-Type, X-API-Key"
+        Access-Control-Max-Age 86400
+    }
+
+    # Handle preflight requests
+    @options method OPTIONS
+    respond @options 204
+
+    # Proxy to Glass API
+    reverse_proxy glass-api:4000 {
+        health_uri /health
+        health_interval 30s
+        health_timeout 10s
+    }
+
+    # Logging
+    log {
+        output file /var/log/caddy/glass-api.log
+        format json
+    }
+}
+
+# Mobile API - app.yourdomain.com
+{$APP_DOMAIN:app.localhost} {
+    encode gzip zstd
+
+    # Proxy to Mobile API
+    reverse_proxy mobile-api:3000 {
+        health_uri /health
+        health_interval 30s
+        health_timeout 10s
+    }
+
+    log {
+        output file /var/log/caddy/mobile-api.log
+        format json
+    }
+}
+
+# Web App static files (if serving from same server)
+{$WEB_DOMAIN:www.localhost} {
+    encode gzip zstd
+
+    # Serve static files
+    root * /srv/web
+    file_server
+
+    # SPA fallback
+    try_files {path} /index.html
+
+    # Cache static assets
+    @static {
+        path *.js *.css *.png *.jpg *.jpeg *.gif *.svg *.woff *.woff2
+    }
+    header @static Cache-Control "public, max-age=31536000, immutable"
+
+    log {
+        output file /var/log/caddy/web.log
+        format json
+    }
+}

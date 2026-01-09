@@ -1,0 +1,45 @@
+# =============================================================================
+# Mobile API Server Dockerfile
+# =============================================================================
+# Lightweight Node.js container for the tRPC mobile API
+# =============================================================================
+
+FROM node:22-slim AS builder
+
+WORKDIR /app
+
+RUN npm install -g pnpm
+
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+
+COPY . .
+RUN pnpm build
+
+# -----------------------------------------------------------------------------
+# Production runtime
+# -----------------------------------------------------------------------------
+FROM node:22-slim AS runner
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN groupadd -r mobile && useradd -r -g mobile mobile
+
+WORKDIR /app
+
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
+
+ENV NODE_ENV=production
+
+EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
+    CMD curl -f http://localhost:3000/health || exit 1
+
+USER mobile
+
+CMD ["node", "dist/server/_core/index.js"]
