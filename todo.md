@@ -1345,3 +1345,16 @@
 - [x] Create onboarding tutorial (3-step walkthrough)
 - [x] Existing onboarding already triggers on first app launch
 - [ ] Test demo flow end-to-end
+
+
+### E2E Test Scenarios
+- [x] Create E2E test structure and utilities (test-utils.ts)
+- [x] Test onboarding flow (welcome → device detection → model selection → completion)
+- [x] Test data entry workflow (create spreadsheet → enter data → validation)
+- [x] Test orchestrator detection (binary, continuous, diagnostic data types)
+- [x] Test analysis suggestion flow (detect → suggest → user confirmation)
+- [x] Test R code generation (generate → preview → copy)
+- [x] Test full workflow integration (onboarding → data → analysis → results)
+- [x] Test edge cases (empty data, invalid data, missing columns)
+- [x] Test error handling and recovery
+- [x] All 90 E2E tests passing, 901 total tests passing
