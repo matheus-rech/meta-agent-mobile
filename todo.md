@@ -1422,3 +1422,12 @@
 - [x] Generate QR code for Expo Go access
 - [x] Publish update to Expo servers (e9869b75-1d9b-4866-933b-fe18a7f1a5cc)
 - [ ] Test on physical device via Expo Go
+
+### Standalone APK Build
+- [x] Build Android APK with EAS Build (cf972203-fd83-403d-bfdf-883fb2791ca6)
+- [ ] Download and test APK on device
+
+### Railway Backend Deployment
+- [x] Deploy backend server to Railway (https://meta-agent-api-production.up.railway.app)
+- [x] Configure production environment variables
+- [x] Update app to use production API URL

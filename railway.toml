@@ -11,7 +11,7 @@ buildCommand = "pnpm install && pnpm build"
 # Start command for the Glass API server
 startCommand = "node dist/index.js"
 # Health check endpoint
-healthcheckPath = "/health"
+healthcheckPath = "/api/health"
 healthcheckTimeout = 300
 # Restart policy
 restartPolicyType = "ON_FAILURE"
@@ -19,4 +19,4 @@ restartPolicyMaxRetries = 3
 
 [service]
 # Internal port the service listens on
-internalPort = 4000
+internalPort = 3000

@@ -1,0 +1,22 @@
+# Ignore mobile app files - only deploy server
+app/
+components/
+hooks/
+assets/
+android/
+ios/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+node_modules/
+.expo/
+expo-qr-code.png
+credentials/
+*.keystore
+tests/
+docs/
+*.test.ts
+*.spec.ts

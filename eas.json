@@ -27,7 +27,7 @@
         "credentialsSource": "local"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://meta-agent-api.up.railway.app"
+        "EXPO_PUBLIC_API_URL": "https://meta-agent-api-production.up.railway.app"
       }
     },
     "production": {
@@ -39,7 +39,7 @@
         "buildType": "app-bundle"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://meta-agent-api.up.railway.app"
+        "EXPO_PUBLIC_API_URL": "https://meta-agent-api-production.up.railway.app"
       }
     }
   },
